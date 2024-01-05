@@ -2,7 +2,7 @@ from django.db import models
 
 
 # Create your models here.
-class Tipo_Informacao_Princiapal(models.Model):
+class Tipo_Informacao_Principal(models.Model):
     Nome_Tipo = models.CharField(max_length=100)
 
     def __str__(self):
@@ -11,14 +11,14 @@ class Tipo_Informacao_Princiapal(models.Model):
 
 class Tipo_Informacao_Especifica(models.Model):
     Nome_Tipo = models.CharField(max_length=100)
-    Tipo_Principal = models.ForeignKey(Tipo_Informacao_Princiapal, on_delete=models.CASCADE)
+    Tipo_Principal = models.ForeignKey(Tipo_Informacao_Principal, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.Nome_Tipo
 
 
 class Idade_Instalacao_Desportiva(models.Model):
-    Tipo = models.ForeignKey(Tipo_Informacao_Princiapal, on_delete=models.CASCADE)
+    Tipo = models.ForeignKey(Tipo_Informacao_Principal, on_delete=models.CASCADE)
     Ano_Construcao = models.IntegerField(max_length=4)
     Ano_Licenciamento = models.IntegerField(max_length=4)
     Ano_Entrada_Funcionamento = models.IntegerField(max_length=4)
