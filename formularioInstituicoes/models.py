@@ -19,7 +19,7 @@ class Tipo_Informacao_Especifica(models.Model):  # Coluna D EXCEL
 
 class Idade_Instalacao_Desportiva(models.Model):
     Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
+                                           default="Diversos")
     Ano_Construcao = models.IntegerField()
     Ano_Licenciamento = models.IntegerField()
     Ano_Entrada_Funcionamento = models.IntegerField()

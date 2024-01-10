@@ -18,5 +18,5 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.index_view),
+    path('', views.form_models),
 ]
