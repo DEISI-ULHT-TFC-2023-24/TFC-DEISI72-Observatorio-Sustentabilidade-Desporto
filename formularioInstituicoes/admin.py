@@ -4,8 +4,7 @@ from django.contrib import admin
 
 from .models import *
 
-admin.site.register(Tipo_Informacao_Principal)
-admin.site.register(Tipo_Informacao_Especifica)
+admin.site.register(Detalhes)
 admin.site.register(Idade_Instalacao_Desportiva)
 admin.site.register(Balneario)
 admin.site.register(Sala_Massagem)
@@ -29,7 +28,6 @@ admin.site.register(Principais_Tipos_Consumos_Custos_Fontes_Energeticas_Nao_Reno
 admin.site.register(Principais_Tipos_Consumos_Custos_Fontes_Energeticas_Renovaveis)
 admin.site.register(Consumos_Energeticos_Anuais)
 admin.site.register(Custos_Energeticos_Anuais)
-admin.site.register(Media_Numeros_Utilizadores_Anuais)
 admin.site.register(Iluminacao)
 admin.site.register(Climatizacao_Ventilacao)
 admin.site.register(Observacoes)

@@ -1,25 +1,77 @@
 from django.db import models
 
 
-# Create your models here.
-class Tipo_Informacao_Principal(models.Model):  # Coluna C EXCEL
-    Nome_Tipo = models.CharField(max_length=100)
+class Detalhes(models.Model):
+    Nome = models.CharField(max_length=100)
+
+    ASSOCIACAO_REPRESENTANTES_AGENTES_DESPORTIVOS = 'Associação de representantes de agentes desportivos'
+    ASSOCIACAO_PROMOTORA_DESPORTO = 'Associação promotora de desporto'
+    ASSOCIACAO_BASE_TERRITORIAL_EQUIVALENTE = 'Associação base territorial ou equivalente'
+    CLUBE = 'Clube'
+    CLUBE_PRATICANTES = 'Clube de praticantes'
+    OUTRA_ENTIDADE = 'Outra entidade com intervenção na área do desporto'
+
+    OPCOES = [
+        (ASSOCIACAO_REPRESENTANTES_AGENTES_DESPORTIVOS, 'Associação de representantes de agentes desportivos'),
+        (ASSOCIACAO_PROMOTORA_DESPORTO, 'Associação promotora de desporto'),
+        (ASSOCIACAO_BASE_TERRITORIAL_EQUIVALENTE, 'Associação base territorial ou equivalente'),
+        (CLUBE, 'Clube'),
+        (CLUBE_PRATICANTES, 'Clube de praticantes'),
+        (OUTRA_ENTIDADE, 'Outra entidade com intervenção na área do desporto'),
+    ]
+
+    Tipo_Instalacao = models.CharField(max_length=100, choices=OPCOES,
+                                       default=ASSOCIACAO_REPRESENTANTES_AGENTES_DESPORTIVOS)
+    Entidade_Gestora_Responsavel = models.CharField(max_length=100)
+    Rua = models.CharField(max_length=100)
+    Código_Postal = models.CharField(max_length=100)
+    Distrito = models.CharField(max_length=100)
+    Concelho = models.CharField(max_length=100)
+    Localidade = models.CharField(max_length=100)
+    Freguesia = models.CharField(max_length=100)
+    NIF = models.IntegerField()
+    Telefone = models.IntegerField()
+    Email = models.CharField(max_length=100)
+    Website = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.Nome_Tipo
+        return self.Nome
 
 
-class Tipo_Informacao_Especifica(models.Model):  # Coluna D EXCEL
-    Nome_Tipo = models.CharField(max_length=100)
-    Tipo_Principal = models.ForeignKey(Tipo_Informacao_Principal, on_delete=models.CASCADE)
+class Responsavel_Tecnico(models.Model):
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
+    Nome = models.CharField(max_length=100)
+    Cargo = models.CharField(max_length=100)
+    Categoria_Profissional = models.CharField(max_length=100)
+    Telefone = models.IntegerField()
+    Email = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.Nome_Tipo
+        return "Responsável Técnico"
+
+
+class Responsavel_Seguranca(models.Model):
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
+    Nome = models.CharField(max_length=100)
+    Telefone = models.IntegerField()
+    Email = models.CharField(max_length=100)
+
+    def __str__(self):
+        return "Responsável Segurança"
+
+
+class Caracterizacao_Instalacao(models.Model):
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
+    Numero_Trabalhadores = models.IntegerField()
+    Numero_Utilizadores = models.IntegerField()
+    Area_Util = models.IntegerField()
+
+    def __str__(self):
+        return "Caracterização da instalação"
 
 
 class Idade_Instalacao_Desportiva(models.Model):
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default="Diversos")
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     Ano_Construcao = models.IntegerField()
     Ano_Licenciamento = models.IntegerField()
     Ano_Entrada_Funcionamento = models.IntegerField()
@@ -30,8 +82,7 @@ class Idade_Instalacao_Desportiva(models.Model):
 
 
 class Balneario(models.Model):
-    Nome_Tipo_Informacao_Especifica = models.OneToOneField(Tipo_Informacao_Especifica, on_delete=models.CASCADE,
-                                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     Numero_Unidades_Identicas = models.IntegerField()
     Area = models.IntegerField()
     Numero_Chuveiros = models.IntegerField()
@@ -45,8 +96,7 @@ class Balneario(models.Model):
 
 
 class Sala_Massagem(models.Model):  # pode ser necessário mudar o tipo de sala de massagem
-    Nome_Tipo_Informacao_Especifica = models.OneToOneField(Tipo_Informacao_Especifica, on_delete=models.CASCADE,
-                                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
 
     AUTONOMA = 'Autonoma'
     INTEGRADA = 'Integrada'
@@ -64,8 +114,7 @@ class Sala_Massagem(models.Model):  # pode ser necessário mudar o tipo de sala 
 
 
 class Sala_Preparacao(models.Model):
-    Nome_Tipo_Informacao_Especifica = models.OneToOneField(Tipo_Informacao_Especifica, on_delete=models.CASCADE,
-                                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     Largura = models.IntegerField()
     Altura = models.IntegerField()
 
@@ -74,8 +123,7 @@ class Sala_Preparacao(models.Model):
 
 
 class Sala_Aquecimento(models.Model):
-    Nome_Tipo_Informacao_Especifica = models.OneToOneField(Tipo_Informacao_Especifica, on_delete=models.CASCADE,
-                                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     Largura = models.IntegerField()
     Altura = models.IntegerField()
 
@@ -84,8 +132,7 @@ class Sala_Aquecimento(models.Model):
 
 
 class Arrecadacao_Material_Desportivo(models.Model):
-    Nome_Tipo_Informacao_Especifica = models.OneToOneField(Tipo_Informacao_Especifica, on_delete=models.CASCADE,
-                                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     Numero_Unidades = models.IntegerField()
     Area_Total = models.IntegerField()
 
@@ -94,8 +141,7 @@ class Arrecadacao_Material_Desportivo(models.Model):
 
 
 class Tribuna_Cabina_Comunicacao_Social(models.Model):
-    Nome_Tipo_Informacao_Especifica = models.OneToOneField(Tipo_Informacao_Especifica, on_delete=models.CASCADE,
-                                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     Numero_Lugares_Fixos = models.IntegerField()
     Numero_Lugares_Adaptados = models.IntegerField()
 
@@ -104,8 +150,7 @@ class Tribuna_Cabina_Comunicacao_Social(models.Model):
 
 
 class Piscinas(models.Model):
-    Nome_Tipo_Informacao_Especifica = models.OneToOneField(Tipo_Informacao_Especifica, on_delete=models.CASCADE,
-                                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     Comprimento = models.IntegerField()
     Largura = models.IntegerField()
     Altura_Maior = models.IntegerField()
@@ -117,8 +162,7 @@ class Piscinas(models.Model):
 
 
 class Bancadas(models.Model):
-    Nome_Tipo_Informacao_Especifica = models.OneToOneField(Tipo_Informacao_Especifica, on_delete=models.CASCADE,
-                                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     Ar_Livre_Num_Espetadores = models.IntegerField()
     Ar_Livre_Num_Espetadores_Mob_Reduzida = models.IntegerField()
     Cobertas_Num_Espetadores = models.IntegerField()
@@ -129,8 +173,7 @@ class Bancadas(models.Model):
 
 
 class Tipos_Meios_Hidricos_Usados(models.Model):
-    Nome_Tipo_Informacao_Especifica = models.OneToOneField(Tipo_Informacao_Especifica, on_delete=models.CASCADE,
-                                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
 
     RIO = 'Rio'
     LAGO = 'Lago'
@@ -153,8 +196,7 @@ class Tipos_Meios_Hidricos_Usados(models.Model):
 
 
 class Informacoes_Adicionais(models.Model):
-    Nome_Tipo_Informacao_Especifica = models.OneToOneField(Tipo_Informacao_Especifica, on_delete=models.CASCADE,
-                                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     Numero_Tanques_Imercao = models.IntegerField()
     Numero_Tanques_Crioterapia = models.IntegerField()
     Numero_Tanques_Terapeuticos = models.IntegerField()
@@ -171,8 +213,7 @@ class Informacoes_Adicionais(models.Model):
 
 
 class Transportes_Publicos(models.Model):
-    Nome_Tipo_Informacao_Especifica = models.OneToOneField(Tipo_Informacao_Especifica, on_delete=models.CASCADE,
-                                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
 
     MAIS_400 = 'mais 400m'
     MENOS_400 = 'menos 400m'
@@ -189,8 +230,8 @@ class Transportes_Publicos(models.Model):
 
 
 class Parques_Estacionamento(models.Model):
-    Nome_Tipo_Informacao_Especifica = models.OneToOneField(Tipo_Informacao_Especifica, on_delete=models.CASCADE,
-                                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
+
     ATE_50 = 'até 50 lugares'
     ENTRE_51_E_150 = 'entre 51 e 150 lugares'
     ENTRE_151_E_300 = 'entre 151 e 300 lugares'
@@ -214,8 +255,8 @@ class Parques_Estacionamento(models.Model):
 
 
 class Parques_Estacionamento_Bicicletas_Motociclos(models.Model):
-    Nome_Tipo_Informacao_Especifica = models.OneToOneField(Tipo_Informacao_Especifica, on_delete=models.CASCADE,
-                                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
+
     ATE_50 = 'até 50 lugares'
     ENTRE_51_E_150 = 'entre 51 e 150 lugares'
     MAIS_151 = 'com mais 151 lugares'
@@ -233,8 +274,8 @@ class Parques_Estacionamento_Bicicletas_Motociclos(models.Model):
 
 
 class Outros_Parques_estacionamento(models.Model):
-    Nome_Tipo_Informacao_Especifica = models.OneToOneField(Tipo_Informacao_Especifica, on_delete=models.CASCADE,
-                                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
+
     Numero_Distancia_Menos_400_M = models.IntegerField()
 
     def __str__(self):
@@ -242,8 +283,7 @@ class Outros_Parques_estacionamento(models.Model):
 
 
 class Instalacao_Menos_400_M(models.Model):
-    Nome_Tipo_Informacao_Especifica = models.OneToOneField(Tipo_Informacao_Especifica, on_delete=models.CASCADE,
-                                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
 
     ENSINO_BASICO = 'Ensino Basico'
     ENSINO_SECUNDARIO = 'Ensino Secundario'
@@ -262,8 +302,7 @@ class Instalacao_Menos_400_M(models.Model):
 
 
 class Instalacao_Inserida_Em(models.Model):
-    Nome_Tipo_Informacao_Especifica = models.OneToOneField(Tipo_Informacao_Especifica, on_delete=models.CASCADE,
-                                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
 
     ESTABELECIMENTO_BASICO = 'Estabelecimento Básico'
     ESTABELECIMENTO_ENSINO_SECUNDARIO = 'Estabelecimento de Ensino Secundário'
@@ -282,8 +321,7 @@ class Instalacao_Inserida_Em(models.Model):
 
 
 class Turismo(models.Model):
-    Nome_Tipo_Informacao_Especifica = models.OneToOneField(Tipo_Informacao_Especifica, on_delete=models.CASCADE,
-                                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     INSTALACAO_MENOS_400_M_ALOJAMENTO = 'Instalação a menos de 400m de alojamento turístico'
     INSTALACAO_INTEGRADA_EMPREENDIMENTO = 'Instalação integrada em empreendimento turístico'
 
@@ -299,7 +337,7 @@ class Turismo(models.Model):
 
 
 class Acessibilidade_Universal(models.Model):
-    Tipo_Informacao = models.ForeignKey(Tipo_Informacao_Principal, on_delete=models.CASCADE)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
 
     NAO_ACESSIVEL = 'Não acessível'
     ACESSIVEL_AREA_PUBLICO = 'Acessível área de público'
@@ -323,8 +361,7 @@ class Acessibilidade_Universal(models.Model):
 class Principais_Tipos_Consumos_Custos_Fontes_Energeticas_Nao_Renovaveis(models.Model):
     # A Energia térmica proveniente de cogeração/redes urbanas têm duas opções
 
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
 
     ELETRICIDADE = 'Eletricidade'
     GAS_NATURAL = 'Gás Natural'
@@ -357,8 +394,7 @@ class Principais_Tipos_Consumos_Custos_Fontes_Energeticas_Nao_Renovaveis(models.
 
 
 class Principais_Tipos_Consumos_Custos_Fontes_Energeticas_Renovaveis(models.Model):
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
 
     ENERGIA_FOTOVOLTAICA = 'Energia Fotovoltaica'
     ENERGIA_SISTEMAS_SOLARES_TERMICOS = 'Energia de sistemas solares térmicos'
@@ -381,8 +417,7 @@ class Principais_Tipos_Consumos_Custos_Fontes_Energeticas_Renovaveis(models.Mode
 
 
 class Consumos_Energeticos_Anuais(models.Model):
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     Valor_Consumo = models.IntegerField()
 
     def __str__(self):
@@ -390,26 +425,15 @@ class Consumos_Energeticos_Anuais(models.Model):
 
 
 class Custos_Energeticos_Anuais(models.Model):
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     Valor_Custo = models.IntegerField()
 
     def __str__(self):
         return "Custos energéticos anuais/fonte energética"
 
 
-class Media_Numeros_Utilizadores_Anuais(models.Model):
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
-    Media_Utilizadores = models.IntegerField()
-
-    def __str__(self):
-        return "Média de número de utilizadores anuais"
-
-
 class Iluminacao(models.Model):
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
 
     ILUMINACAO_INTERIOR_GERAL = 'Iluminação Interior Geral'
     ILUMINACAO_INTERIOR_DESPORTIVA = 'Iluminação Interior Desportiva'
@@ -430,8 +454,7 @@ class Iluminacao(models.Model):
 
 
 class Climatizacao_Ventilacao(models.Model):
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
 
     SISTEMA_CALDEIRA = 'Sistema de Caldeira'
     BOMBA_CALOR = 'Bomba de Calor'
@@ -454,8 +477,7 @@ class Climatizacao_Ventilacao(models.Model):
 
 
 class Observacoes(models.Model):
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     Observacoes = models.CharField(max_length=500)
 
     def __str__(self):
@@ -463,8 +485,7 @@ class Observacoes(models.Model):
 
 
 class Custo_Total_Agua_Anual(models.Model):
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     Custo_Agua_Anual = models.IntegerField()
 
     def __str__(self):
@@ -472,8 +493,7 @@ class Custo_Total_Agua_Anual(models.Model):
 
 
 class Principais_Consumos_Fontes_Abastecimento_Agua(models.Model):
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
 
     ABASTECIMENTO_PUBLICO = 'Abastecimento Público'
     CAPTACOES_PROPRIAS = 'Captações próprias'
@@ -496,8 +516,7 @@ class Principais_Consumos_Fontes_Abastecimento_Agua(models.Model):
 
 
 class Descricao_Area_Ambiental(models.Model):
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     Tipo_Vegetacao = models.CharField(max_length=500)
     Tipo_Solo = models.CharField(max_length=500)
 
@@ -506,8 +525,7 @@ class Descricao_Area_Ambiental(models.Model):
 
 
 class Tipo_Producao_Residuos(models.Model):
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
 
     ORGANICOS = 'Orgânicos'
     PLASTICOS = 'Plásticos'
@@ -532,8 +550,7 @@ class Tipo_Producao_Residuos(models.Model):
 
 
 class CO2_Equivalente(models.Model):
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     CO2 = models.IntegerField()
 
     def __str__(self):
@@ -541,8 +558,7 @@ class CO2_Equivalente(models.Model):
 
 
 class Carbono_Associado(models.Model):
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     Carbono = models.IntegerField()
 
     def __str__(self):
@@ -550,8 +566,7 @@ class Carbono_Associado(models.Model):
 
 
 class Tarifa_Media(models.Model):
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     Tarifa = models.IntegerField()
 
     def __str__(self):
@@ -559,8 +574,7 @@ class Tarifa_Media(models.Model):
 
 
 class Tipo_Meio_Transporte(models.Model):
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
 
     CARRO_PASSAGEIROS = 'Carros de passageiros'
     CARRINHA = 'Carrinha'
@@ -583,8 +597,7 @@ class Tipo_Meio_Transporte(models.Model):
 
 
 class Tipo_Indicadores_Sustentabilidade(models.Model):
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
 
     REDUCAO_RESIDUOS = 'Redução de Resíduos '
     RECUPERACAO_MATERIAIS = ' Recuperação de Materiais'
@@ -614,8 +627,7 @@ class Tipo_Indicadores_Sustentabilidade(models.Model):
 
 
 class Modalidade_Atividades(models.Model):
-    Tipo_Informacao = models.OneToOneField(Tipo_Informacao_Principal, on_delete=models.CASCADE,
-                                           default=1)
+    Detalhes_Instalacao = models.OneToOneField(Detalhes, on_delete=models.CASCADE, default=1)
     Tipos_Modalidades = models.CharField(max_length=500)
 
     def __str__(self):

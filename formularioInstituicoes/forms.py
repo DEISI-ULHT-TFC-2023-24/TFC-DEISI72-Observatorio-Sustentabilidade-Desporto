@@ -105,10 +105,6 @@ class Custos_Energeticos_Anuais_Form(ModelForm):
     class Meta:
         model = Custos_Energeticos_Anuais
         fields = '__all__'
-class Media_Numeros_Utilizadores_Anuais_Form(ModelForm):
-    class Meta:
-        model = Media_Numeros_Utilizadores_Anuais
-        fields = '__all__'
 
 class Iluminacao_Form(ModelForm):
     class Meta:

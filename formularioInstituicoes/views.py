@@ -6,8 +6,6 @@ from .forms import *
 # Create your views here.
 def index_view(request):
     return render(request, 'index.html', {
-        'Tipo_Informacao_Principal': Tipo_Informacao_Principal.objects.all(),
-        'Tipo_Informacao_Especifica': Tipo_Informacao_Especifica.objects.all(),
         'Idade_Instalacao_Desportiva': Idade_Instalacao_Desportiva.objects.all(),
         'Balneario': Balneario.objects.all(),
         'Sala_Massagem': Sala_Massagem.objects.all(),
@@ -31,7 +29,6 @@ def index_view(request):
         'Principais_Tipos_Consumos_Custos_Fontes_Energeticas_Renovaveis': Principais_Tipos_Consumos_Custos_Fontes_Energeticas_Renovaveis.objects.all(),
         'Consumos_Energeticos_Anuais': Consumos_Energeticos_Anuais.objects.all(),
         'Custos_Energeticos_Anuais': Custos_Energeticos_Anuais.objects.all(),
-        'Media_Numeros_Utilizadores_Anuais': Media_Numeros_Utilizadores_Anuais.objects.all(),
         'Iluminacao': Iluminacao.objects.all(),
         'Climatizacao_Ventilacao': Climatizacao_Ventilacao.objects.all(),
         'Observacoes': Observacoes.objects.all(),
