@@ -7,20 +7,21 @@ class Tema(models.Model):
     def __str__(self):
         return self.nome
 
+
 class SubTema(models.Model):
-    nome = models.CharField(max_length=100)
     tema = models.ForeignKey(Tema, on_delete=models.CASCADE, related_name='subtemas')
+    nome = models.CharField(max_length=100)
 
     def __str__(self):
         return self.nome
 
+
 class Pergunta(models.Model):
-    texto = models.CharField(max_length=100)
     subtema = models.ForeignKey(SubTema, on_delete=models.CASCADE, related_name='perguntas', null=True)
+    texto = models.CharField(max_length=100)
 
     def __str__(self):
         return self.texto
-
 
 
 class Questionario(models.Model):
@@ -29,6 +30,7 @@ class Questionario(models.Model):
 
     def __str__(self):
         return self.nome
+
 
 class Entidade(models.Model):
     nome = models.CharField(max_length=100)
@@ -52,6 +54,7 @@ class Avaliacao(models.Model):
 
     def __str__(self):
         return f"{self.instalacao}: {self.questionario}"
+
 
 class Resposta(models.Model):
     avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='respostas')

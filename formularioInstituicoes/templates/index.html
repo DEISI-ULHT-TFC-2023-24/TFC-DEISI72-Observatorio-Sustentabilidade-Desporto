@@ -12,11 +12,40 @@
     <meta charset="UTF-8">
 </head>
 <body>
-<h1>Formulario</h1>
+<h1>Formulário</h1>
 <form action="." method="post">
     {% csrf_token %}
-    {{ Idade_Instalacao_Desportiva.as_p }}
-    <input type="submit" value="Save">
+
+    {% block questionario %}
+    <ol>
+        {% for tema in Temas %}
+
+        <h2><li>{{tema.nome}}</h2>
+
+            <ol>
+
+                {% for subtema in tema.subtemas.all %}
+                    <h3><li>{{subtema.nome}}</h3>
+                    
+
+                        {% for pergunta in subtema.perguntas.all %}
+
+                            <p>{{pergunta.texto}}</p>
+
+                        {% endfor %}
+
+                    </li> 
+            
+                {% endfor %}
+            </ol>
+        </li>    
+
+    {% endfor %}
+    </ol>
+    
+
+    {% endblock questionario %}
+
 </form>
 </body>
 </html>

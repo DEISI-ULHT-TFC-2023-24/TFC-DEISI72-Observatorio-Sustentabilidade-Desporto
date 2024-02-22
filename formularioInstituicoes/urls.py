@@ -18,5 +18,5 @@ from . import views
 
 
 urlpatterns = [
-    #path('', views.form_models),
+    path('', views.formulario_view),
 ]
