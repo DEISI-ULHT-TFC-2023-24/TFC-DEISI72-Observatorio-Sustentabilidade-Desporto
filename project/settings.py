@@ -38,9 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'formularioInstituicoes',
-    'django_extensions',
+    #'django_extensions',
 ]
 
+'''
 GRAPH_MODELS = {
   'all_applications': True,
   'group_models': True,
@@ -49,6 +50,7 @@ GRAPH_MODELS = {
 GRAPH_MODELS = {
   'app_labels': ["formularioInstituicoes", "auth"],
 }
+'''
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
