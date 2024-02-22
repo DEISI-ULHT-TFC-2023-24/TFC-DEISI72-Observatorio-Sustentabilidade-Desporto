@@ -4,30 +4,59 @@ from django.db import models
 class Tema(models.Model):
     nome = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.nome
+
+class SubTema(models.Model):
+    nome = models.CharField(max_length=100)
+    tema = models.ForeignKey(Tema, on_delete=models.CASCADE, related_name='subtemas')
+
+    def __str__(self):
+        return self.nome
 
 class Pergunta(models.Model):
-    pergunta = models.CharField(max_length=100)
-    tema = models.OneToOneField(Tema, on_delete=models.CASCADE)
+    texto = models.CharField(max_length=100)
+    subtema = models.ForeignKey(SubTema, on_delete=models.CASCADE, related_name='perguntas', null=True)
 
+    def __str__(self):
+        return self.texto
 
-class Resposta(models.Model):
-    id = models.IntegerField(primary_key=True)
-    resposta = models.CharField(max_length=100)
-    pergunta = models.OneToOneField(Pergunta, on_delete=models.CASCADE)
 
 
 class Questionario(models.Model):
-    perguntas = models.ForeignKey(Pergunta, on_delete=models.CASCADE)
+    temas = models.ManyToManyField(Tema, related_name='questionarios', null=True, blank=True)
+    nome = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nome
+
+class Entidade(models.Model):
+    nome = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nome
+
+
+class Instalacao(models.Model):
+    entidade = models.ForeignKey(Entidade, on_delete=models.CASCADE, related_name='instalacoes')
+    nome = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nome
 
 
 class Avaliacao(models.Model):
-    id = models.IntegerField(primary_key=True)
+    instalacao = models.ForeignKey(Instalacao, on_delete=models.CASCADE, related_name='avaliacoes')
+    questionario = models.ForeignKey(Questionario, on_delete=models.CASCADE, related_name='avaliacoes')
     ano = models.IntegerField()
-    questionario = models.OneToOneField(Questionario, on_delete=models.CASCADE)
-    respostas = models.ForeignKey(Resposta, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return f"{self.instalacao}: {self.questionario}"
 
-class Entidade(models.Model):
-    id = models.IntegerField(primary_key=True)
-    nome = models.CharField(max_length=100)
-    avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE)
+class Resposta(models.Model):
+    avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='respostas')
+    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostas')
+    texto = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.texto
