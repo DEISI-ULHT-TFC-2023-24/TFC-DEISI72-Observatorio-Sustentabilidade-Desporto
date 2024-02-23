@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import *
 from .forms import *
 
+
 def formulario_view(request):
     return render(request, 'index.html', {
         'Temas': Tema.objects.all(),
@@ -12,4 +13,5 @@ def formulario_view(request):
         'Instalacoes': Instalacao.objects.all(),
         'Avaliacoes': Avaliacao.objects.all(),
         'Respostas': Resposta.objects.all(),
+        'TipoResposta': TipoResposta.objects.all()
     })

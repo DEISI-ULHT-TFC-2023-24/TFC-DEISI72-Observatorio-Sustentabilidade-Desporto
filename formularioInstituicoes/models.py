@@ -55,7 +55,7 @@ class Avaliacao(models.Model):
     def __str__(self):
         return f"{self.instalacao}: {self.questionario}"
 
-class Tipo_Resposta(models.Model):
+class TipoResposta(models.Model):
     nome = models.CharField(max_length=100)
     pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='tipo_respostas')
     def __str__(self):
@@ -63,7 +63,7 @@ class Tipo_Resposta(models.Model):
 
 class Resposta(models.Model):
     avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='respostas')
-    tipo_resposta = models.ForeignKey(Tipo_Resposta, on_delete=models.CASCADE, related_name='respostas')
+    tipo_resposta = models.ForeignKey(TipoResposta, on_delete=models.CASCADE, related_name='respostas', null=True)
     texto = models.CharField(max_length=100)
 
     def __str__(self):
