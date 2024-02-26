@@ -13,5 +13,5 @@ def formulario_view(request):
         'Instalacoes': Instalacao.objects.all(),
         'Avaliacoes': Avaliacao.objects.all(),
         'Respostas': Resposta.objects.all(),
-        'TipoResposta': TipoResposta.objects.all()
+        'Opcoes': Opcao.objects.all()
     })

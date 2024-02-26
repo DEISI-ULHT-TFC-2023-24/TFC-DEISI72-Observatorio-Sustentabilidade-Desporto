@@ -19,6 +19,7 @@ class SubTema(models.Model):
 class Pergunta(models.Model):
     subtema = models.ForeignKey(SubTema, on_delete=models.CASCADE, related_name='perguntas', null=True)
     texto = models.CharField(max_length=100)
+    dropdown = models.BooleanField(null=True)
 
     def __str__(self):
         return self.texto
@@ -56,17 +57,17 @@ class Avaliacao(models.Model):
         return f"{self.instalacao}: {self.questionario}"
 
 
-class TipoResposta(models.Model):
-    nome = models.CharField(max_length=100)
-    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='tipo_respostas')
+class Opcao(models.Model):
+    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='opcoes', default=False)
+    opcao = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.nome
+        return self.opcao
 
 
 class Resposta(models.Model):
+    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostas', null=True)
     avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='respostas')
-    tipo_resposta = models.ForeignKey(TipoResposta, on_delete=models.CASCADE, related_name='respostas', null=True)
     texto = models.CharField(max_length=100)
 
     def __str__(self):

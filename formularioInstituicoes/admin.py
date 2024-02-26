@@ -22,7 +22,7 @@ class SubTemaAdmin(admin.ModelAdmin):
 admin.site.register(SubTema, SubTemaAdmin)
 admin.site.register(Instalacao)
 admin.site.register(Pergunta)
-admin.site.register(TipoResposta)
+admin.site.register(Opcao)
 admin.site.register(Resposta)
 
 
