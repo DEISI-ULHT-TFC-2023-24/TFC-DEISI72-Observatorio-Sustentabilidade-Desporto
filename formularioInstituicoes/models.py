@@ -65,9 +65,18 @@ class Opcao(models.Model):
         return self.opcao
 
 
-class Resposta(models.Model):
-    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostas', null=True)
-    avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='respostas')
+class RespostaNumerica(models.Model):
+    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostasNumericas', null=True)
+    avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='respostasNumericas')
+    texto = models.IntegerField()
+
+    def __str__(self):
+        return self.texto
+
+
+class RespostaTextual(models.Model):
+    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostasTextuais', null=True)
+    avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='respostasTextuais')
     texto = models.CharField(max_length=100)
 
     def __str__(self):

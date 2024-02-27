@@ -12,6 +12,7 @@ def formulario_view(request):
         'Entidades': Entidade.objects.all(),
         'Instalacoes': Instalacao.objects.all(),
         'Avaliacoes': Avaliacao.objects.all(),
-        'Respostas': Resposta.objects.all(),
+        'RespostasNumericas': RespostaNumerica.objects.all(),
+        'RespostasTextuais': RespostaTextual.objects.all(),
         'Opcoes': Opcao.objects.all()
     })

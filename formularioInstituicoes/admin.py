@@ -23,7 +23,8 @@ admin.site.register(SubTema, SubTemaAdmin)
 admin.site.register(Instalacao)
 admin.site.register(Pergunta)
 admin.site.register(Opcao)
-admin.site.register(Resposta)
+admin.site.register(RespostaNumerica)
+admin.site.register(RespostaTextual)
 
 
 class QuestionarioAdmin(admin.ModelAdmin):
