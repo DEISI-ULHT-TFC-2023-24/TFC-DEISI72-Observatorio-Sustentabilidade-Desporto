@@ -32,6 +32,27 @@
 
                             <p>{{pergunta.texto}}</p>
 
+                            {{ form.as_p }}
+                            {% if pergunta.tipo == 'NUMERO_INTEIRO' %}
+
+
+
+                            {% elif pergunta.tipo == 'TEXTO_LIVRE' %}
+
+
+
+                            {% elif pergunta.tipo == 'ESCOLHA_MULTIPLA' %}
+
+
+
+                            {% endif %}
+
+
+
+
+
+                            <input type="submit" value="Submit">
+
                         {% endfor %}
 
                     </li> 

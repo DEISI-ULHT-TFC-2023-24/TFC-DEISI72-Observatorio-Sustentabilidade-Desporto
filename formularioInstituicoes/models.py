@@ -1,5 +1,6 @@
 from django.db import models
 
+#TENHO QUE VER, NO FINAL DA MODELAÇÃO, QUAIS ATRIBUTOS VALEM A PENA TER NULL=TRUE
 
 class Tema(models.Model):
     nome = models.CharField(max_length=100)
@@ -19,7 +20,14 @@ class SubTema(models.Model):
 class Pergunta(models.Model):
     subtema = models.ForeignKey(SubTema, on_delete=models.CASCADE, related_name='perguntas', null=True)
     texto = models.CharField(max_length=100)
-    dropdown = models.BooleanField(null=True)
+
+    TIPO_RESPOSTA = (
+        ('NUMERO_INTEIRO', 'Número Inteiro'),
+        ('TEXTO_LIVRE', 'Texto Livre'),
+        ('ESCOLHA_MULTIPLA', 'Escolha Múltipla'),
+    )
+
+    tipo = models.CharField(max_length=20, choices=TIPO_RESPOSTA, null=True)
 
     def __str__(self):
         return self.texto
@@ -66,7 +74,7 @@ class Opcao(models.Model):
 
 
 class RespostaNumerica(models.Model):
-    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostasNumericas', null=True)
+    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostasNumericas', null=True, limit_choices_to={'pergunta__dropdown': True})
     avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='respostasNumericas')
     texto = models.IntegerField()
 

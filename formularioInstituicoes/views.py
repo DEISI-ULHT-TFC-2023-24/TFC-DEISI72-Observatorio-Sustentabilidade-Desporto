@@ -14,5 +14,6 @@ def formulario_view(request):
         'Avaliacoes': Avaliacao.objects.all(),
         'RespostasNumericas': RespostaNumerica.objects.all(),
         'RespostasTextuais': RespostaTextual.objects.all(),
-        'Opcoes': Opcao.objects.all()
+        'Opcoes': Opcao.objects.all(),
+        'form': FormNumerosInteiros(),
     })
