@@ -67,19 +67,20 @@ class Avaliacao(models.Model):
 
 class Opcao(models.Model):
     pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='opcoes', default=False)
-    opcao = models.CharField(max_length=100)
+    nome = models.CharField(max_length=100)
+    valor = models.CharField(max_length=100, null=True)
 
     def __str__(self):
-        return self.opcao
+        return self.nome
 
 
 class RespostaNumerica(models.Model):
-    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostasNumericas', null=True, limit_choices_to={'pergunta__dropdown': True})
+    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostasNumericas', null=True)
     avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='respostasNumericas')
-    texto = models.IntegerField()
+    numero = models.IntegerField()
 
     def __str__(self):
-        return self.texto
+        return f"{self.numero}"
 
 
 class RespostaTextual(models.Model):

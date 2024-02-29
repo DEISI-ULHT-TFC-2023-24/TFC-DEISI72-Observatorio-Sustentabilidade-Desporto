@@ -30,38 +30,33 @@
 
                         {% for pergunta in subtema.perguntas.all %}
 
-                            <p>{{pergunta.texto}}</p>
+                            <h4>{{pergunta.texto}}</h4>
 
-                            {{ form.as_p }}
+                            <form action="." method="post">
+
                             {% if pergunta.tipo == 'NUMERO_INTEIRO' %}
 
-
+                                {{ formInt.as_p }}
 
                             {% elif pergunta.tipo == 'TEXTO_LIVRE' %}
 
-
+                                {{ formTexto.as_p }}
 
                             {% elif pergunta.tipo == 'ESCOLHA_MULTIPLA' %}
 
-
+                                {{ formEscolha.as_p }}
 
                             {% endif %}
 
-
-
-
-
-                            <input type="submit" value="Submit">
-
                         {% endfor %}
 
-                    </li> 
-            
                 {% endfor %}
-            </ol>
-        </li>    
 
-    {% endfor %}
+                <br><input type="submit" value="Submit">
+            </form>
+            </ol>
+
+        {% endfor %}
     </ol>
     
 

@@ -37,7 +37,7 @@ class OpcaoAdmin(admin.ModelAdmin):  # filtar no admin a pergunta que se pretend
             kwargs["queryset"] = Pergunta.objects.filter(tipo='ESCOLHA_MULTIPLA')
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-    list_display = ('opcao', 'pergunta')
+    list_display = ('nome', 'pergunta')
 
 
 admin.site.register(Opcao, OpcaoAdmin)
