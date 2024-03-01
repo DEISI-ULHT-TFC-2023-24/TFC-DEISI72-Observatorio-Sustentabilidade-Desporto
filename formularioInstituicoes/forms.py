@@ -6,30 +6,28 @@ from .models import *
 class FormNumerosInteiros(ModelForm):
     class Meta:
         model = RespostaNumerica
-        fields = [ 'pergunta', 'avaliacao', 'numero']
+        fields = ['numero']
         labels = {'numero': 'Introduza número'}
 
 
 class FormTextoLivre(ModelForm):
-
     class Meta:
         model = RespostaTextual
-        fields = ['pergunta', 'avaliacao', 'texto']
+        fields = ['texto']
         labels = {'texto': 'Introduza o texto'}
 
 
 class FormEscolhaMultipla(ModelForm):
-
     opcao = forms.ModelChoiceField(queryset=Opcao.objects.all(), empty_label="Escolha uma opção")
 
     class Meta:
         model = RespostaTextual
-        fields = ['pergunta', 'avaliacao', 'opcao']
+        fields = ['opcao']
 
     def save(self, commit=True):
         instance = super().save(commit=False)
         opcao_escolhida = self.cleaned_data['opcao']
-        instance.texto = opcao_escolhida.nome  # Salvar o nome da opção escolhida no campo texto
+        instance.texto = opcao_escolhida.nome
         if commit:
             instance.save()
         return instance

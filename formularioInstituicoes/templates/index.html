@@ -35,15 +35,15 @@
                             <form action="." method="post">
 
                             {% if pergunta.tipo == 'NUMERO_INTEIRO' %}
-
+                                <input type="hidden" name="pergunta_id_int" value="{{ pergunta.id }}">
                                 {{ formInt.as_p }}
 
                             {% elif pergunta.tipo == 'TEXTO_LIVRE' %}
-
+                                <input type="hidden" name="pergunta_id_string" value="{{ pergunta.id }}">
                                 {{ formTexto.as_p }}
 
                             {% elif pergunta.tipo == 'ESCOLHA_MULTIPLA' %}
-
+                                <input type="hidden" name="pergunta_id_escolha" value="{{ pergunta.id }}">
                                 {{ formEscolha.as_p }}
 
                             {% endif %}
