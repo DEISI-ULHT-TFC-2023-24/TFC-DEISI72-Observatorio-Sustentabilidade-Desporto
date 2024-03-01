@@ -18,7 +18,7 @@ class SubTema(models.Model):
 
 
 class Pergunta(models.Model):
-    subtema = models.ForeignKey(SubTema, on_delete=models.CASCADE, related_name='perguntas', null=True)
+    subtema = models.ForeignKey(SubTema, on_delete=models.CASCADE, related_name='perguntas')
     texto = models.CharField(max_length=100)
 
     TIPO_RESPOSTA = (
@@ -27,14 +27,14 @@ class Pergunta(models.Model):
         ('ESCOLHA_MULTIPLA', 'Escolha Múltipla'),
     )
 
-    tipo = models.CharField(max_length=20, choices=TIPO_RESPOSTA, null=True)
+    tipo = models.CharField(max_length=20, choices=TIPO_RESPOSTA)
 
     def __str__(self):
         return self.texto
 
 
 class Questionario(models.Model):
-    temas = models.ManyToManyField(Tema, related_name='questionarios', null=True, blank=True)
+    temas = models.ManyToManyField(Tema, related_name='questionarios', blank=True)
     nome = models.CharField(max_length=100)
 
     def __str__(self):
@@ -51,6 +51,29 @@ class Entidade(models.Model):
 class Instalacao(models.Model):
     entidade = models.ForeignKey(Entidade, on_delete=models.CASCADE, related_name='instalacoes')
     nome = models.CharField(max_length=100)
+
+    TIPO_INSTALACAO = (
+        ('ARAD', 'Associação de Representantes de Agentes Desportivos'),
+        ('APD', 'Associação promotora de desporto'),
+        ('ABTE', 'Associação base territorial ou equivalente'),
+        ('CLUBE', 'Clube'),
+        ('CLUBE_P', 'Clube de praticantes'),
+        ('OEIAD', 'Outra entidade com intervenção na área do desporto'),
+    )
+
+    tipo_instalacao = models.CharField(max_length=100, choices=TIPO_INSTALACAO)
+    rua = models.CharField(max_length=100)
+    codigo_postal = models.IntegerField()
+    distrito = models.CharField(max_length=100)
+    concelho = models.CharField(max_length=100)
+    localidade = models.CharField(max_length=100)
+    coordenada_x = models.CharField(max_length=100)
+    coordenada_y = models.CharField(max_length=100)
+    freguesia = models.CharField(max_length=100)
+    nif = models.IntegerField()
+    telefone = models.IntegerField()
+    email = models.CharField(max_length=100)
+    website = models.CharField(max_length=100, null=True)
 
     def __str__(self):
         return self.nome
@@ -75,7 +98,7 @@ class Opcao(models.Model):
 
 
 class RespostaNumerica(models.Model):
-    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostasNumericas', null=True)
+    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostasNumericas')
     avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='respostasNumericas')
     numero = models.IntegerField()
 
@@ -84,7 +107,7 @@ class RespostaNumerica(models.Model):
 
 
 class RespostaTextual(models.Model):
-    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostasTextuais', null=True)
+    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostasTextuais')
     avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='respostasTextuais')
     texto = models.CharField(max_length=100)
 
