@@ -1,3 +1,4 @@
+from django.core.validators import RegexValidator
 from django.db import models
 
 #TENHO QUE VER, NO FINAL DA MODELAÇÃO, QUAIS ATRIBUTOS VALEM A PENA TER NULL=TRUE
@@ -14,7 +15,7 @@ class SubTema(models.Model):
     nome = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.nome
+        return f"{self.nome}: {self.tema}"
 
 
 class Pergunta(models.Model):
@@ -63,17 +64,17 @@ class Instalacao(models.Model):
 
     tipo_instalacao = models.CharField(max_length=100, choices=TIPO_INSTALACAO)
     rua = models.CharField(max_length=100)
-    codigo_postal = models.IntegerField()
+    codigo_postal = models.CharField(max_length=9, validators=[RegexValidator(r'^\d{4}-\d{3}$', message='O código postal deve estar no formato XXXX-XXX')])
     distrito = models.CharField(max_length=100)
     concelho = models.CharField(max_length=100)
     localidade = models.CharField(max_length=100)
-    coordenada_x = models.CharField(max_length=100)
-    coordenada_y = models.CharField(max_length=100)
+    coordenada_x = models.IntegerField(null=True, blank=True)
+    coordenada_y = models.IntegerField(null=True, blank=True)
     freguesia = models.CharField(max_length=100)
     nif = models.IntegerField()
     telefone = models.IntegerField()
-    email = models.CharField(max_length=100)
-    website = models.CharField(max_length=100, null=True)
+    email = models.EmailField()
+    website = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return self.nome

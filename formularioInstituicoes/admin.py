@@ -15,9 +15,8 @@ admin.site.register(Tema, TemaAdmin)
 
 
 class SubTemaAdmin(admin.ModelAdmin):
-    # filter_horizontal = ('perguntas',)
     list_display = ('nome', 'tema')
-    ordering = ('tema', 'nome')
+    ordering = ('tema', 'nome',)
 
 
 admin.site.register(SubTema, SubTemaAdmin)
@@ -28,7 +27,13 @@ class InstalacaoAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Instalacao, InstalacaoAdmin)
-admin.site.register(Pergunta)
+
+
+class PerguntaAdmin(admin.ModelAdmin):
+    search_fields = ['subtema']
+
+
+admin.site.register(Pergunta, PerguntaAdmin)
 
 
 class OpcaoAdmin(admin.ModelAdmin):  # filtar no admin a pergunta que se pretende com dropdown=True
