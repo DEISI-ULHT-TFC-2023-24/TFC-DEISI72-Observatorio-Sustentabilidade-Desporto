@@ -7,8 +7,7 @@ def formulario_view(request):
     if request.method == "POST":
         formInt = FormNumerosInteiros(request.POST)
         formString = FormTextoLivre(request.POST)
-        pergunta_id_escolha = request.POST.get('pergunta_id_escolha')
-        formEscolha = FormEscolhaMultipla(pergunta_id_escolha, request.POST)
+        formEscolha = FormEscolhaMultipla(request.POST)
 
         if formInt.is_valid():
             saveInt = formInt.save(commit=False)
@@ -59,7 +58,7 @@ def formulario_view(request):
         'Opcoes': Opcao.objects.all(),
         'formInt': FormNumerosInteiros(),
         'formTexto': FormTextoLivre(),
-        'formEscolha': FormEscolhaMultipla(request.POST.get('pergunta_id_escolha')),
+        'formEscolha': FormEscolhaMultipla(),
     }
 
     return render(request, 'index.html', context)
