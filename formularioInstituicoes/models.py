@@ -1,7 +1,8 @@
 from django.core.validators import RegexValidator
 from django.db import models
 
-#TENHO QUE VER, NO FINAL DA MODELAÇÃO, QUAIS ATRIBUTOS VALEM A PENA TER NULL=TRUE
+
+# TENHO QUE VER, NO FINAL DA MODELAÇÃO, QUAIS ATRIBUTOS VALEM A PENA TER NULL=TRUE
 
 class Tema(models.Model):
     nome = models.CharField(max_length=100)
@@ -31,7 +32,7 @@ class Pergunta(models.Model):
     tipo = models.CharField(max_length=20, choices=TIPO_RESPOSTA)
 
     def __str__(self):
-        return self.texto
+        return f"{self.texto}: {self.subtema.nome}"
 
 
 class Questionario(models.Model):
@@ -64,7 +65,8 @@ class Instalacao(models.Model):
 
     tipo_instalacao = models.CharField(max_length=100, choices=TIPO_INSTALACAO)
     rua = models.CharField(max_length=100)
-    codigo_postal = models.CharField(max_length=9, validators=[RegexValidator(r'^\d{4}-\d{3}$', message='O código postal deve estar no formato XXXX-XXX')])
+    codigo_postal = models.CharField(max_length=9, validators=[
+        RegexValidator(r'^\d{4}-\d{3}$', message='O código postal deve estar no formato XXXX-XXX')])
     distrito = models.CharField(max_length=100)
     concelho = models.CharField(max_length=100)
     localidade = models.CharField(max_length=100)
@@ -98,15 +100,6 @@ class Opcao(models.Model):
         return self.nome
 
 
-class RespostaNumerica(models.Model):
-    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostasNumericas')
-    avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='respostasNumericas')
-    numero = models.IntegerField()
-
-    def __str__(self):
-        return f"{self.numero}"
-
-
 class RespostaTextual(models.Model):
     pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostasTextuais')
     avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='respostasTextuais')
@@ -114,3 +107,12 @@ class RespostaTextual(models.Model):
 
     def __str__(self):
         return self.texto
+
+
+class RespostaNumerica(models.Model):
+    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostasNumericas')
+    avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='respostasNumericas')
+    numero = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.numero}"

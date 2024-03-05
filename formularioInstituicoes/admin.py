@@ -46,8 +46,20 @@ class OpcaoAdmin(admin.ModelAdmin):  # filtar no admin a pergunta que se pretend
 
 
 admin.site.register(Opcao, OpcaoAdmin)
-admin.site.register(RespostaNumerica)
-admin.site.register(RespostaTextual)
+
+
+class RespostaNumericaAdmin(admin.ModelAdmin):
+    list_display = ('numero', 'pergunta')
+
+
+admin.site.register(RespostaNumerica, RespostaNumericaAdmin)
+
+
+class RespostaTextualAdmin(admin.ModelAdmin):
+    list_display = ('texto', 'pergunta')
+
+
+admin.site.register(RespostaTextual, RespostaTextualAdmin)
 
 
 class QuestionarioAdmin(admin.ModelAdmin):
