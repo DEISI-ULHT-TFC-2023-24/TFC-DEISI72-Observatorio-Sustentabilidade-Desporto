@@ -11,57 +11,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
 </head>
+
 <body>
-<h1>Formulário</h1>
-<form action="." method="post">
-    {% csrf_token %}
+    <h1>Formulário</h1>
+    <form action="." method="post">
+        {% csrf_token %}
 
-    {% block questionario %}
-    <ol>
-        {% for tema in Temas %}
+        {% block questionario %}
+        <ol>
+            {% for tema in Temas %}
 
-        <h2><li>{{tema.nome}}</h2>
+            <h2>
+                <li>{{tema.nome}}
+            </h2>
 
             <ol>
 
                 {% for subtema in tema.subtemas.all %}
-                    <h3><li>{{subtema.nome}}</h3>
-                    
+                <h3>
+                    <li>{{subtema.nome}}
+                </h3>
 
-                        {% for pergunta in subtema.perguntas.all %}
 
-                            <h4>{{pergunta.texto}}</h4>
+                {% for pergunta in subtema.perguntas.all %}
 
-                            <form action="." method="post">
+                <h4>{{pergunta.texto}}</h4>
 
-                            {% if pergunta.tipo == 'NUMERO_INTEIRO' %}
-                                <input type="hidden" name="pergunta_id_int" value="{{ pergunta.id }}">
-                                {{ formInt.as_p }}
+                <form action="." method="post">
 
-                            {% elif pergunta.tipo == 'TEXTO_LIVRE' %}
-                                <input type="hidden" name="pergunta_id_string" value="{{ pergunta.id }}">
-                                {{ formTexto.as_p }}
+                    {% if pergunta.tipo == 'NUMERO_INTEIRO' %}
+                    <input type="hidden" name="pergunta_id_int" value="{{ pergunta.id }}">
+                    {{ formInt.as_p }}
 
-                            {% elif pergunta.tipo == 'ESCOLHA_MULTIPLA' %}
-                                <input type="hidden" name="pergunta_id_escolha" value="{{ pergunta.id }}">
-                                {{ formEscolha.as_p }}
+                    {% elif pergunta.tipo == 'TEXTO_LIVRE' %}
+                    <input type="hidden" name="pergunta_id_string" value="{{ pergunta.id }}">
+                    {{ formTexto.as_p }}
 
-                            {% endif %}
+                    {% elif pergunta.tipo == 'ESCOLHA_MULTIPLA' %}
+                    <input type="hidden" name="pergunta_id_escolha" value="{{ pergunta.id }}">
+                    {{ formEscolha.as_p }}
 
-                        {% endfor %}
+                    <form action="">
+                        <select name="" id="">
+                            {% for opcao in Opcoes %}
 
-                {% endfor %}
+                                {% if opcao.pergunta.id == pergunta.id %}
 
-                <br><input type="submit" value="Submit">
-            </form>
+                                    <option value="{{ opcao.nome }}">{{ opcao.nome }}</option>
+
+                                {% endif %}
+
+                            {% endfor %}
+                        </select>
+                    </form>
+
+                    {% endif %}
+
+                    {% endfor %}
+
+                    {% endfor %}
+
+                    <br><input type="submit" value="Submit">
+                </form>
             </ol>
 
-        {% endfor %}
-    </ol>
-    
+            {% endfor %}
+        </ol>
 
-    {% endblock questionario %}
 
-</form>
+        {% endblock questionario %}
+
+    </form>
 </body>
+
 </html>

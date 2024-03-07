@@ -7,15 +7,15 @@ def formulario_view(request):
     if request.method == "POST":
         formInt = FormNumerosInteiros(request.POST)
         formString = FormTextoLivre(request.POST)
+
         formEscolha = FormEscolhaMultipla(request.POST)
 
         if formInt.is_valid():
             saveInt = formInt.save(commit=False)
 
             pergunta_id = request.POST.get('pergunta_id_int')
-
             pergunta = Pergunta.objects.get(id=pergunta_id)
-            avaliacao = Avaliacao.objects.get(id=1)  # isto vai estar ligado com o login associado ao formulario
+            avaliacao = Avaliacao.objects.get(id=2)  # isto vai estar ligado com o login associado ao formulario
 
             saveInt.pergunta = pergunta
             saveInt.avaliacao = avaliacao
@@ -27,7 +27,7 @@ def formulario_view(request):
             pergunta_id = request.POST.get('pergunta_id_string')
 
             pergunta = Pergunta.objects.get(id=pergunta_id)
-            avaliacao = Avaliacao.objects.get(id=1)  # isto vai estar ligado com o login associado ao formulario
+            avaliacao = Avaliacao.objects.get(id=2)  # isto vai estar ligado com o login associado ao formulario
 
             saveString.pergunta = pergunta
             saveString.avaliacao = avaliacao
@@ -39,7 +39,7 @@ def formulario_view(request):
             pergunta_id = request.POST.get('pergunta_id_escolha')
 
             pergunta = Pergunta.objects.get(id=pergunta_id)
-            avaliacao = Avaliacao.objects.get(id=1)  # isto vai estar ligado com o login associado ao formulario
+            avaliacao = Avaliacao.objects.get(id=2)  # isto vai estar ligado com o login associado ao formulario
 
             saveEscolha.pergunta = pergunta
             saveEscolha.avaliacao = avaliacao
