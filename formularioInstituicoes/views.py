@@ -62,3 +62,7 @@ def formulario_view(request):
     }
 
     return render(request, 'index.html', context)
+
+
+def dashboard_view(request):
+    return render(request, 'dashboard.html', {})

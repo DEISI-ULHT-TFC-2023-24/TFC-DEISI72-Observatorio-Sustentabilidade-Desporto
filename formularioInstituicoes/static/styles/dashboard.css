@@ -1,0 +1,99 @@
+html {
+    margin: auto;
+    height: 100%;
+}
+
+body {
+  margin-left: 40vh;
+  margin-right: 40vh;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#graphbar {
+    height: 10vh;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: stretch;
+    margin-bottom: 15vh;
+}
+
+.entry {
+    margin: auto;
+    text-align: center;
+    flex: 1;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 50vh;
+    flex: 1;
+}
+
+.display {
+    box-shadow: 2px 4px 4px 2px #888888;
+    border-radius: 10px;
+    margin-bottom: 5vh;
+}
+
+.display-view {
+    padding: 5%;
+}
+
+#circlechart {
+    margin: auto;
+    width: 100%;
+}
+
+#barchart {
+    margin: auto;
+    width: 100%;
+}
+
+.consumo-ultimo-mes-text {
+    width: 100%;
+    padding-left: 3%;
+    position: absolute;
+}
+
+#ultimo-mes {
+    height: 100%;
+    position: relative;
+    box-shadow: 2px 4px 4px 2px #888888;
+    margin-bottom: 15vh;
+    border-radius: 10px;
+    padding: 2%;
+}
+
+.consumo-ultimo-mes-text p, h1 {
+    display: inline;
+}
+
+.data-list p {
+    display: inline;
+}
+
+.data-list {
+    padding-left: 10%;
+    padding-right: 10%;
+    list-style: auto;
+}
+
+.data-list li{
+    width: 100%;
+    font-size: 150%;
+    margin-bottom: 10%;
+}
+
+.list-percentage {
+    float: right;
+}
+
+.display h2 {
+    padding: 3%;
+    padding-bottom: 0;
+    margin: 0;
+}
