@@ -126,12 +126,10 @@
         });
         const bloco = element.nextElementSibling;
         const sinal = element.querySelector("#sinal");
-        if (bloco.style.display === "none" || bloco.style.display === "") {
+        if (bloco.style.display === "none") {
             bloco.style.display = "block";
-            sinal.innerText = '-';
         } else {
             bloco.style.display = "none";
-            sinal.innerText = '+';
         }
 
     }
