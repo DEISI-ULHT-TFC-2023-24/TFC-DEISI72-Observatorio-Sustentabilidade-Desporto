@@ -5,6 +5,75 @@
 <head>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+        body {
+            background: orange;
+        }
+
+        .tema {
+            border: 1px solid lightgrey;
+            margin: 10px;
+            background: whitesmoke;
+            padding: 5px 15px;
+            border-radius: 10px;
+        }
+
+        .titulo {
+            font-size: 1.5em;
+            padding: 1ch 0;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: row;
+        }
+
+        details > ol {
+            background: grey;
+        }
+
+        .bloco {
+            display: none;
+            margin-left: 40px;
+            margin-bottom: 40px;
+        }
+
+        select {
+            width: 158px;
+        }
+
+        input{
+            max-width: 150px;
+        }
+
+        select option {
+            white-space: normal;
+        }
+
+        .pergunta {
+            width: 50ch;
+            padding: 0 10px 20px 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .resposta {
+            vertical-align: top;
+        }
+
+        @media (max-width: 800px) {
+            .pergunta {
+                width: 20ch;
+            }
+
+            .bloco {
+                margin-left: 0;
+                margin-bottom: 10px;
+            }
+        }
+
+        div label {
+            display: none;
+        }
     </style>
     <title>Formulario</title>
 
@@ -13,45 +82,59 @@
 </head>
 
 <body>
-    <h1>Formulário</h1>
-    <form action="." method="post">
-        {% csrf_token %}
-        <ol>
-            {% for tema, subtemas in temas.items %}
+<h1>Avaliação da Instalação</h1>
+<form action="." method="post">
+    {% csrf_token %}
 
-                <h2><li>{{ tema.nome }}</h2>
-
-                <ol>
-
+    {% for tema, subtemas in temas.items %}
+        {% with forloop.counter as tema_counter %}
+            <div class="tema">
+                <div class="titulo" onclick="toggle(this)">
+                    <span>{{ tema_counter }}. {{ tema.nome }} </span>
+                    <span style="float:right" id="sinal" >+</span>
+                </div>
+                <div class="bloco">
                     {% for subtema, perguntas in subtemas.items %}
+                        {% with forloop.counter as subtema_counter %}
 
-                    <h3><li>{{subtema.nome}}</h3>
-                    <ol>
+                            <h3>{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}</h3>
+                            <table>
+                                {% for pergunta, resposta in perguntas.items %}
+                                    <tr>
+                                        <td class="pergunta">{{ pergunta.texto }}</td>
+                                        <td class="resposta">{{ resposta }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        {% endwith %}
 
-                        {% for pergunta, resposta in perguntas.items %}
-
-                            <h4><li>{{ pergunta.texto }}</h4>
-
-                                <ol>
-                                    {{ resposta.as_p }}
-                                </ol>
-
-                        {% endfor %}
-                    </ol>
-
-
-                {% endfor %}
+                    {% endfor %}
                     <input type="submit" value="Submit">
-                </ol>
+                </div>
+            </div>
+        {% endwith %}
 
-            {% endfor %}
-
-
-
-        </ol>
+    {% endfor %}
 
 
-    </form>
+</form>
 </body>
+<script>
+    function toggle(element) {
+        document.querySelectorAll(".bloco").forEach(function (e) {
+            e.style.display = "none";
+        });
+        const bloco = element.nextElementSibling;
+        const sinal = element.querySelector("#sinal");
+        if (bloco.style.display === "none" || bloco.style.display === "") {
+            bloco.style.display = "block";
+            sinal.innerText = '-';
+        } else {
+            bloco.style.display = "none";
+            sinal.innerText = '+';
+        }
+
+    }
+</script>
 
 </html>

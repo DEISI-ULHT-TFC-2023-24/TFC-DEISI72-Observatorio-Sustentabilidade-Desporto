@@ -25,7 +25,7 @@ class Pergunta(models.Model):
     texto = models.CharField(max_length=100)
 
     TIPO_RESPOSTA = (
-        ('NUMERO_INTEIRO', 'Número Inteiro'),
+        ('NUMERO_INTEIR O', 'Número Inteiro'),
         ('TEXTO_LIVRE', 'Texto Livre'),
         ('ESCOLHA_MULTIPLA', 'Escolha Múltipla'),
     )
