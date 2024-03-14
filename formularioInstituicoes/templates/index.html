@@ -16,70 +16,40 @@
     <h1>Formulário</h1>
     <form action="." method="post">
         {% csrf_token %}
-
-        {% block questionario %}
         <ol>
-            {% for tema in Temas %}
+            {% for tema, subtemas in temas.items %}
 
-            <h2>
-                <li>{{tema.nome}}
-            </h2>
+                <h2><li>{{ tema.nome }}</h2>
 
-            <ol>
+                <ol>
 
-                {% for subtema in tema.subtemas.all %}
-                <h3>
-                    <li>{{subtema.nome}}
-                </h3>
+                    {% for subtema, perguntas in subtemas.items %}
+
+                    <h3><li>{{subtema.nome}}</h3>
+                    <ol>
+
+                        {% for pergunta, resposta in perguntas.items %}
+
+                            <h4><li>{{ pergunta.texto }}</h4>
+
+                                <ol>
+                                    {{ resposta.as_p }}
+                                </ol>
+
+                        {% endfor %}
+                    </ol>
 
 
-                {% for pergunta in subtema.perguntas.all %}
-
-                <h4>{{pergunta.texto}}</h4>
-
-                <form action="." method="post">
-
-                    {% if pergunta.tipo == 'NUMERO_INTEIRO' %}
-                    <input type="hidden" name="pergunta_id_int" value="{{ pergunta.id }}">
-                    {{ formInt.as_p }}
-
-                    {% elif pergunta.tipo == 'TEXTO_LIVRE' %}
-                    <input type="hidden" name="pergunta_id_string" value="{{ pergunta.id }}">
-                    {{ formTexto.as_p }}
-
-                    {% elif pergunta.tipo == 'ESCOLHA_MULTIPLA' %}
-                    <input type="hidden" name="pergunta_id_escolha" value="{{ pergunta.id }}">
-                    {{ formEscolha.as_p }}
-
-                    <form action="">
-                        <select name="" id="">
-                            {% for opcao in Opcoes %}
-
-                                {% if opcao.pergunta.id == pergunta.id %}
-
-                                    <option value="{{ opcao.nome }}">{{ opcao.nome }}</option>
-
-                                {% endif %}
-
-                            {% endfor %}
-                        </select>
-                    </form>
-
-                    {% endif %}
-
-                    {% endfor %}
-
-                    {% endfor %}
-
-                    <br><input type="submit" value="Submit">
-                </form>
-            </ol>
+                {% endfor %}
+                    <input type="submit" value="Submit">
+                </ol>
 
             {% endfor %}
+
+
+
         </ol>
 
-
-        {% endblock questionario %}
 
     </form>
 </body>

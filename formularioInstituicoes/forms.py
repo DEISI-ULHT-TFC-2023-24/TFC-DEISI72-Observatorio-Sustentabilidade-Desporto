@@ -16,8 +16,9 @@ class FormTextoLivre(ModelForm):
         fields = ['texto']
         labels = {'texto': 'Introduza o texto'}
 
+
 class FormEscolhaMultipla(ModelForm):
-    opcao = forms.ModelChoiceField(queryset=Opcao.objects.filter(pergunta_id=56), empty_label="Escolha uma opção")
+    opcao = forms.ModelChoiceField(queryset=Opcao.objects.all(), empty_label="Escolha uma opção")
 
     class Meta:
         model = RespostaTextual
@@ -30,4 +31,3 @@ class FormEscolhaMultipla(ModelForm):
         if commit:
             instance.save()
         return instance
-

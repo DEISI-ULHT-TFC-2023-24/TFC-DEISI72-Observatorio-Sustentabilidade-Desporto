@@ -14,9 +14,10 @@ class Tema(models.Model):
 class SubTema(models.Model):
     tema = models.ForeignKey(Tema, on_delete=models.CASCADE, related_name='subtemas')
     nome = models.CharField(max_length=100)
+    resposta_duplicavel = models.BooleanField(null=True)
 
     def __str__(self):
-        return f"{self.nome}: {self.tema}"
+        return f"{self.nome}"
 
 
 class Pergunta(models.Model):
@@ -30,9 +31,10 @@ class Pergunta(models.Model):
     )
 
     tipo = models.CharField(max_length=20, choices=TIPO_RESPOSTA)
+    obrigatoria = models.BooleanField()
 
     def __str__(self):
-        return f"{self.texto}: {self.subtema.nome}"
+        return f"{self.texto}"
 
 
 class Questionario(models.Model):

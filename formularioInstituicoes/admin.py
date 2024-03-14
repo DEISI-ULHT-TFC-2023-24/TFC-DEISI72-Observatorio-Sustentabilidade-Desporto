@@ -30,7 +30,7 @@ admin.site.register(Instalacao, InstalacaoAdmin)
 
 
 class PerguntaAdmin(admin.ModelAdmin):
-    search_fields = ['subtema']
+    list_display = ('texto', 'subtema',)
 
 
 admin.site.register(Pergunta, PerguntaAdmin)
