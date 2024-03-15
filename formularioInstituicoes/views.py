@@ -56,7 +56,11 @@ def formulario_view(request):
             formulario = {}
 
             for pergunta in Pergunta.objects.filter(subtema_id=subtema.id):
-                if pergunta.tipo == 'NUMERO_INTEIRO':
+                if pergunta.subtema.nome == "Observações":
+                    formobs = FormTextoLivreObservacoes()
+                    formulario[pergunta] = formobs
+
+                elif pergunta.tipo == 'NUMERO_INTEIRO':
                     formint = FormNumerosInteiros()
                     formulario[pergunta] = formint
 
@@ -68,6 +72,8 @@ def formulario_view(request):
                     formescolha = FormEscolhaMultipla()
                     formescolha.fields['opcao'].queryset = Opcao.objects.filter(pergunta_id=pergunta.id)
                     formulario[pergunta] = formescolha
+
+
 
             subtemas[subtema] = formulario
 

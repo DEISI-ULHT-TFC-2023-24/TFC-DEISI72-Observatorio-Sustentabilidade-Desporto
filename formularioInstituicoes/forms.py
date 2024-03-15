@@ -14,8 +14,18 @@ class FormTextoLivre(ModelForm):
     class Meta:
         model = RespostaTextual
         fields = ['texto']
-        labels = {'texto': '', # 'Introduza o texto'
-         }
+        labels = {'texto': ''}
+
+
+class FormTextoLivreObservacoes(ModelForm):
+    class Meta:
+        model = RespostaTextual
+        fields = ['texto']
+        labels = {'texto': ''}
+
+        widgets = {
+            'texto': forms.Textarea(attrs={'cols': 21, 'rows': 10}),
+        }
 
 
 class FormEscolhaMultipla(ModelForm):
