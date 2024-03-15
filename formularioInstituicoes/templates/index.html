@@ -10,6 +10,15 @@
             background: orange;
         }
 
+        .container {
+            max-width: 700px;
+            margin: auto;
+        }
+
+        .cabecalho {
+            text-align:center;
+        }
+
         .tema {
             border: 1px solid lightgrey;
             margin: 10px;
@@ -20,6 +29,7 @@
 
         .titulo {
             font-size: 1.5em;
+            font-weight:bold;
             padding: 1ch 0;
             display: flex;
             justify-content: space-between;
@@ -33,15 +43,15 @@
         .bloco {
             display: none;
             margin-left: 40px;
-            margin-bottom: 40px;
         }
 
         select {
             width: 158px;
         }
 
-        input{
-            max-width: 150px;
+        td p {
+            margin:0;
+
         }
 
         select option {
@@ -49,16 +59,42 @@
         }
 
         .pergunta {
-            width: 50ch;
-            padding: 0 10px 20px 0;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
+            width: 30ch;
+            padding: 12px 10px 20px;
+            text-align:right;
+        }
+
+        .pergunta * {
+            text-align:right;
         }
 
         .resposta {
             vertical-align: top;
         }
+        input, select {
+            max-width: 150px;
+            padding: 5px 10px;
+            margin: 5px 0;
+        }
+
+        input[type="submit"] {
+
+            display:block;
+            margin-left:auto;
+            background: orange;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-bottom:10px;
+            border: 0;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #ff7f00;
+        }
+
+    .orange-background:hover {
+         /* Darker shade of orange */
+
 
         @media (max-width: 800px) {
             .pergunta {
@@ -67,7 +103,7 @@
 
             .bloco {
                 margin-left: 0;
-                margin-bottom: 10px;
+                margin-bottom: 30px;
             }
         }
 
@@ -75,16 +111,16 @@
             display: none;
         }
     </style>
-    <title>Formulario</title>
+    <title>IPDJ - SNID</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
 </head>
 
 <body>
-<h1>Avaliação da Instalação</h1>
-<form action="." method="post">
-    {% csrf_token %}
+<h1 class="cabecalho">Avaliação da Instalação</h1>
+
+<div class="container">
 
     {% for tema, subtemas in temas.items %}
         {% with forloop.counter as tema_counter %}
@@ -94,30 +130,38 @@
                     <span style="float:right" id="sinal" >+</span>
                 </div>
                 <div class="bloco">
-                    {% for subtema, perguntas in subtemas.items %}
-                        {% with forloop.counter as subtema_counter %}
+                    <form action="" method="post">
+                        {% csrf_token %}
 
-                            <h3>{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}</h3>
-                            <table>
-                                {% for pergunta, resposta in perguntas.items %}
-                                    <tr>
-                                        <td class="pergunta">{{ pergunta.texto }}</td>
-                                        <td class="resposta">{{ resposta }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </table>
-                        {% endwith %}
+                        <!-- input que envia informação do tema que está a ser submetido-->
+                        <input type="hidden" name="tema_id" value="{tema.id}">
 
-                    {% endfor %}
-                    <input type="submit" value="Submit">
+                        {% for subtema, perguntas in subtemas.items %}
+                            {% with forloop.counter as subtema_counter %}
+
+                                <h3>{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}</h3>
+                                <table>
+                                    {% for pergunta, resposta in perguntas.items %}
+                                        <tr>
+                                            <td class="pergunta">{{ pergunta.texto }}</td>
+                                            <td class="resposta">{{ resposta.as_p}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            {% endwith %}
+                        {% endfor %}
+
+                        <input type="submit" value="Gravar">
+
+                    </form>
                 </div>
             </div>
         {% endwith %}
 
     {% endfor %}
+</div>
 
 
-</form>
 </body>
 <script>
     function toggle(element) {
@@ -126,10 +170,12 @@
         });
         const bloco = element.nextElementSibling;
         const sinal = element.querySelector("#sinal");
-        if (bloco.style.display === "none") {
+        if (bloco.style.display === "none" || bloco.style.display === "") {
             bloco.style.display = "block";
+            sinal.innerText = '-';
         } else {
             bloco.style.display = "none";
+            sinal.innerText = '+';
         }
 
     }

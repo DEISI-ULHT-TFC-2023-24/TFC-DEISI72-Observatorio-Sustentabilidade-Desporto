@@ -1,6 +1,6 @@
 digraph model_graph {
   // Dotfile by Django-Extensions graph_models
-  // Created: 2024-02-21 16:46
+  // Created: 2024-02-27 16:51
   // Cli Options: -a -o myapp_models.dot
 
   fontname = "Roboto"
@@ -549,6 +549,14 @@ digraph model_graph {
     </TD></TR>
   
   
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto">tipo</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto">CharField</FONT>
+    </TD></TR>
+  
+  
     </TABLE>
     >]
 
@@ -680,11 +688,87 @@ digraph model_graph {
     </TABLE>
     >]
 
-  formularioInstituicoes_models_Resposta [label=<
+  formularioInstituicoes_models_Opcao [label=<
     <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
     <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
     <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
-    Resposta
+    Opcao
+    </B></FONT></TD></TR>
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto"><B>id</B></FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto"><B>BigAutoField</B></FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto"><B>pergunta</B></FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto"><B>ForeignKey (id)</B></FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto">opcao</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto">CharField</FONT>
+    </TD></TR>
+  
+  
+    </TABLE>
+    >]
+
+  formularioInstituicoes_models_RespostaNumerica [label=<
+    <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
+    <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
+    RespostaNumerica
+    </B></FONT></TD></TR>
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto"><B>id</B></FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto"><B>BigAutoField</B></FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto"><B>avaliacao</B></FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto"><B>ForeignKey (id)</B></FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto"><B>pergunta</B></FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto"><B>ForeignKey (id)</B></FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Roboto">texto</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Roboto">IntegerField</FONT>
+    </TD></TR>
+  
+  
+    </TABLE>
+    >]
+
+  formularioInstituicoes_models_RespostaTextual [label=<
+    <TABLE BGCOLOR="white" BORDER="1" CELLBORDER="0" CELLSPACING="0">
+    <TR><TD COLSPAN="2" CELLPADDING="5" ALIGN="CENTER" BGCOLOR="#1b563f">
+    <FONT FACE="Roboto" COLOR="white" POINT-SIZE="10"><B>
+    RespostaTextual
     </B></FONT></TD></TR>
   
   
@@ -791,11 +875,20 @@ digraph model_graph {
   formularioInstituicoes_models_Avaliacao -> formularioInstituicoes_models_Questionario
   [label=" questionario (avaliacoes)"] [arrowhead=none, arrowtail=dot, dir=both];
 
-  formularioInstituicoes_models_Resposta -> formularioInstituicoes_models_Avaliacao
-  [label=" avaliacao (respostas)"] [arrowhead=none, arrowtail=dot, dir=both];
+  formularioInstituicoes_models_Opcao -> formularioInstituicoes_models_Pergunta
+  [label=" pergunta (opcoes)"] [arrowhead=none, arrowtail=dot, dir=both];
 
-  formularioInstituicoes_models_Resposta -> formularioInstituicoes_models_Pergunta
-  [label=" pergunta (respostas)"] [arrowhead=none, arrowtail=dot, dir=both];
+  formularioInstituicoes_models_RespostaNumerica -> formularioInstituicoes_models_Pergunta
+  [label=" pergunta (respostasNumericas)"] [arrowhead=none, arrowtail=dot, dir=both];
+
+  formularioInstituicoes_models_RespostaNumerica -> formularioInstituicoes_models_Avaliacao
+  [label=" avaliacao (respostasNumericas)"] [arrowhead=none, arrowtail=dot, dir=both];
+
+  formularioInstituicoes_models_RespostaTextual -> formularioInstituicoes_models_Pergunta
+  [label=" pergunta (respostasTextuais)"] [arrowhead=none, arrowtail=dot, dir=both];
+
+  formularioInstituicoes_models_RespostaTextual -> formularioInstituicoes_models_Avaliacao
+  [label=" avaliacao (respostasTextuais)"] [arrowhead=none, arrowtail=dot, dir=both];
 
 
 }
