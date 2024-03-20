@@ -120,6 +120,10 @@
 
 <div class="container">
 
+    {% for key, value in respostas.items %}
+    <p>{{ key }}: {{ value }}</p>
+    {% endfor %}
+
     {% for tema, subtemas in temas.items %}
         {% with forloop.counter as tema_counter %}
             <div class="tema">
@@ -131,9 +135,6 @@
                     <form action="" method="post">
                         {% csrf_token %}
 
-                        <!-- input que envia informação do tema que está a ser submetido-->
-                        <input type="hidden" name="tema_id" value="{tema.id}">
-
                         {% for subtema, perguntas in subtemas.items %}
                             {% with forloop.counter as subtema_counter %}
 
@@ -141,6 +142,7 @@
                                 <table>
                                     {% for pergunta, resposta in perguntas.items %}
                                         <tr>
+                                            <input type="hidden" name="pergunta" value={{ pergunta.id }}>
                                             <td class="pergunta">{{ pergunta.texto }}</td>
                                             <td class="resposta">{{ resposta.as_p}}</td>
                                         </tr>
@@ -157,6 +159,8 @@
         {% endwith %}
 
     {% endfor %}
+
+
 </div>
 
 

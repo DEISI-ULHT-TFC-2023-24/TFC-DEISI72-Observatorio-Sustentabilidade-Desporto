@@ -4,6 +4,7 @@ from .models import *
 
 
 class FormNumerosInteiros(ModelForm):
+
     class Meta:
         model = RespostaNumerica
         fields = ['numero']
@@ -24,7 +25,7 @@ class FormTextoLivreObservacoes(ModelForm):
         labels = {'texto': ''}
 
         widgets = {
-            'texto': forms.Textarea(attrs={'cols': 21, 'rows': 10}),
+            'texto': forms.Textarea(attrs={'cols': 25, 'rows': 20}),
         }
 
 
