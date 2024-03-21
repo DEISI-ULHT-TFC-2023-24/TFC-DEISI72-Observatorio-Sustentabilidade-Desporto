@@ -1,3 +1,6 @@
+import os
+from pathlib import Path
+
 from django.shortcuts import render
 from .models import *
 from .forms import *
@@ -33,24 +36,30 @@ def formulario_view(request):
                     formescolha.fields['opcao'].queryset = Opcao.objects.filter(pergunta_id=pergunta.id)
                     formulario[pergunta] = formescolha
 
+                elif pergunta.tipo == 'FICHEIRO':
+                    formficheiro = FormFicheiro(prefix=pergunta.id)
+                    formulario[pergunta] = formficheiro
+
             subtemas[subtema] = formulario
 
         temas[tema] = subtemas
 
     if request.method == "POST":
+        print(request.POST)
+        print(request.FILES)
         post = request.POST
 
         for chave, resposta_recebida in post.items():
             pergunta_tiporesposta = chave.split('-')
             id_pergunta_retirado = pergunta_tiporesposta[0]
-            if (id_pergunta_retirado.isdigit()):
+            if id_pergunta_retirado.isdigit():
                 tiporesposta = pergunta_tiporesposta[1]
 
                 if tiporesposta == "numero":
                     resposta_num = RespostaNumerica(
                         avaliacao=Avaliacao.objects.get(id=2), #só com o login feito é que fica bom
                         pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
-                        numero=int(resposta_recebida)
+                        numero=int(resposta_recebida),
                     )
                     resposta_num.save()
 
@@ -58,7 +67,7 @@ def formulario_view(request):
                     resposta_txt = RespostaTextual(
                         avaliacao=Avaliacao.objects.get(id=2),#só com o login feito é que fica bom
                         pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
-                        texto=resposta_recebida
+                        texto=resposta_recebida,
                     )
                     resposta_txt.save()
 
@@ -66,49 +75,24 @@ def formulario_view(request):
                     resposta_txt = RespostaTextual(
                         avaliacao=Avaliacao.objects.get(id=2),#só com o login feito é que fica bom
                         pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
-                        texto=Opcao.objects.get(id=int(resposta_recebida))
+                        texto=Opcao.objects.get(id=int(resposta_recebida)),
                     )
                     resposta_txt.save()
+
+                elif tiporesposta == "ficheiro":
+
+
+
+                    file = Ficheiro(
+                        avaliacao=Avaliacao.objects.get(id=2),  # só com o login feito é que fica bom
+                        pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
+                        ficheiro=f'media/{resposta_recebida}'
+                    )
+                    file.save()
+
 
     context = {
         'temas': temas,
     }
 
     return render(request, 'index.html', context)
-
-
-'''
-    if request.method == "POST":
-                formInt = FormNumerosInteiros(request.POST)
-                formString = FormTextoLivre(request.POST)
-                formEscolha = FormEscolhaMultipla(request.POST)
-
-                if formInt.is_valid():
-                    saveInt = formInt.save(commit=False)
-
-                    pergunta = Pergunta.objects.get(texto="Sala de imprensa")
-                    avaliacao = Avaliacao.objects.get(id=2)  # isto vai estar ligado com o login associado ao formulario
-
-                    saveInt.pergunta = pergunta
-                    saveInt.avaliacao = avaliacao
-                    saveInt.save()
-
-                if formString.is_valid():
-                    saveString = formString.save(commit=False)
-
-                    pergunta = Pergunta.objects.get(texto="Sala de imprensa")
-                    avaliacao = Avaliacao.objects.get(id=2)  # isto vai estar ligado com o login associado ao formulario
-
-                    saveString.pergunta = pergunta
-                    saveString.avaliacao = avaliacao
-                    saveString.save()
-
-                if formEscolha.is_valid():
-                    saveEscolha = formEscolha.save(commit=False)
-
-                    pergunta = Pergunta.objects.get(texto="Sala de imprensa")
-                    avaliacao = Avaliacao.objects.get(id=2)  # isto vai estar ligado com o login associado ao formulario
-
-                    saveEscolha.pergunta = pergunta
-                    saveEscolha.avaliacao = avaliacao
-                    saveEscolha.save() '''

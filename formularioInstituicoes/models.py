@@ -28,11 +28,11 @@ class Pergunta(models.Model):
         ('NUMERO_INTEIRO', 'Número Inteiro'),
         ('TEXTO_LIVRE', 'Texto Livre'),
         ('ESCOLHA_MULTIPLA', 'Escolha Múltipla'),
+        ('FICHEIRO', 'Ficheiro'),
     )
 
     tipo = models.CharField(max_length=20, choices=TIPO_RESPOSTA)
     obrigatoria = models.BooleanField()
-
     def __str__(self):
         return f"{self.texto}"
 
@@ -118,3 +118,11 @@ class RespostaNumerica(models.Model):
 
     def __str__(self):
         return f"{self.numero}"
+
+class Ficheiro(models.Model):
+    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='ficheiros')
+    avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='ficheiros')
+    ficheiro = models.FileField(upload_to='media/')
+
+    def __str__(self):
+        return f"{self.ficheiro.name}"

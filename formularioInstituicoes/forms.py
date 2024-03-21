@@ -44,3 +44,8 @@ class FormEscolhaMultipla(ModelForm):
         if commit:
             instance.save()
         return instance
+
+class FormFicheiro(ModelForm):
+    class Meta:
+        model = Ficheiro
+        fields = ['ficheiro']

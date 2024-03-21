@@ -63,9 +63,10 @@ admin.site.register(RespostaTextual, RespostaTextualAdmin)
 
 
 class QuestionarioAdmin(admin.ModelAdmin):
-    pass  # filter_horizontal = ('temas',)
+    filter_horizontal = ('temas',)
 
 
 admin.site.register(Questionario, QuestionarioAdmin)
 admin.site.register(Avaliacao)
 admin.site.register(Entidade)
+admin.site.register(Ficheiro)
