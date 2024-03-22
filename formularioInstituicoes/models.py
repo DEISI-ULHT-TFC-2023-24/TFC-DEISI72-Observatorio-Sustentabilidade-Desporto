@@ -33,6 +33,8 @@ class Pergunta(models.Model):
 
     tipo = models.CharField(max_length=20, choices=TIPO_RESPOSTA)
     obrigatoria = models.BooleanField()
+    resposta_duplicavel = models.BooleanField(default=False)
+
     def __str__(self):
         return f"{self.texto}"
 
