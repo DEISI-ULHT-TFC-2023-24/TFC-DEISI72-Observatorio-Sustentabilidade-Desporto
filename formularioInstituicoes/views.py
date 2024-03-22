@@ -46,7 +46,6 @@ def formulario_view(request):
 
     if request.method == "POST":
         print(request.POST)
-        print(request.FILES)
         post = request.POST
 
         for chave, resposta_recebida in post.items():
@@ -79,16 +78,26 @@ def formulario_view(request):
                     )
                     resposta_txt.save()
 
-                elif tiporesposta == "ficheiro":
+        print(request.FILES)
+        files = request.FILES
+        for chave, resposta_recebida in files.items():
+            pergunta_tiporesposta = chave.split('-')
+            id_pergunta_retirado = pergunta_tiporesposta[0]
+            if id_pergunta_retirado.isdigit():
+                tipofile = pergunta_tiporesposta[1]
 
-
-
+                if tipofile == "ficheiro":
+                    print(resposta_recebida)
                     file = Ficheiro(
                         avaliacao=Avaliacao.objects.get(id=2),  # só com o login feito é que fica bom
                         pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
-                        ficheiro=f'media/{resposta_recebida}'
+                        ficheiro=resposta_recebida
                     )
                     file.save()
+
+
+
+
 
 
     context = {
