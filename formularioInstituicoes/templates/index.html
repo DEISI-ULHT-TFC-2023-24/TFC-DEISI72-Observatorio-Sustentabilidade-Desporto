@@ -16,7 +16,7 @@
         }
 
         .cabecalho {
-            text-align:center;
+            text-align: center;
         }
 
         .tema {
@@ -29,7 +29,7 @@
 
         .titulo {
             font-size: 1.5em;
-            font-weight:bold;
+            font-weight: bold;
             padding: 1ch 0;
             display: flex;
             justify-content: space-between;
@@ -56,11 +56,11 @@
         .pergunta {
             width: 30ch;
             padding: 12px 10px 20px;
-            text-align:right;
+            text-align: right;
         }
 
         .pergunta * {
-            text-align:right;
+            text-align: right;
         }
 
         .resposta {
@@ -75,15 +75,16 @@
 
         input[type="submit"] {
 
-            display:block;
-            margin-left:auto;
+            display: block;
+            margin-left: auto;
             background: orange;
             padding: 10px 20px;
             border-radius: 10px;
-            margin-bottom:10px;
+            margin-bottom: 10px;
             border: 0;
             transition: background-color 0.3s ease;
         }
+
         input[type="submit"]:hover {
             background-color: #ff7f00;
         }
@@ -92,22 +93,28 @@
             display: none;
         }
 
-    .orange-background:hover {
-
-        @media (max-width: 800px) {
-            .pergunta {
-                width: 20ch;
-            }
-
-            .bloco {
-                margin-left: 0;
-                margin-bottom: 30px;
-            }
-
+        h3 button {
+            background-color: orange;
+            color: black;
+            font-weight: bold;
         }
 
+        .orange-background:hover {
 
-    }
+            @media (max-width: 800px) {
+                .pergunta {
+                    width: 20ch;
+                }
+
+                .bloco {
+                    margin-left: 0;
+                    margin-bottom: 30px;
+                }
+
+            }
+
+
+        }
     </style>
     <title>IPDJ - SNID</title>
 
@@ -121,7 +128,7 @@
 <div class="container">
 
     {% for key, value in respostas.items %}
-    <p>{{ key }}: {{ value }}</p>
+        <p>{{ key }}: {{ value }}</p>
     {% endfor %}
 
     {% for tema, subtemas in temas.items %}
@@ -129,7 +136,7 @@
             <div class="tema">
                 <div class="titulo" onclick="toggle(this)">
                     <span>{{ tema_counter }}. {{ tema.nome }} </span>
-                    <span style="float:right" id="sinal" >+</span>
+                    <span style="float:right" id="sinal">+</span>
                 </div>
                 <div class="bloco">
                     <form action="" method="post" enctype="multipart/form-data">
@@ -138,13 +145,25 @@
                         {% for subtema, perguntas in subtemas.items %}
                             {% with forloop.counter as subtema_counter %}
 
-                                <h3>{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}</h3>
+                                <h3>{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}
+                                    {% if subtema.resposta_duplicavel %}
+                                        <input type="hidden" value="{{ tema.id }}" name="temaId">
+                                        <button type="button" class="adicionar-formulario"
+                                                data-subtema="{{ subtema.id }}" data-tema="{{ tema.id }}">+
+                                        </button>
+
+                                    {% endif %}
+                                </h3>
                                 <table>
                                     {% for pergunta, resposta in perguntas.items %}
                                         <tr>
                                             <input type="hidden" name="pergunta" value={{ pergunta.id }}>
                                             <td class="pergunta">{{ pergunta.texto }}</td>
-                                            <td class="resposta">{{ resposta.as_p}}</td>
+                                            <td class="resposta">{{ resposta.as_p }}</td>
+                                            {% if pergunta.unidade != null %}
+                                                <td>{{ pergunta.unidade }}</td>
+                                            {% endif %}
+
                                         </tr>
                                     {% endfor %}
                                 </table>
@@ -179,8 +198,25 @@
             bloco.style.display = "none";
             sinal.innerText = '+';
         }
-
     }
+
+    document.querySelectorAll(".adicionar-formulario").forEach(button => {
+        button.addEventListener("click", function () {
+            var temaId = this.dataset.tema;
+            var subtemaId = this.dataset.subtema;
+            var tema_subtema = temaId + "-" + subtemaId
+            const formData = new FormData();
+            formData.append('tema_subtema', tema_subtema);
+            fetch(`adicionar_formulario`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: formData
+            })
+                .then(response => response.json())
+        });
+    });
 </script>
 
 </html>

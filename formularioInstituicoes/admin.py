@@ -35,14 +35,16 @@ class PerguntaAdmin(admin.ModelAdmin):
 
 admin.site.register(Pergunta, PerguntaAdmin)
 
+admin.site.register(UnidadePergunta)
+
 
 class OpcaoAdmin(admin.ModelAdmin):  # filtar no admin a pergunta que se pretende com dropdown=True
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == "pergunta":
-            kwargs["queryset"] = Pergunta.objects.filter(tipo='ESCOLHA_MULTIPLA')
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+            kwargs["queryset"] = Pergunta.objects.filter(tipo="ESCOLHA_MULTIPLA")
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
-    list_display = ('nome', 'pergunta')
+    filter_horizontal = ('pergunta',)
 
 
 admin.site.register(Opcao, OpcaoAdmin)

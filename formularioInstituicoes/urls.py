@@ -21,6 +21,7 @@ from django.views.static import serve
 
 urlpatterns = [
     path('', views.formulario_view),
+    path('adicionar_formulario', views.formulario_view),
     re_path(r'^download/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
