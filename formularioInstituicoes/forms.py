@@ -4,7 +4,6 @@ from .models import *
 
 
 class FormNumerosInteiros(ModelForm):
-
     class Meta:
         model = RespostaNumerica
         fields = ['numero']
@@ -29,23 +28,28 @@ class FormTextoLivreObservacoes(ModelForm):
         }
 
 
-class FormEscolhaMultipla(ModelForm):
-    opcao = forms.ModelChoiceField(queryset=Opcao.objects.all(), empty_label='')
+class FormEscolhaMultiplaUnica(ModelForm):
+    opcao = forms.ModelChoiceField(queryset=Opcao.objects.all(), label=False)
 
     class Meta:
         model = RespostaTextual
         fields = ['opcao']
         labels = {'opcao': ''}
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        opcao_escolhida = self.cleaned_data['opcao']
-        instance.texto = opcao_escolhida.nome
-        if commit:
-            instance.save()
-        return instance
-
 class FormFicheiro(ModelForm):
     class Meta:
         model = Ficheiro
         fields = ['ficheiro']
+
+
+
+
+class FormEscolhaMultiplaVarias(ModelForm):
+    opcoes = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, label=False)
+
+    class Meta:
+        model = RespostaTextual
+        fields = ['opcoes']
+
+
+

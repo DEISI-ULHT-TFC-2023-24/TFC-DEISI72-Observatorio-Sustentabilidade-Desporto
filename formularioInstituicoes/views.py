@@ -8,6 +8,14 @@ from .forms import *
 
 temas = {}
 
+DEMO_CHOICES = {
+    1: "Naveen",
+    2: "Pranav",
+    3: "Isha",
+    4: "Saloni",
+}
+
+
 def guarda_perguntas():
     questionario = Questionario.objects.get(nome="Questionário Instalações Desportivas")
 
@@ -31,10 +39,22 @@ def guarda_perguntas():
                     formtext = FormTextoLivre(prefix=pergunta.id)
                     formulario[pergunta] = formtext
 
-                elif pergunta.tipo == 'ESCOLHA_MULTIPLA':
-                    formescolha = FormEscolhaMultipla(prefix=pergunta.id)
-                    perg = Pergunta.objects.get(id=pergunta.id)
-                    formescolha.fields['opcao'].queryset = perg.opcoes.all()
+                elif pergunta.tipo == 'ESCOLHA_MULTIPLA_UNICA':
+                    formescolha = FormEscolhaMultiplaUnica(prefix=pergunta.id)
+                    formescolha.fields['opcao'].queryset = pergunta.opcoes.all()
+                    formulario[pergunta] = formescolha
+
+                elif pergunta.tipo == 'ESCOLHA_MULTIPLA_VARIAS':
+                    formescolha = FormEscolhaMultiplaVarias(prefix=pergunta.id)
+
+                    escolhas = {}
+
+                    count = 1
+                    for opcao in pergunta.opcoes.all():
+                        escolhas[count] = opcao.nome
+                        count+=1
+
+                    formescolha.fields['opcoes'].choices = escolhas
                     formulario[pergunta] = formescolha
 
                 elif pergunta.tipo == 'FICHEIRO':
@@ -62,7 +82,6 @@ def formulario_view(request):
                 perguntas = {}
 
                 for pergunta in Pergunta.objects.filter(subtema_id=subtema_id):
-                    print(pergunta)
                     if pergunta.subtema.nome == "Observações":
                         formobs = FormTextoLivreObservacoes(prefix=pergunta.id)
                         perguntas[pergunta] = formobs
@@ -76,7 +95,7 @@ def formulario_view(request):
                         perguntas[pergunta] = formtext
 
                     elif pergunta.tipo == 'ESCOLHA_MULTIPLA':
-                        formescolha = FormEscolhaMultipla(prefix=pergunta.id)
+                        formescolha = FormEscolhaMultiplaUnica(prefix=pergunta.id)
                         formescolha.fields['opcao'].queryset = Opcao.objects.filter(pergunta_id=pergunta.id)
                         perguntas[pergunta] = formescolha
 
@@ -141,4 +160,3 @@ def formulario_view(request):
     }
 
     return render(request, 'index.html', context)
-

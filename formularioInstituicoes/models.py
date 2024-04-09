@@ -21,7 +21,7 @@ class SubTema(models.Model):
 
 
 class UnidadePergunta(models.Model):
-    unidade = models.CharField(max_length=10)
+    unidade = models.CharField(max_length=15)
 
     def __str__(self):
         return f"{self.unidade}"
@@ -36,12 +36,13 @@ class Pergunta(models.Model):
     TIPO_RESPOSTA = (
         ('NUMERO_INTEIRO', 'Número Inteiro'),
         ('TEXTO_LIVRE', 'Texto Livre'),
-        ('ESCOLHA_MULTIPLA', 'Escolha Múltipla'),
+        ('ESCOLHA_MULTIPLA_UNICA', 'Escolha Múltipla Única'),
+        ('ESCOLHA_MULTIPLA_VARIAS', 'Escolha Múltipla Várias'),
         ('FICHEIRO', 'Ficheiro'),
         ('CAMPO_AUTOMATICO', 'Campo Automático'),
     )
 
-    tipo = models.CharField(max_length=20, choices=TIPO_RESPOSTA)
+    tipo = models.CharField(max_length=30, choices=TIPO_RESPOSTA)
     obrigatoria = models.BooleanField()
     resposta_duplicavel = models.BooleanField(default=False)
 
@@ -89,7 +90,7 @@ class Avaliacao(models.Model):
 
 
 class Opcao(models.Model):
-    pergunta = models.ManyToManyField(Pergunta, related_name='opcoes', default=False)
+    pergunta = models.ManyToManyField(Pergunta, related_name='opcoes')
     nome = models.CharField(max_length=100)
     valor = models.CharField(max_length=100, blank=True)
 
