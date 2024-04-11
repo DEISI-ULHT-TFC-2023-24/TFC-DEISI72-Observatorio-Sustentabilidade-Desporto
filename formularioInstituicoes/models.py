@@ -92,7 +92,7 @@ class Avaliacao(models.Model):
 class Opcao(models.Model):
     pergunta = models.ManyToManyField(Pergunta, related_name='opcoes')
     nome = models.CharField(max_length=100)
-    valor = models.CharField(max_length=100, blank=True)
+    valor = models.CharField(max_length=100)
 
     def __str__(self):
         return self.nome
@@ -101,7 +101,7 @@ class Opcao(models.Model):
 class RespostaTextual(models.Model):
     pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostasTextuais')
     avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='respostasTextuais')
-    texto = models.CharField(max_length=100)
+    texto = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
         return self.texto
@@ -110,7 +110,7 @@ class RespostaTextual(models.Model):
 class RespostaNumerica(models.Model):
     pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostasNumericas')
     avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='respostasNumericas')
-    numero = models.IntegerField()
+    numero = models.IntegerField(blank=True)
 
     def __str__(self):
         return f"{self.numero}"
@@ -119,7 +119,7 @@ class RespostaNumerica(models.Model):
 class Ficheiro(models.Model):
     pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='ficheiros')
     avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='ficheiros')
-    ficheiro = models.FileField(upload_to='media/')
+    ficheiro = models.FileField(upload_to='media/', blank=True)
 
     def __str__(self):
         return f"{self.ficheiro.name}"
