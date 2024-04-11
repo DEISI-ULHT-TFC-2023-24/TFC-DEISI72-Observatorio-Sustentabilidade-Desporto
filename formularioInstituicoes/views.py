@@ -8,6 +8,7 @@ from .forms import *
 
 temas = {}
 
+
 def guarda_perguntas():
     questionario = Questionario.objects.get(nome="Questionário Instalações Desportivas")
 
@@ -25,13 +26,12 @@ def guarda_perguntas():
             subtema_outro = subtemas_todos.get(nome='Outro')
 
             subtemas_todos = [subtema_valores] + list(valores_escluidos) + [subtema_outro]
-            
+
         elif subtemas_todos.filter(nome='Outro').exists():
             valores_escluidos = subtemas_todos.exclude(nome='Outro')
             subtema_outro = subtemas_todos.get(nome='Outro')
 
             subtemas_todos = list(valores_escluidos) + [subtema_outro]
-
 
         for subtema in subtemas_todos:
             formulario = {}
@@ -106,89 +106,91 @@ def formulario_view(request):
 
     if request.method == "POST":
         print(request.POST)
+
         post = request.POST
+        post_dicionario = dict(post)
+        print(post_dicionario['118-opcoes'])
 
-        for chave, resposta_recebida in post.items():
-            if chave == 'tema_subtema':
-                tema_id, subtema_id = resposta_recebida.split('-')
+        for chave, resposta_recebida in post_dicionario.items():
+            for valor in resposta_recebida:
+                if chave == 'tema_subtema':
+                    tema_id, subtema_id = valor.split('-')
 
-                tem = temas.get(Tema.objects.get(id=tema_id))
-                subtema_adicionar = SubTema.objects.get(id=subtema_id)
+                    subtema_adicionar = SubTema.objects.get(id=subtema_id)
 
-                perguntas = {}
+                    perguntas = {}
 
-                for pergunta in Pergunta.objects.filter(subtema_id=subtema_id):
-                    if pergunta.subtema.nome == "Observações":
-                        formobs = FormTextoLivreObservacoes(prefix=pergunta.id)
-                        perguntas[pergunta] = formobs
+                    for pergunta in Pergunta.objects.filter(subtema_id=subtema_id):
+                        if pergunta.subtema.nome == "Observações":
+                            formobs = FormTextoLivreObservacoes(prefix=pergunta.id)
+                            perguntas[pergunta] = formobs
 
-                    elif pergunta.tipo == 'NUMERO_INTEIRO':
-                        formint = FormNumerosInteiros(prefix=pergunta.id)
-                        perguntas[pergunta] = formint
+                        elif pergunta.tipo == 'NUMERO_INTEIRO':
+                            formint = FormNumerosInteiros(prefix=pergunta.id)
+                            perguntas[pergunta] = formint
 
-                    elif pergunta.tipo == 'TEXTO_LIVRE':
-                        formtext = FormTextoLivre(prefix=pergunta.id)
-                        perguntas[pergunta] = formtext
+                        elif pergunta.tipo == 'TEXTO_LIVRE':
+                            formtext = FormTextoLivre(prefix=pergunta.id)
+                            perguntas[pergunta] = formtext
 
-                    elif pergunta.tipo == 'ESCOLHA_MULTIPLA_UNICA':
-                        formescolha = FormEscolhaMultiplaUnica(prefix=pergunta.id)
-                        formescolha.fields['opcao'].queryset = Opcao.objects.filter(pergunta_id=pergunta.id)
-                        perguntas[pergunta] = formescolha
+                        elif pergunta.tipo == 'ESCOLHA_MULTIPLA_UNICA':
+                            formescolha = FormEscolhaMultiplaUnica(prefix=pergunta.id)
+                            formescolha.fields['opcao'].queryset = Opcao.objects.filter(pergunta_id=pergunta.id)
+                            perguntas[pergunta] = formescolha
 
-                    elif pergunta.tipo == 'FICHEIRO':
-                        formficheiro = FormFicheiro(prefix=pergunta.id)
-                        perguntas[pergunta] = formficheiro
+                        elif pergunta.tipo == 'FICHEIRO':
+                            formficheiro = FormFicheiro(prefix=pergunta.id)
+                            perguntas[pergunta] = formficheiro
 
-                temas.get(Tema.objects.get(id=tema_id))[subtema_adicionar] = perguntas
+                    temas.get(Tema.objects.get(id=tema_id))[subtema_adicionar] = perguntas
 
-                print(temas.get(Tema.objects.get(id=tema_id)).get(SubTema.objects.get(id=subtema_id)).keys())
+                    print(temas.get(Tema.objects.get(id=tema_id)).get(SubTema.objects.get(id=subtema_id)).keys())
 
-            else:
-                pergunta_tiporesposta = chave.split('-')
-                id_pergunta_retirado = pergunta_tiporesposta[0]
-                if id_pergunta_retirado.isdigit():
-                    tiporesposta = pergunta_tiporesposta[1]
+                else:
+                    pergunta_tiporesposta = chave.split('-')
+                    id_pergunta_retirado = pergunta_tiporesposta[0]
+                    if id_pergunta_retirado.isdigit():
+                        tiporesposta = pergunta_tiporesposta[1]
 
+                        if valor != '':
+                            if tiporesposta == "numero":
+                                resposta_num = RespostaNumerica(
+                                    avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
+                                    pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
+                                    numero=int(valor),
+                                )
+                                resposta_num.save()
 
-                    if resposta_recebida != '':
-                        if tiporesposta == "numero":
-                            resposta_num = RespostaNumerica(
-                                avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
-                                pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
-                                numero=int(resposta_recebida),
-                            )
-                            resposta_num.save()
+                            elif tiporesposta == "texto":
+                                resposta_txt = RespostaTextual(
+                                    avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
+                                    pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
+                                    texto=valor,
+                                )
+                                resposta_txt.save()
 
-                        elif tiporesposta == "texto":
-                            resposta_txt = RespostaTextual(
-                                avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
-                                pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
-                                texto=resposta_recebida,
-                            )
-                            resposta_txt.save()
-
-                        elif tiporesposta == "opcao":
-                            resposta_txt = RespostaTextual(
-                                avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
-                                pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
-                                texto=Opcao.objects.get(id=int(resposta_recebida)),
-                            )
-                            resposta_txt.save()
-
-
-                        elif tiporesposta == "opcoes":
-
-                            print(Pergunta.objects.get(id=int(id_pergunta_retirado)).opcoes.order_by('nome')[int(resposta_recebida)])
-                            print(resposta_recebida)
-
-                            resposta_txt = RespostaTextual(
-                                avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
-                                pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
-                                texto=Pergunta.objects.get(id=int(id_pergunta_retirado)).opcoes.order_by('nome')[int(resposta_recebida)],
-                            )
-                            resposta_txt.save()
+                            elif tiporesposta == "opcao":
+                                resposta_txt = RespostaTextual(
+                                    avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
+                                    pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
+                                    texto=Opcao.objects.get(id=int(valor)),
+                                )
+                                resposta_txt.save()
 
 
+                            elif tiporesposta == "opcoes":
+
+                                print(Pergunta.objects.get(id=int(id_pergunta_retirado)).opcoes.order_by('nome')[
+                                          int(valor)])
+                                print(valor)
+
+                                resposta_txt = RespostaTextual(
+                                    avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
+                                    pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
+                                    texto=Pergunta.objects.get(id=int(id_pergunta_retirado)).opcoes.order_by('nome')[
+                                        int(valor)],
+                                )
+                                resposta_txt.save()
 
         print(request.FILES)
         files = request.FILES
