@@ -100,24 +100,33 @@ document.addEventListener("DOMContentLoaded", function () {
     for (const elemento of elementosComPotenciaMedia) {
         elemento.style.display = 'none';
     }
-});
 
-document.addEventListener("DOMContentLoaded", function () {
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
 
     for (const checkbox of checkboxes) {
-
         const labelId = checkbox.id;
         const labelElement = document.querySelector(`label[for="${labelId}"]`);
         const labelText = slugify(labelElement.textContent);
-        const elementoDiv = document.getElementById(labelText);
+        const subtemaNumero = checkbox.closest('.perto').querySelector('h3').textContent.split('.')[0];
+        const labelProcurar = `${subtemaNumero}:${labelText}`
 
-        elementoDiv.style.display = 'none';
+        const elementoDiv = document.getElementById(labelProcurar).style.display = 'none';
+        console.log(elementoDiv)
 
-        const subtemaNumero = checkbox.closest('.perto').querySelector('h3').textContent.split(' ')[0];
-        console.log(subtemaNumero)
+    }
 
-        const questionInputs = elementoDiv.querySelectorAll('input');
+
+});
+
+const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+    for (const checkbox of checkboxes) {
+        const labelId = checkbox.id;
+        const labelElement = document.querySelector(`label[for="${labelId}"]`);
+        const labelText = slugify(labelElement.textContent);
+        const subtemaNumero = checkbox.closest('.perto').querySelector('h3').textContent.split('.')[0];
+        const labelProcurar = `${subtemaNumero}:${labelText}`
+         const elementoDiv = document.getElementById(labelProcurar);
 
         checkbox.addEventListener('change', function () {
 
@@ -137,11 +146,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         });
+        console.log(elementoDiv)
     }
-});
 
-document.addEventListener("DOMContentLoaded", function () {
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
 
     for (const checkbox of checkboxes) {
 
@@ -156,7 +163,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const elementoDiv = document.getElementById(labelProcurar);
 
         checkbox.addEventListener('change', function () {
-            console.log(labelProcurar)
+
             if (checkbox.checked) {
                 elementoDiv.style.display = 'table-row';
 
@@ -174,7 +181,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
-})
 
 
 

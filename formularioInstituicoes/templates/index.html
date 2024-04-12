@@ -35,7 +35,7 @@
 
                         {% for subtema, perguntas in subtemas.items %}
                             {% with forloop.counter as subtema_counter %}
-                                <div id={{ subtema.nome|slugify }} class="perto">
+                                <div id={{ tema_counter }}:{{ subtema.nome|slugify }} class="perto">
                                     <h3>{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}
                                         {% if subtema.resposta_duplicavel %}
                                             <input type="hidden" value="{{ tema.id }}" name="temaId">
