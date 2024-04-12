@@ -114,6 +114,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         elementoDiv.style.display = 'none';
 
+        const subtemaNumero = checkbox.closest('.perto').querySelector('h3').textContent.split(' ')[0];
+        console.log(subtemaNumero)
+
         const questionInputs = elementoDiv.querySelectorAll('input');
 
         checkbox.addEventListener('change', function () {

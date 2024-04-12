@@ -109,7 +109,6 @@ def formulario_view(request):
 
         post = request.POST
         post_dicionario = dict(post)
-        print(post_dicionario['118-opcoes'])
 
         for chave, resposta_recebida in post_dicionario.items():
             for valor in resposta_recebida:
