@@ -110,77 +110,82 @@ document.addEventListener("DOMContentLoaded", function () {
         const subtemaNumero = checkbox.closest('.perto').querySelector('h3').textContent.split('.')[0];
         const labelProcurar = `${subtemaNumero}:${labelText}`
 
-        const elementoDiv = document.getElementById(labelProcurar).style.display = 'none';
-        console.log(elementoDiv)
+        const elementoDiv = document.getElementById(labelProcurar);
+
+        if (elementoDiv) {
+            elementoDiv.style.display = 'none';
+            console.log(elementoDiv);
+        } else {
+            console.log('Elemento não encontrado:', labelProcurar);
+        }
 
     }
 
 
 });
-
 const checkboxes = document.querySelectorAll('input[type="checkbox"]');
 
-    for (const checkbox of checkboxes) {
-        const labelId = checkbox.id;
-        const labelElement = document.querySelector(`label[for="${labelId}"]`);
-        const labelText = slugify(labelElement.textContent);
-        const subtemaNumero = checkbox.closest('.perto').querySelector('h3').textContent.split('.')[0];
-        const labelProcurar = `${subtemaNumero}:${labelText}`
-         const elementoDiv = document.getElementById(labelProcurar);
+for (const checkbox of checkboxes) {
+    const labelId = checkbox.id;
+    const labelElement = document.querySelector(`label[for="${labelId}"]`);
+    const labelText = slugify(labelElement.textContent);
+    const subtemaNumero = checkbox.closest('.perto').querySelector('h3').textContent.split('.')[0];
+    const labelProcurar = `${subtemaNumero}:${labelText}`
+    const elementoDiv = document.getElementById(labelProcurar);
 
-        checkbox.addEventListener('change', function () {
+    checkbox.addEventListener('change', function () {
 
-            if (checkbox.checked) {
-                elementoDiv.style.display = 'block';
+        if (checkbox.checked) {
+            elementoDiv.style.display = 'block';
 
-                // Set required attribute to true for all question inputs
-                for (const input of questionInputs) {
-                    input.setAttribute('required', true);
-                }
-            } else {
-                elementoDiv.style.display = 'none';
-
-                // Remove required attribute for all question inputs
-                for (const input of questionInputs) {
-                    input.removeAttribute('required');
-                }
+            // Set required attribute to true for all question inputs
+            for (const input of questionInputs) {
+                input.setAttribute('required', true);
             }
-        });
-        console.log(elementoDiv)
-    }
+        } else {
+            elementoDiv.style.display = 'none';
 
-
-    for (const checkbox of checkboxes) {
-
-        const labelId = checkbox.id;
-        const labelElement = document.querySelector(`label[for="${labelId}"]`);
-        const labelText = slugify(labelElement.textContent);
-
-        const subtemaNumero = checkbox.closest('.perto').querySelector('h3').textContent.split(' ')[0];
-
-        const labelProcurar = `${subtemaNumero}:${labelText}-com-potencia-media-de`
-
-        const elementoDiv = document.getElementById(labelProcurar);
-
-        checkbox.addEventListener('change', function () {
-
-            if (checkbox.checked) {
-                elementoDiv.style.display = 'table-row';
-
-                // Set required attribute to true for all question inputs
-                for (const input of questionInputs) {
-                    input.setAttribute('required', true);
-                }
-            } else {
-                elementoDiv.style.display = 'none';
-
-                // Remove required attribute for all question inputs
-                for (const input of questionInputs) {
-                    input.removeAttribute('required');
-                }
+            // Remove required attribute for all question inputs
+            for (const input of questionInputs) {
+                input.removeAttribute('required');
             }
-        });
-    }
+        }
+    });
+    console.log(elementoDiv)
+}
+
+
+for (const checkbox of checkboxes) {
+
+    const labelId = checkbox.id;
+    const labelElement = document.querySelector(`label[for="${labelId}"]`);
+    const labelText = slugify(labelElement.textContent);
+
+    const subtemaNumero = checkbox.closest('.perto').querySelector('h3').textContent.split(' ')[0];
+
+    const labelProcurar = `${subtemaNumero}:${labelText}-com-potencia-media-de`
+
+    const elementoDiv = document.getElementById(labelProcurar);
+
+    checkbox.addEventListener('change', function () {
+
+        if (checkbox.checked) {
+            elementoDiv.style.display = 'table-row';
+
+            // Set required attribute to true for all question inputs
+            for (const input of questionInputs) {
+                input.setAttribute('required', true);
+            }
+        } else {
+            elementoDiv.style.display = 'none';
+
+            // Remove required attribute for all question inputs
+            for (const input of questionInputs) {
+                input.removeAttribute('required');
+            }
+        }
+    });
+}
 
 
 
