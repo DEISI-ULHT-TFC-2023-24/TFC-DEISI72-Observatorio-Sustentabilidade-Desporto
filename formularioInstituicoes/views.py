@@ -71,25 +71,22 @@ def guarda_perguntas():
                 elif pergunta.tipo == 'ESCOLHA_MULTIPLA_VARIAS':
                     formescolha = FormEscolhaMultiplaVarias(prefix=pergunta.id)
 
-                    escolhas = {}
-
-                    count = 1
+                    escolhas = []
 
                     opcoes = pergunta.opcoes.all().order_by('nome')
 
-                    # Verifica se 'outro' está presente nas opções
                     if opcoes.filter(nome='Outro').exists():
-                        # Exclui 'outro' da lista de opções ordenadas
                         opcoes = opcoes.exclude(nome='Outro')
-                        # Adiciona 'outro' ao final da lista de opções
                         opcao_outro = pergunta.opcoes.get(nome='Outro')
                         opcoes = list(opcoes) + [opcao_outro]
 
-                    for opcao in opcoes:
-                        escolhas[count] = opcao.nome
-                        count += 1
+                    for count, opcao in enumerate(opcoes, start=1):
+                        escolha = (str(count), opcao.nome)
+                        escolhas.append(escolha)
 
-                    formescolha.fields['opcoes'].choices = escolhas
+                    escolhas_final = tuple(escolhas)
+
+                    formescolha.fields['opcoes'].choices = escolhas_final
                     formulario[pergunta] = formescolha
 
                 elif pergunta.tipo == 'FICHEIRO':
