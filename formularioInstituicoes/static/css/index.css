@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+body {
+    background: orange;
+}
+
+
+
+.container {
+    max-width: 700px;
+    margin: auto;
+}
+
+.cabecalho {
+    text-align: center;
+}
+
+.tema {
+    border: 1px solid lightgrey;
+    margin: 10px;
+    background: whitesmoke;
+    padding: 5px 15px;
+    border-radius: 10px;
+}
+
+.titulo {
+    font-size: 1.5em;
+    font-weight: bold;
+    padding: 1ch 0;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
+
+details > ol {
+    background: grey;
+}
+
+.bloco {
+    display: none;
+    margin-left: 40px;
+}
+
+select {
+    width: 158px;
+}
+
+select option {
+    white-space: normal;
+}
+
+.pergunta {
+    width: 30ch;
+    padding: 12px 10px 20px;
+    text-align: right;
+}
+
+.pergunta * {
+    text-align: right;
+}
+
+.resposta {
+    vertical-align: top;
+}
+
+input, select {
+    max-width: 300px;
+    padding: 5px 10px;
+    margin: 5px 0;
+}
+
+input[type="submit"] {
+
+    display: block;
+    margin-left: auto;
+    background: orange;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border: 0;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: #ff7f00;
+}
+
+
+h3 button {
+    background-color: orange;
+    color: black;
+    font-weight: bold;
+}
+
+.orange-background:hover {
+
+    @media (max-width: 800px) {
+        .pergunta {
+            width: 20ch;
+        }
+
+        .bloco {
+            margin-left: 0;
+            margin-bottom: 30px;
+        }
+
+    }
+
+
+}
+
+.ar-condicionado-com-potencia-media-de{
+    display: none;
+}

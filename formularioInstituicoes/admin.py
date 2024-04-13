@@ -30,19 +30,21 @@ admin.site.register(Instalacao, InstalacaoAdmin)
 
 
 class PerguntaAdmin(admin.ModelAdmin):
-    search_fields = ['subtema']
+    list_display = ('texto', 'subtema')
 
 
 admin.site.register(Pergunta, PerguntaAdmin)
 
+admin.site.register(UnidadePergunta)
+
 
 class OpcaoAdmin(admin.ModelAdmin):  # filtar no admin a pergunta que se pretende com dropdown=True
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == "pergunta":
-            kwargs["queryset"] = Pergunta.objects.filter(tipo='ESCOLHA_MULTIPLA')
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+            kwargs["queryset"] = Pergunta.objects.filter(tipo__in=['ESCOLHA_MULTIPLA_UNICA', 'ESCOLHA_MULTIPLA_VARIAS'])
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
-    list_display = ('nome', 'pergunta')
+    filter_horizontal = ('pergunta',)
 
 
 admin.site.register(Opcao, OpcaoAdmin)
@@ -63,9 +65,10 @@ admin.site.register(RespostaTextual, RespostaTextualAdmin)
 
 
 class QuestionarioAdmin(admin.ModelAdmin):
-    pass  # filter_horizontal = ('temas',)
+    filter_horizontal = ('temas',)
 
 
 admin.site.register(Questionario, QuestionarioAdmin)
 admin.site.register(Avaliacao)
 admin.site.register(Entidade)
+admin.site.register(Ficheiro)

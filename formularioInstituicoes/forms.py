@@ -7,27 +7,56 @@ class FormNumerosInteiros(ModelForm):
     class Meta:
         model = RespostaNumerica
         fields = ['numero']
-        labels = {'numero': 'Introduza número'}
+        labels = {'numero': ''}
+
+        numero = forms.Textarea(attrs={'required': False})
 
 
 class FormTextoLivre(ModelForm):
     class Meta:
         model = RespostaTextual
         fields = ['texto']
-        labels = {'texto': 'Introduza o texto'}
+        labels = {'texto': ''}
+
+        texto = forms.Textarea(attrs={'required': False})
 
 
-class FormEscolhaMultipla(ModelForm):
-    opcao = forms.ModelChoiceField(queryset=Opcao.objects.all(), empty_label="Escolha uma opção")
+class FormTextoLivreObservacoes(ModelForm):
+    class Meta:
+        model = RespostaTextual
+        fields = ['texto']
+        labels = {'texto': ''}
+
+        widgets = {
+            'texto': forms.Textarea(attrs={'cols': 25, 'rows': 20}),
+        }
+
+        texto = forms.Textarea(attrs={'required': False})
+
+
+class FormEscolhaMultiplaUnica(ModelForm):
+    opcao = forms.ModelChoiceField(queryset=Opcao.objects.all(), label=False, required=False)
 
     class Meta:
         model = RespostaTextual
         fields = ['opcao']
+        labels = {'opcao': ''}
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        opcao_escolhida = self.cleaned_data['opcao']
-        instance.texto = opcao_escolhida.nome
-        if commit:
-            instance.save()
-        return instance
+        opcao = forms.Textarea(attrs={'required': False})
+
+
+class FormEscolhaMultiplaVarias(ModelForm):
+    opcoes = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, label=False, required=False)
+
+    class Meta:
+        model = RespostaTextual
+        fields = ['opcoes']
+
+
+class FormFicheiro(ModelForm):
+    class Meta:
+        model = Ficheiro
+        fields = ['ficheiro']
+        labels = {'ficheiro': ''}
+
+        ficheiro = forms.Textarea(attrs={'required': False})

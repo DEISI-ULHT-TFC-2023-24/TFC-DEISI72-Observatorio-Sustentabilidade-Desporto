@@ -14,25 +14,40 @@ class Tema(models.Model):
 class SubTema(models.Model):
     tema = models.ForeignKey(Tema, on_delete=models.CASCADE, related_name='subtemas')
     nome = models.CharField(max_length=100)
+    resposta_duplicavel = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.nome}: {self.tema}"
+        return f"{self.nome} - {self.tema.nome}"
+
+
+class UnidadePergunta(models.Model):
+    unidade = models.CharField(max_length=15)
+
+    def __str__(self):
+        return f"{self.unidade}"
 
 
 class Pergunta(models.Model):
     subtema = models.ForeignKey(SubTema, on_delete=models.CASCADE, related_name='perguntas')
-    texto = models.CharField(max_length=100)
+    texto = models.TextField(max_length=1000)
+    unidade = models.ForeignKey(UnidadePergunta, on_delete=models.CASCADE, blank=True, null=True,
+                                related_name='perguntas')
 
     TIPO_RESPOSTA = (
         ('NUMERO_INTEIRO', 'Número Inteiro'),
         ('TEXTO_LIVRE', 'Texto Livre'),
-        ('ESCOLHA_MULTIPLA', 'Escolha Múltipla'),
+        ('ESCOLHA_MULTIPLA_UNICA', 'Escolha Múltipla Única'),
+        ('ESCOLHA_MULTIPLA_VARIAS', 'Escolha Múltipla Várias'),
+        ('FICHEIRO', 'Ficheiro'),
+        ('CAMPO_AUTOMATICO', 'Campo Automático'),
     )
 
-    tipo = models.CharField(max_length=20, choices=TIPO_RESPOSTA)
+    tipo = models.CharField(max_length=30, choices=TIPO_RESPOSTA)
+    obrigatoria = models.BooleanField()
+    resposta_duplicavel = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.texto}: {self.subtema.nome}"
+        return f"{self.texto}"
 
 
 class Questionario(models.Model):
@@ -54,29 +69,12 @@ class Instalacao(models.Model):
     entidade = models.ForeignKey(Entidade, on_delete=models.CASCADE, related_name='instalacoes')
     nome = models.CharField(max_length=100)
 
-    TIPO_INSTALACAO = (
-        ('ARAD', 'Associação de Representantes de Agentes Desportivos'),
-        ('APD', 'Associação promotora de desporto'),
-        ('ABTE', 'Associação base territorial ou equivalente'),
-        ('CLUBE', 'Clube'),
-        ('CLUBE_P', 'Clube de praticantes'),
-        ('OEIAD', 'Outra entidade com intervenção na área do desporto'),
-    )
-
-    tipo_instalacao = models.CharField(max_length=100, choices=TIPO_INSTALACAO)
-    rua = models.CharField(max_length=100)
-    codigo_postal = models.CharField(max_length=9, validators=[
-        RegexValidator(r'^\d{4}-\d{3}$', message='O código postal deve estar no formato XXXX-XXX')])
+    morada = models.CharField(max_length=100)
     distrito = models.CharField(max_length=100)
     concelho = models.CharField(max_length=100)
-    localidade = models.CharField(max_length=100)
-    coordenada_x = models.IntegerField(null=True, blank=True)
-    coordenada_y = models.IntegerField(null=True, blank=True)
     freguesia = models.CharField(max_length=100)
-    nif = models.IntegerField()
     telefone = models.IntegerField()
     email = models.EmailField()
-    website = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return self.nome
@@ -92,9 +90,9 @@ class Avaliacao(models.Model):
 
 
 class Opcao(models.Model):
-    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='opcoes', default=False)
+    pergunta = models.ManyToManyField(Pergunta, related_name='opcoes')
     nome = models.CharField(max_length=100)
-    valor = models.CharField(max_length=100, null=True)
+    valor = models.CharField(max_length=100)
 
     def __str__(self):
         return self.nome
@@ -103,7 +101,7 @@ class Opcao(models.Model):
 class RespostaTextual(models.Model):
     pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostasTextuais')
     avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='respostasTextuais')
-    texto = models.CharField(max_length=100)
+    texto = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
         return self.texto
@@ -112,7 +110,16 @@ class RespostaTextual(models.Model):
 class RespostaNumerica(models.Model):
     pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='respostasNumericas')
     avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='respostasNumericas')
-    numero = models.IntegerField()
+    numero = models.IntegerField(blank=True)
 
     def __str__(self):
         return f"{self.numero}"
+
+
+class Ficheiro(models.Model):
+    pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='ficheiros')
+    avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='ficheiros')
+    ficheiro = models.FileField(upload_to='media/', blank=True)
+
+    def __str__(self):
+        return f"{self.ficheiro.name}"

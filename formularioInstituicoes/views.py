@@ -1,64 +1,213 @@
-from django.shortcuts import render
+import os
+from pathlib import Path
+
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
 from .models import *
 from .forms import *
 
+temas = {}
+
+
+def guarda_perguntas():
+    questionario = Questionario.objects.get(nome="Questionário Instalações Desportivas")
+
+    for tema in questionario.temas.all():
+
+        subtemas = {}
+
+        subtemas_todos = SubTema.objects.filter(tema_id=tema.id).order_by('nome')
+
+        if subtemas_todos.filter(nome='Valores relevantes').exists() & subtemas_todos.filter(nome='Outro').exists():
+            excluindo_valores = subtemas_todos.exclude(nome='Valores relevantes')
+            subtema_valores = subtemas_todos.get(nome='Valores relevantes')
+
+            valores_escluidos = excluindo_valores.exclude(nome='Outro')
+            subtema_outro = subtemas_todos.get(nome='Outro')
+
+            subtemas_todos = [subtema_valores] + list(valores_escluidos) + [subtema_outro]
+
+        elif subtemas_todos.filter(nome='Outro').exists():
+            valores_escluidos = subtemas_todos.exclude(nome='Outro')
+            subtema_outro = subtemas_todos.get(nome='Outro')
+
+            subtemas_todos = list(valores_escluidos) + [subtema_outro]
+
+        for subtema in subtemas_todos:
+            formulario = {}
+
+            perguntas_todos = Pergunta.objects.filter(subtema_id=subtema.id).order_by('texto')
+
+            if perguntas_todos.filter(tipo='ESCOLHA_MULTIPLA_VARIAS').exists():
+                valores_escluidos = perguntas_todos.exclude(tipo='ESCOLHA_MULTIPLA_VARIAS')
+                pergunta_escluida = perguntas_todos.get(tipo='ESCOLHA_MULTIPLA_VARIAS')
+
+                perguntas_todos = [pergunta_escluida] + list(valores_escluidos)
+
+            elif perguntas_todos.filter(texto='Com potência de').exists():
+                valores_escluidos = perguntas_todos.exclude(texto='Com potência de')
+                pergunta_escluida = perguntas_todos.get(texto='Com potência de')
+
+                perguntas_todos = list(valores_escluidos) + [pergunta_escluida]
+
+            for pergunta in perguntas_todos:
+                if pergunta.subtema.nome == "Observações":
+                    formobs = FormTextoLivreObservacoes(prefix=pergunta.id)
+                    formulario[pergunta] = formobs
+
+                elif pergunta.tipo == 'NUMERO_INTEIRO':
+                    formint = FormNumerosInteiros(prefix=pergunta.id)
+                    formulario[pergunta] = formint
+
+                elif pergunta.tipo == 'TEXTO_LIVRE':
+                    formtext = FormTextoLivre(prefix=pergunta.id)
+                    formulario[pergunta] = formtext
+
+                elif pergunta.tipo == 'ESCOLHA_MULTIPLA_UNICA':
+                    formescolha = FormEscolhaMultiplaUnica(prefix=pergunta.id)
+                    formescolha.fields['opcao'].queryset = pergunta.opcoes.all().order_by('nome')
+                    formulario[pergunta] = formescolha
+
+                elif pergunta.tipo == 'ESCOLHA_MULTIPLA_VARIAS':
+                    formescolha = FormEscolhaMultiplaVarias(prefix=pergunta.id)
+
+                    escolhas = []
+
+                    opcoes = pergunta.opcoes.all().order_by('nome')
+
+                    if opcoes.filter(nome='Outro').exists():
+                        opcoes = opcoes.exclude(nome='Outro')
+                        opcao_outro = pergunta.opcoes.get(nome='Outro')
+                        opcoes = list(opcoes) + [opcao_outro]
+
+                    for count, opcao in enumerate(opcoes, start=1):
+                        escolha = (str(count), opcao.nome)
+                        escolhas.append(escolha)
+
+                    escolhas_final = tuple(escolhas)
+
+                    formescolha.fields['opcoes'].choices = escolhas_final
+                    formulario[pergunta] = formescolha
+
+                elif pergunta.tipo == 'FICHEIRO':
+                    formficheiro = FormFicheiro(prefix=pergunta.id)
+                    formulario[pergunta] = formficheiro
+
+            subtemas[subtema] = formulario
+
+        temas[tema] = subtemas
+
 
 def formulario_view(request):
+    guarda_perguntas()
+
     if request.method == "POST":
-        formInt = FormNumerosInteiros(request.POST)
-        formString = FormTextoLivre(request.POST)
-        formEscolha = FormEscolhaMultipla(request.POST)
+        print(request.POST)
 
-        if formInt.is_valid():
-            saveInt = formInt.save(commit=False)
+        post = request.POST
+        post_dicionario = dict(post)
 
-            pergunta_id = request.POST.get('pergunta_id_int')
+        for chave, resposta_recebida in post_dicionario.items():
+            for valor in resposta_recebida:
+                if chave == 'tema_subtema':
+                    tema_id, subtema_id = valor.split('-')
 
-            pergunta = Pergunta.objects.get(id=pergunta_id)
-            avaliacao = Avaliacao.objects.get(id=1)  # isto vai estar ligado com o login associado ao formulario
+                    subtema_adicionar = SubTema.objects.get(id=subtema_id)
 
-            saveInt.pergunta = pergunta
-            saveInt.avaliacao = avaliacao
-            saveInt.save()
+                    perguntas = {}
 
-        if formString.is_valid():
-            saveString = formString.save(commit=False)
+                    for pergunta in Pergunta.objects.filter(subtema_id=subtema_id):
+                        if pergunta.subtema.nome == "Observações":
+                            formobs = FormTextoLivreObservacoes(prefix=pergunta.id)
+                            perguntas[pergunta] = formobs
 
-            pergunta_id = request.POST.get('pergunta_id_string')
+                        elif pergunta.tipo == 'NUMERO_INTEIRO':
+                            formint = FormNumerosInteiros(prefix=pergunta.id)
+                            perguntas[pergunta] = formint
 
-            pergunta = Pergunta.objects.get(id=pergunta_id)
-            avaliacao = Avaliacao.objects.get(id=1)  # isto vai estar ligado com o login associado ao formulario
+                        elif pergunta.tipo == 'TEXTO_LIVRE':
+                            formtext = FormTextoLivre(prefix=pergunta.id)
+                            perguntas[pergunta] = formtext
 
-            saveString.pergunta = pergunta
-            saveString.avaliacao = avaliacao
-            saveString.save()
+                        elif pergunta.tipo == 'ESCOLHA_MULTIPLA_UNICA':
+                            formescolha = FormEscolhaMultiplaUnica(prefix=pergunta.id)
+                            formescolha.fields['opcao'].queryset = Opcao.objects.filter(pergunta_id=pergunta.id)
+                            perguntas[pergunta] = formescolha
 
-        if formEscolha.is_valid():
-            saveEscolha = formEscolha.save(commit=False)
+                        elif pergunta.tipo == 'FICHEIRO':
+                            formficheiro = FormFicheiro(prefix=pergunta.id)
+                            perguntas[pergunta] = formficheiro
 
-            pergunta_id = request.POST.get('pergunta_id_escolha')
+                    temas.get(Tema.objects.get(id=tema_id))[subtema_adicionar] = perguntas
 
-            pergunta = Pergunta.objects.get(id=pergunta_id)
-            avaliacao = Avaliacao.objects.get(id=1)  # isto vai estar ligado com o login associado ao formulario
+                    print(temas.get(Tema.objects.get(id=tema_id)).get(SubTema.objects.get(id=subtema_id)).keys())
 
-            saveEscolha.pergunta = pergunta
-            saveEscolha.avaliacao = avaliacao
-            saveEscolha.save()
+                else:
+                    pergunta_tiporesposta = chave.split('-')
+                    id_pergunta_retirado = pergunta_tiporesposta[0]
+                    if id_pergunta_retirado.isdigit():
+                        tiporesposta = pergunta_tiporesposta[1]
+
+                        if valor != '':
+                            if tiporesposta == "numero":
+                                resposta_num = RespostaNumerica(
+                                    avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
+                                    pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
+                                    numero=int(valor),
+                                )
+                                resposta_num.save()
+
+                            elif tiporesposta == "texto":
+                                resposta_txt = RespostaTextual(
+                                    avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
+                                    pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
+                                    texto=valor,
+                                )
+                                resposta_txt.save()
+
+                            elif tiporesposta == "opcao":
+                                resposta_txt = RespostaTextual(
+                                    avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
+                                    pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
+                                    texto=Opcao.objects.get(id=int(valor)),
+                                )
+                                resposta_txt.save()
+
+
+                            elif tiporesposta == "opcoes":
+
+                                print(Pergunta.objects.get(id=int(id_pergunta_retirado)).opcoes.order_by('nome')[
+                                          int(valor)])
+                                print(valor)
+
+                                resposta_txt = RespostaTextual(
+                                    avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
+                                    pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
+                                    texto=Pergunta.objects.get(id=int(id_pergunta_retirado)).opcoes.order_by('nome')[
+                                        int(valor)],
+                                )
+                                resposta_txt.save()
+
+        print(request.FILES)
+        files = request.FILES
+        for chave, resposta_recebida in files.items():
+            pergunta_tiporesposta = chave.split('-')
+            id_pergunta_retirado = pergunta_tiporesposta[0]
+            if id_pergunta_retirado.isdigit():
+                tipofile = pergunta_tiporesposta[1]
+
+                if tipofile == "ficheiro":
+                    print(resposta_recebida)
+                    file = Ficheiro(
+                        avaliacao=Avaliacao.objects.get(id=2),  # só com o login feito é que fica bom
+                        pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
+                        ficheiro=resposta_recebida
+                    )
+                    file.save()
+        return HttpResponseRedirect(request.path_info)
 
     context = {
-        'Temas': Tema.objects.all(),
-        'SubTemas': SubTema.objects.all(),
-        'Perguntas': Pergunta.objects.all(),
-        'Questionarios': Questionario.objects.all(),
-        'Entidades': Entidade.objects.all(),
-        'Instalacoes': Instalacao.objects.all(),
-        'Avaliacoes': Avaliacao.objects.all(),
-        'RespostasNumericas': RespostaNumerica.objects.all(),
-        'RespostasTextuais': RespostaTextual.objects.all(),
-        'Opcoes': Opcao.objects.all(),
-        'formInt': FormNumerosInteiros(),
-        'formTexto': FormTextoLivre(),
-        'formEscolha': FormEscolhaMultipla(),
+        'temas': temas,
     }
 
     return render(request, 'index.html', context)

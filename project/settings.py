@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     #'django_extensions',
 ]
 
-'''
+"""
 GRAPH_MODELS = {
   'all_applications': True,
   'group_models': True,
@@ -50,7 +50,9 @@ GRAPH_MODELS = {
 GRAPH_MODELS = {
   'app_labels': ["formularioInstituicoes", "auth"],
 }
-'''
+"""
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -137,7 +139,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # default static files settings for PythonAnywhere.
 # see https://help.pythonanywhere.com/pages/DjangoStaticFiles for more info
-MEDIA_ROOT = '/home/IPDJTFC/project/media'
-MEDIA_URL = '/media/'
-STATIC_ROOT = '/home/IPDJTFC/project/static'
-STATIC_URL = '/static/'
+STATICFILES_DIRS=[os.path.join(BASE_DIR, "static")]
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')
