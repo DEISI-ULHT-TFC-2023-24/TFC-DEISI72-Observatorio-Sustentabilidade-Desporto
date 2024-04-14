@@ -1,14 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
-    {% load static %}
-    <link rel="stylesheet" href='{% static "styles/../static/css/dashboard.css" %}'>
 
-    {% load static %}
-    <script src="{% static 'javascript/../static/js/graficos.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <script>
+        function makeLineChart(context, labels, data, lineColor, fillColor) {
+            let chart = new Chart(context, {
+                type: "line",
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Consumo total (L)",
+                            pointRadius: 0,
+                            pointHitRadius: 50,
+                            data: data,
+                            borderColor: lineColor,
+                            tension: .3,
+                            fill: {
+                                target: 'origin',
+                                above: fillColor,   // Area will be red above the origin
+                                below: fillColor    // And blue below the origin
+                            },
+                            responsive: true,
+                            maintainAspectRatio: false
+                        }
+                    ]
+                },
+                options: {
+                    title: {
+                        text: "Consumo total mensal",
+                        display: true
+                    },
+                    scales: {
+                        y: {
+                            suggestedMin: 50,
+                            suggestedMax: 40000,
+                            display: false,
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function makePieChart(context, labels, data, colors) {
+            let chart = new Chart(context, {
+                type: "doughnut",
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "kWh",
+                            backgroundColor: colors,
+                            data: data
+                        }
+                    ]
+                },
+            });
+        }
+
+        function makeBarChart(context, labels, data, colors) {
+            let chart = new Chart(context, {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "€",
+                            backgroundColor: colors,
+                            data: data
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        },
+                    }, plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+
 </head>
 <body>
 <!--<div id="graphbar">
