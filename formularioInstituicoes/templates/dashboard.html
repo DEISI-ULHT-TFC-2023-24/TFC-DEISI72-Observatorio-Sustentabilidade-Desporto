@@ -5,84 +5,91 @@
     <title>Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
     {% load static %}
-        <link rel="stylesheet" href='{% static "styles/dashboard.css" %}'>
+    <link rel="stylesheet" href='{% static "styles/dashboard.css" %}'>
 
     {% load static %}
-        <script src="{% static 'javascript/graficos.js' %}"></script>
+    <script src="{% static 'javascript/graficos.js' %}"></script>
 </head>
 <body>
-    <!--<div id="graphbar">
-        <div class="entry">AGUA</div>
-        <div class="entry">ELETRICIDADE</div>
-        <div class="entry">RESIDUOS</div>
-    </div>-->
+<!--<div id="graphbar">
+    <div class="entry">AGUA</div>
+    <div class="entry">ELETRICIDADE</div>
+    <div class="entry">RESIDUOS</div>
+</div>-->
 
 
-    <div id="ultimo-mes">
-        <div class="consumo-ultimo-mes-text">
-            <h2>Consumo mensal (L)</h2>
-            <h1>24 200 L</h1> <p>(Ultimo Mês) </p>
-            <h2> - 11,35 %</h2>
+<div class="display">
+
+    <div class="grid">
+        <div class="display-view">
+            <h1>Distribuição de Consumo Anual</h1>
+            <canvas id="consumodeenergia" class="graph-view"></canvas>
         </div>
-
-        <canvas id="barchart"></canvas>
-    </div>
-
-
-    <div class="display">
-        <h2>Distribuição de Consumo (Ultimo Mês)</h2>
-        <div class="grid">
-            <div class="display-view">
-                <canvas id="consumodeaguacircular"></canvas>
-            </div>
-            <div class="display-view">
-                <ul class="data-list">
-                    <li><span>Piscinas</span> <span class="list-percentage"><b>12000L (49.58%)</b></span></li>
-                    <li><span>Irrigação</span> <span class="list-percentage"><b>8000L (33.05%)</b></span></li>
-                    <li><span>Consumo</span> <span class="list-percentage"><b>1500L (6.20%%)</b></span></li>
-                    <li><span>Outros</span> <span class="list-percentage"><b>500L (2.07%%)</b></span></li>
-                </ul>
-            </div>
+        <div class="display-view">
+            <h1>Custo Energético</h1>
+            <canvas id="custodeenergia" class="graph-view"></canvas>
         </div>
     </div>
+</div>
 
+<div class="display">
+    <div class="grid">
+        <div class="display-view">
+            <h1>Custo por kWh</h1>
+            <canvas id="custoconsumodeenergia" class="graph-view"></canvas>
+        </div>
+        <div class="display-view">
+            <h1>Fáturas Energéticas</h1>
+            <table>
+                <tr>
+                    <td>Energia</td>
+                    <td>Fatura Minima kWh</td>
+                    <td>Fatura Minima €</td>
+                    <td>Fatura Maxima kWh</td>
+                    <td>Fatura Maxima €</td>
+                </tr>
+                {% for a,b,c,d,e in faturas %}
+                    <tr>
+                        <td>{{ a }}</td>
+                        <td>{{ b }}</td>
+                        <td>{{ c }}</td>
+                        <td>{{ d }}</td>
+                        <td>{{ e }}</td>
+                    </tr>
+                {% endfor %}
 
-    <div class="display">
-        <div class="grid">
-            <div class="display-view">
-                <canvas id="fontesdeaguacircular"></canvas>
-            </div>
-            <div class="display-view">
-                <ul class="data-list">
-                    <li><span>Abastecimento Publico</span> <span class="list-percentage"><b>23300L (67.28%)</b></span></li>
-                    <li><span>Águas pluviais</span> <span class="list-percentage"><b>7800L (22.52%)</b></span></li>
-                    <li><span>Captações próprias</span> <span class="list-percentage"><b>3000L (8.66%)</b></span></li>
-                    <li><span>Águas cinzentas</span> <span class="list-percentage"><b>500L (1.44%)</b></span></li>
-                    <li><span>Outras</span> <span class="list-percentage"><b>30L (0.09%)</b></span></li>
-                </ul>
-            </div>
+            </table>
         </div>
     </div>
+</div>
+
+
+<!--<div id="ultimo-mes">
+    <div class="consumo-ultimo-mes-text">
+        <h2>Consumo mensal (L)</h2>
+        <h1>24 200 L</h1> <p>(Ultimo Mês) </p>
+        <h2> - 11,35 %</h2>
+    </div>
+
+</div>-->
 
 <script>
-    let linechart = document.getElementById("barchart").getContext("2d");
-    var gradientFill = linechart.createLinearGradient(0, 500, 0, 100);
-    gradientFill.addColorStop(1, "rgba(20, 50, 150, 0.6)");
-    gradientFill.addColorStop(0, "rgba(0, 100, 100, 0.4)");
-
-    makeLineChart(linechart, ["7/2023","8/2023","9/2023","10/2023","11/2023","12/2023", "1/2024", "2/2024", "3/2024"],
-    [16200, 13500, 18000, 20000, 21000, 15900, 23700, 27300, 24200], 'rgb(0, 150, 255, 255)', gradientFill)
 
 
-    let aguaconsumo = document.getElementById("consumodeaguacircular").getContext("2d");
+    let energiaconsumo = document.getElementById("consumodeenergia").getContext("2d");
 
-    makePieChart(aguaconsumo, ["Piscinas", "Irrigação", "Consumo", "Outros"], [12000, 8000, 1500, 500],
-    ["red", "orange", "green", "blue"])
+    makePieChart(energiaconsumo, {{ consumos_labels|safe }}, {{ consumos }},
+        ["red", "orange", "green", "blue"])
 
-    let fontesagua = document.getElementById("fontesdeaguacircular").getContext("2d");
+    let energiacusto = document.getElementById("custodeenergia").getContext("2d");
 
-    makePieChart(fontesagua, ["Abastecimento Publico", "Captações próprias", "Águas pluviais", "Águas cinzentas", "Outras"], [23300, 3000, 7800, 500, 30],
-    ["yellow", "blue", "orange", "red", "green"])
+    makeBarChart(energiacusto, {{ consumos_labels|safe }}, {{ custos }},
+        ["yellow", "blue", "orange", "red", "green"])
+
+    let energiacustoconsumo = document.getElementById("custoconsumodeenergia").getContext("2d");
+
+    makeBarChart(energiacustoconsumo, {{ consumos_labels|safe }}, {{ custosconsumo }},
+        ["yellow", "blue", "orange", "red", "green"])
 </script>
 </body>
 </html>

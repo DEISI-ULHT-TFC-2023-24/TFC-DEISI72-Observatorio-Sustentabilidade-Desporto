@@ -214,4 +214,130 @@ def formulario_view(request):
 
 
 def dashboard_view(request):
-    return render(request, 'dashboard.html', {})
+    consumosAnuaisElectricidade = getRespostaNumericaOr0(11)
+    consumosAnuaisGasNatural = getRespostaNumericaOr0(21)
+    consumosAnuaisPropano = getRespostaNumericaOr0(31)
+    consumosAnuaisGasoleo = getRespostaNumericaOr0(41)
+    consumosAnuaisGasolina = getRespostaNumericaOr0(51)
+    consumosAnuaisFotovoltaica = getRespostaNumericaOr0(61)
+    consumosAnuaisBiomassa = getRespostaNumericaOr0(71)
+    consumosAnuaisEolica = getRespostaNumericaOr0(81)
+    consumosAnuaisTermica = getRespostaNumericaOr0(91)
+    consumosAnuaisOutros = getRespostaNumericaOr0(101)
+
+    consumos = [consumosAnuaisElectricidade, consumosAnuaisGasNatural, consumosAnuaisPropano,
+                consumosAnuaisGasoleo, consumosAnuaisGasolina, consumosAnuaisFotovoltaica,
+                consumosAnuaisBiomassa, consumosAnuaisEolica, consumosAnuaisTermica, consumosAnuaisOutros]
+
+    consumos_labels = ["Electricidade", "Gas Natural", "Propano", "Gasoleo", "Gasolina", "Fotovoltaica", "Biomassa",
+                       "Eolica", "Térmica", "Outros"]
+
+    custosAnuaisElectricidade = getRespostaNumericaOr0(12)
+    custosAnuaisGasNatural = getRespostaNumericaOr0(22)
+    custosAnuaisPropano = getRespostaNumericaOr0(32)
+    custosAnuaisGasoleo = getRespostaNumericaOr0(42)
+    custosAnuaisGasolina = getRespostaNumericaOr0(52)
+    custosAnuaisFotovoltaica = getRespostaNumericaOr0(62)
+    custosAnuaisBiomassa = getRespostaNumericaOr0(72)
+    custosAnuaisEolica = getRespostaNumericaOr0(82)
+    custosAnuaisTermica = getRespostaNumericaOr0(92)
+    custosAnuaisOutros = getRespostaNumericaOr0(103)
+
+    custos = [custosAnuaisElectricidade, custosAnuaisGasNatural, custosAnuaisPropano,
+              custosAnuaisGasoleo, custosAnuaisGasolina, custosAnuaisFotovoltaica,
+              custosAnuaisBiomassa, custosAnuaisEolica, custosAnuaisTermica, custosAnuaisOutros]
+
+    custosconsumo = [
+        divByZero(custosAnuaisElectricidade, consumosAnuaisElectricidade),
+        divByZero(custosAnuaisGasNatural, consumosAnuaisGasNatural),
+        divByZero(custosAnuaisPropano, consumosAnuaisPropano),
+        divByZero(custosAnuaisGasoleo, consumosAnuaisGasoleo),
+        divByZero(custosAnuaisGasolina, consumosAnuaisGasolina),
+        divByZero(custosAnuaisFotovoltaica, consumosAnuaisFotovoltaica),
+        divByZero(custosAnuaisBiomassa, consumosAnuaisBiomassa),
+        divByZero(custosAnuaisEolica, consumosAnuaisEolica),
+        divByZero(custosAnuaisTermica, consumosAnuaisTermica),
+        divByZero(custosAnuaisOutros, consumosAnuaisOutros)
+
+    ]
+
+    faturaMinimaElectricidade = getRespostaNumericaOr0(15)
+    faturaMinimaGasNatural = getRespostaNumericaOr0(25)
+    faturaMinimaPropano = getRespostaNumericaOr0(35)
+    faturaMinimaGasoleo = getRespostaNumericaOr0(45)
+    faturaMinimaGasolina = getRespostaNumericaOr0(55)
+    faturaMinimaFotovoltaica = getRespostaNumericaOr0(65)
+    faturaMinimaBiomassa = getRespostaNumericaOr0(75)
+    faturaMinimaEolica = getRespostaNumericaOr0(85)
+    faturaMinimaTermica = getRespostaNumericaOr0(95)
+    faturaMinimaOutros = getRespostaNumericaOr0(106)
+
+    faturasMinimaskWh = [
+        getRespostaNumericaOr0(15),
+        getRespostaNumericaOr0(25),
+        getRespostaNumericaOr0(35),
+        getRespostaNumericaOr0(45),
+        getRespostaNumericaOr0(55),
+        getRespostaNumericaOr0(65),
+        getRespostaNumericaOr0(75),
+        getRespostaNumericaOr0(85),
+        getRespostaNumericaOr0(95),
+        getRespostaNumericaOr0(106)
+    ]
+
+    faturasMaximaskWh = [
+        getRespostaNumericaOr0(18),
+        getRespostaNumericaOr0(28),
+        getRespostaNumericaOr0(38),
+        getRespostaNumericaOr0(48),
+        getRespostaNumericaOr0(58),
+        getRespostaNumericaOr0(68),
+        getRespostaNumericaOr0(78),
+        getRespostaNumericaOr0(88),
+        getRespostaNumericaOr0(98),
+        getRespostaNumericaOr0(103)
+    ]
+
+    faturasMinimasEur = [
+        getRespostaNumericaOr0(17),
+        getRespostaNumericaOr0(27),
+        getRespostaNumericaOr0(37),
+        getRespostaNumericaOr0(47),
+        getRespostaNumericaOr0(57),
+        getRespostaNumericaOr0(67),
+        getRespostaNumericaOr0(77),
+        getRespostaNumericaOr0(87),
+        getRespostaNumericaOr0(97),
+        getRespostaNumericaOr0(108)
+    ]
+
+    faturasMaximasEur = [
+        getRespostaNumericaOr0(20),
+        getRespostaNumericaOr0(30),
+        getRespostaNumericaOr0(40),
+        getRespostaNumericaOr0(50),
+        getRespostaNumericaOr0(60),
+        getRespostaNumericaOr0(70),
+        getRespostaNumericaOr0(80),
+        getRespostaNumericaOr0(90),
+        getRespostaNumericaOr0(100),
+        getRespostaNumericaOr0(105)
+    ]
+
+    faturas = zip(consumos_labels, faturasMinimaskWh, faturasMinimasEur, faturasMaximaskWh, faturasMaximasEur)
+
+    print(faturas)
+
+    return render(request, 'dashboard.html', {"consumos": consumos, "consumos_labels": consumos_labels,
+                                              "custos": custos, "custosconsumo": custosconsumo, "faturas": faturas})
+
+
+def getRespostaNumericaOr0(pergunta_id):
+    if RespostaNumerica.objects.filter(pergunta_id=Pergunta.objects.get(id=pergunta_id)).first():
+        return RespostaNumerica.objects.filter(pergunta_id=Pergunta.objects.get(id=pergunta_id)).first().numero
+    else:
+        return 0
+
+
+def divByZero(n, d):
+    return n / d if d else 0

@@ -4,11 +4,12 @@ html {
 }
 
 body {
-  margin-left: 40vh;
-  margin-right: 40vh;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+    margin-left: 40vh;
+    margin-right: 40vh;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: orange;
 }
 
 #graphbar {
@@ -41,10 +42,15 @@ body {
 
 .display-view {
     padding: 5%;
+    position: relative;
+    background-color: white;
 }
 
-#circlechart {
+.graph-view {
     margin: auto;
+    position: absolute;
+    top: 0%;
+    bottom: 0%;
     width: 100%;
 }
 
@@ -82,7 +88,7 @@ body {
     list-style: auto;
 }
 
-.data-list li{
+.data-list li {
     width: 100%;
     font-size: 150%;
     margin-bottom: 10%;
@@ -96,4 +102,15 @@ body {
     padding: 3%;
     padding-bottom: 0;
     margin: 0;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+#consumodeenergia {
+
+    width: 17vw !important;
+    height: 34vh !important;
+
 }
