@@ -1,3 +1,7 @@
+import calendar
+import datetime
+import locale
+
 from django.forms import ModelForm
 from django import forms
 from .models import *
@@ -21,17 +25,6 @@ class FormTextoLivre(ModelForm):
         texto = forms.Textarea(attrs={'required': False})
 
 
-class FormTextoLivreObservacoes(ModelForm):
-    class Meta:
-        model = RespostaTextual
-        fields = ['texto']
-        labels = {'texto': ''}
-
-        widgets = {
-            'texto': forms.Textarea(attrs={'cols': 25, 'rows': 20}),
-        }
-
-        texto = forms.Textarea(attrs={'required': False})
 
 
 class FormEscolhaMultiplaUnica(ModelForm):
@@ -60,3 +53,27 @@ class FormFicheiro(ModelForm):
         labels = {'ficheiro': ''}
 
         ficheiro = forms.Textarea(attrs={'required': False})
+
+
+class FormMes(ModelForm):
+    month_choices = [
+        ('', ''),
+        ('Janeiro', 'Janeiro'),
+        ('Fevereiro', 'Fevereiro'),
+        ('Março', 'Março'),
+        ('Abril', 'Abril'),
+        ('Maio', 'Maio'),
+        ('Junho', 'Junho'),
+        ('Julho', 'Julho'),
+        ('Agosto', 'Agosto'),
+        ('Setembro', 'Setembro'),
+        ('Outubro', 'Outubro'),
+        ('Novembro', 'Novembro'),
+        ('Dezembro', 'Dezembro'),
+    ]
+    month = forms.ChoiceField(choices=month_choices, label='', required=False)
+
+    class Meta:
+        model = RespostaTextual
+        fields = ['month']
+        labels = {'month': ''}

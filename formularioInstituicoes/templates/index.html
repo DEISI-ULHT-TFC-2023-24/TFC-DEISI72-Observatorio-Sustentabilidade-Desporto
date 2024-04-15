@@ -242,50 +242,43 @@
                                         {% endif %}
                                     </h3>
                                     <table>
-
-
                                         {% for pergunta, resposta in perguntas.items %}
-
                                             <tr id="{{ tema_counter }}.{{ subtema_counter }}:{{ pergunta.texto|slugify }}">
-                                                <input type="hidden" name="pergunta" value={{ pergunta.id }}>
-
-                                                <td class="pergunta">{{ pergunta.texto }}</td>
-
-                                                <td class="resposta">{{ resposta.as_p }}</td>
-
+                                                <td>
+                                                    <input type="hidden" name="pergunta" value="{{ pergunta.id }}">
+                                                    {{ pergunta.texto }}
+                                                </td>
+                                                <td>{{ resposta.as_p }}</td>
                                                 {% if pergunta.unidade %}
                                                     <td>
                                                         {% if "^" in pergunta.unidade.unidade %}
                                                             {% with pergunta.unidade.unidade|split:"|" as toda %}
-                                                                <td>
-                                                                    {% for cada in toda %}
-                                                                        {% if "^" in cada %}
-                                                                            {% with cada|split:"^" as parts %}
-                                                                                {{ parts|first }}
-                                                                                <sup>{{ parts|last }}</sup>
-                                                                            {% endwith %}
-                                                                        {% else %}
-                                                                            {{ cada }}
-                                                                        {% endif %}
-                                                                        {% if toda|length > 1 %}
-                                                                            {% if forloop.first %}
-                                                                                |
-                                                                            {% endif %}
-                                                                        {% endif %}
-                                                                    {% endfor %}
-                                                                </td>
-
-
+                                                                {% for cada in toda %}
+                                                                    {% if "^" in cada %}
+                                                                        {% with cada|split:"^" as parts %}
+                                                                            {{ parts|first }}<sup>{{ parts|last }}</sup>
+                                                                        {% endwith %}
+                                                                    {% else %}
+                                                                        {{ cada }}
+                                                                    {% endif %}
+                                                                    {% if toda|length > 1 %}
+                                                                        {% if forloop.first %}|{% endif %}
+                                                                    {% endif %}
+                                                                {% endfor %}
                                                             {% endwith %}
                                                         {% else %}
-                                                            <td>{{ pergunta.unidade }}</td>
+                                                            {{ pergunta.unidade }}
                                                         {% endif %}
                                                     </td>
                                                 {% endif %}
-
-
+                                                {% if pergunta.resposta_duplicavel %}
+                                                    <td >
+                                                        <button type="button" class="butao_duplica">+</button>
+                                                    </td>
+                                                {% else %}
+                                                    <td style="display: none"></td>
+                                                {% endif %}
                                             </tr>
-
                                         {% endfor %}
 
 

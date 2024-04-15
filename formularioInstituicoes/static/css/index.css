@@ -69,6 +69,15 @@ input, select {
     margin: 5px 0;
 }
 
+.butao_duplica {
+    padding: 5px 10px;
+    margin-left: auto;
+    background: orange;
+    border-radius: 5px;
+    border: 0;
+    transition: background-color 0.3s ease;
+}
+
 input[type="submit"] {
 
     display: block;

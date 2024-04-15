@@ -40,6 +40,7 @@ class Pergunta(models.Model):
         ('ESCOLHA_MULTIPLA_VARIAS', 'Escolha Múltipla Várias'),
         ('FICHEIRO', 'Ficheiro'),
         ('CAMPO_AUTOMATICO', 'Campo Automático'),
+        ('MES', 'Mês'),
     )
 
     tipo = models.CharField(max_length=30, choices=TIPO_RESPOSTA)

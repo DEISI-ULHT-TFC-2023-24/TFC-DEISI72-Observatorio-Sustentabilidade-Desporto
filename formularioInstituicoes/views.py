@@ -52,11 +52,7 @@ def guarda_perguntas():
                 perguntas_todos = list(valores_escluidos) + [pergunta_escluida]
 
             for pergunta in perguntas_todos:
-                if pergunta.subtema.nome == "Observações":
-                    formobs = FormTextoLivreObservacoes(prefix=pergunta.id)
-                    formulario[pergunta] = formobs
-
-                elif pergunta.tipo == 'NUMERO_INTEIRO':
+                if pergunta.tipo == 'NUMERO_INTEIRO':
                     formint = FormNumerosInteiros(prefix=pergunta.id)
                     formulario[pergunta] = formint
 
@@ -94,14 +90,16 @@ def guarda_perguntas():
                     formficheiro = FormFicheiro(prefix=pergunta.id)
                     formulario[pergunta] = formficheiro
 
+                elif pergunta.tipo == 'MES':
+                    formdata = FormMes(prefix=pergunta.id)
+                    formulario[pergunta] = formdata
+
             subtemas[subtema] = formulario
 
         temas[tema] = subtemas
 
 
-def formulario_view(request):
-    guarda_perguntas()
-
+def post(request):
     if request.method == "POST":
         print(request.POST)
 
@@ -118,11 +116,7 @@ def formulario_view(request):
                     perguntas = {}
 
                     for pergunta in Pergunta.objects.filter(subtema_id=subtema_id):
-                        if pergunta.subtema.nome == "Observações":
-                            formobs = FormTextoLivreObservacoes(prefix=pergunta.id)
-                            perguntas[pergunta] = formobs
-
-                        elif pergunta.tipo == 'NUMERO_INTEIRO':
+                        if pergunta.tipo == 'NUMERO_INTEIRO':
                             formint = FormNumerosInteiros(prefix=pergunta.id)
                             perguntas[pergunta] = formint
 
@@ -138,6 +132,10 @@ def formulario_view(request):
                         elif pergunta.tipo == 'FICHEIRO':
                             formficheiro = FormFicheiro(prefix=pergunta.id)
                             perguntas[pergunta] = formficheiro
+
+                        elif pergunta.tipo == 'MES':
+                            formdata = FormMes(prefix=pergunta.id)
+                            perguntas[pergunta] = formdata
 
                     temas.get(Tema.objects.get(id=tema_id))[subtema_adicionar] = perguntas
 
@@ -158,7 +156,7 @@ def formulario_view(request):
                                 )
                                 resposta_num.save()
 
-                            elif tiporesposta == "texto":
+                            elif tiporesposta == "texto" or tiporesposta == "month":
                                 resposta_txt = RespostaTextual(
                                     avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
                                     pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
@@ -176,10 +174,6 @@ def formulario_view(request):
 
 
                             elif tiporesposta == "opcoes":
-
-                                print(Pergunta.objects.get(id=int(id_pergunta_retirado)).opcoes.order_by('nome')[
-                                          int(valor)])
-                                print(valor)
 
                                 resposta_txt = RespostaTextual(
                                     avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
@@ -206,6 +200,12 @@ def formulario_view(request):
                     )
                     file.save()
         return HttpResponseRedirect(request.path_info)
+
+
+def formulario_view(request):
+    guarda_perguntas()
+
+    post(request)
 
     context = {
         'temas': temas,
