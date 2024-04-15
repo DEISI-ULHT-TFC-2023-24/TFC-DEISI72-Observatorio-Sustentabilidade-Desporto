@@ -253,8 +253,34 @@
 
                                                 <td class="resposta">{{ resposta.as_p }}</td>
 
-                                                {% if pergunta.unidade != null %}
-                                                    <td>{{ pergunta.unidade }}</td>
+                                                {% if pergunta.unidade %}
+                                                    <td>
+                                                        {% if "^" in pergunta.unidade.unidade %}
+                                                            {% with pergunta.unidade.unidade|split:"|" as toda %}
+                                                                <td>
+                                                                    {% for cada in toda %}
+                                                                        {% if "^" in cada %}
+                                                                            {% with cada|split:"^" as parts %}
+                                                                                {{ parts|first }}
+                                                                                <sup>{{ parts|last }}</sup>
+                                                                            {% endwith %}
+                                                                        {% else %}
+                                                                            {{ cada }}
+                                                                        {% endif %}
+                                                                        {% if toda|length > 1 %}
+                                                                            {% if forloop.first %}
+                                                                                |
+                                                                            {% endif %}
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                </td>
+
+
+                                                            {% endwith %}
+                                                        {% else %}
+                                                            <td>{{ pergunta.unidade }}</td>
+                                                        {% endif %}
+                                                    </td>
                                                 {% endif %}
 
 

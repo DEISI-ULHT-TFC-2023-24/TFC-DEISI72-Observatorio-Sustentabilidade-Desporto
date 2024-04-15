@@ -3,6 +3,7 @@ from pathlib import Path
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.template.defaulttags import register
 from .models import *
 from .forms import *
 
@@ -211,6 +212,11 @@ def formulario_view(request):
     }
 
     return render(request, 'index.html', context)
+
+
+@register.filter(name='split')
+def split(value, key):
+    return value.split(key)
 
 
 def dashboard_view(request):
