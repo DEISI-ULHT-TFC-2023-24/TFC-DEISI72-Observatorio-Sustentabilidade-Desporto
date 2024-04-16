@@ -29,26 +29,6 @@
         }
     }
 
-    document.querySelectorAll(".adicionar-formulario").forEach(button => {
-
-        button.addEventListener("click", function () {
-
-            var temaId = this.dataset.tema;
-            var subtemaId = this.dataset.subtema;
-            var tema_subtema = temaId + "-" + subtemaId
-            const formData = new FormData();
-            formData.append('tema_subtema', tema_subtema);
-            fetch(`adicionar_formulario`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: formData
-            })
-                .then(response => response.json())
-        });
-    });
-
     function slugify(texto) {
         const caracteresEspeciais = {
             á: 'a',
@@ -244,40 +224,52 @@
                                     <table>
                                         {% for pergunta, resposta in perguntas.items %}
                                             <tr id="{{ tema_counter }}.{{ subtema_counter }}:{{ pergunta.texto|slugify }}">
-                                                <td>
+                                                <td id="pergunta">
                                                     <input type="hidden" name="pergunta" value="{{ pergunta.id }}">
                                                     {{ pergunta.texto }}
                                                 </td>
-                                                <td>{{ resposta.as_p }}</td>
-                                                {% if pergunta.unidade %}
-                                                    <td>
-                                                        {% if "^" in pergunta.unidade.unidade %}
-                                                            {% with pergunta.unidade.unidade|split:"|" as toda %}
-                                                                {% for cada in toda %}
-                                                                    {% if "^" in cada %}
-                                                                        {% with cada|split:"^" as parts %}
-                                                                            {{ parts|first }}<sup>{{ parts|last }}</sup>
-                                                                        {% endwith %}
-                                                                    {% else %}
-                                                                        {{ cada }}
-                                                                    {% endif %}
-                                                                    {% if toda|length > 1 %}
-                                                                        {% if forloop.first %}|{% endif %}
-                                                                    {% endif %}
-                                                                {% endfor %}
-                                                            {% endwith %}
-                                                        {% else %}
-                                                            {{ pergunta.unidade }}
+                                                <td id="resposta">
+                                                    <div id="boxResposta">
+                                                        <div>
+                                                            {{ resposta.as_p }}
+                                                        </div>
+                                                        {% if pergunta.unidade %}
+                                                            <div>
+                                                                {% if "^" in pergunta.unidade.unidade %}
+                                                                    {% with pergunta.unidade.unidade|split:"|" as toda %}
+                                                                        {% for cada in toda %}
+                                                                            {% if "^" in cada %}
+                                                                                {% with cada|split:"^" as parts %}
+                                                                                    {{ parts|first }}
+                                                                                    <sup>{{ parts|last }}</sup>
+                                                                                {% endwith %}
+                                                                            {% else %}
+                                                                                {{ cada }}
+                                                                            {% endif %}
+                                                                            {% if toda|length > 1 %}
+                                                                                {% if forloop.first %}|{% endif %}
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    {% endwith %}
+                                                                {% else %}
+                                                                    {{ pergunta.unidade }}
+                                                                {% endif %}
+                                                            </div>
                                                         {% endif %}
-                                                    </td>
-                                                {% endif %}
-                                                {% if pergunta.resposta_duplicavel %}
-                                                    <td >
-                                                        <button type="button" class="butao_duplica">+</button>
-                                                    </td>
-                                                {% else %}
-                                                    <td style="display: none"></td>
-                                                {% endif %}
+                                                        {% if pergunta.resposta_duplicavel %}
+                                                            <div>
+                                                                <button type="button" class="butao_adiciona"
+                                                                        id="butao_adiciona" onclick="adicionarValor()">+
+                                                                </button>
+                                                            </div>
+                                                        {% else %}
+                                                            <div style="display: none;"></div>
+                                                        {% endif %}
+                                                    </div>
+                                                        <div id='{{ pergunta.texto|slugify }}'></div>
+
+                                                </td>
+
                                             </tr>
                                         {% endfor %}
 

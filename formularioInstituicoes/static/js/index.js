@@ -13,26 +13,6 @@ function toggle(element) {
     }
 }
 
-document.querySelectorAll(".adicionar-formulario").forEach(button => {
-
-    button.addEventListener("click", function () {
-
-        var temaId = this.dataset.tema;
-        var subtemaId = this.dataset.subtema;
-        var tema_subtema = temaId + "-" + subtemaId
-        const formData = new FormData();
-        formData.append('tema_subtema', tema_subtema);
-        fetch(`adicionar_formulario`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: formData
-        })
-            .then(response => response.json())
-    });
-});
-
 function slugify(texto) {
     const caracteresEspeciais = {
         á: 'a',
@@ -189,6 +169,42 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 });
+
+
+
+
+function adicionarValor() {
+
+    const currentTr = event.target.closest('tr');
+
+    const inputElement = currentTr.querySelector('td#resposta > div#boxResposta > div > p > input');
+
+    const cloneInputElement = inputElement.cloneNode(true);
+
+    var novoItem = document.createElement('div');
+
+    var novoInput = cloneInputElement;
+    novoInput.type = 'text'; // Define o tipo do input
+    novoInput.className = 'input-resposta'; // Adiciona uma classe ao input
+
+    var botaoRemover = document.createElement('button');
+    botaoRemover.type = 'button';
+    botaoRemover.className = 'butao_remove'; // Adiciona uma classe ao botão
+    botaoRemover.innerText = '-'; // Define o texto do botão
+
+    botaoRemover.addEventListener('click', function() {
+        // Remove o div pai do botão (que contém o input e o botão)
+        this.parentNode.parentNode.removeChild(this.parentNode);
+    });
+
+    novoItem.appendChild(novoInput);
+    novoItem.appendChild(botaoRemover);
+
+    const currentRow = currentTr.id.split(':')[1];
+
+    var listaValoresDiv = document.getElementById(currentRow);
+    listaValoresDiv.appendChild(novoItem);
+}
 
 
 

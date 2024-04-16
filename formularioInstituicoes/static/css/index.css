@@ -5,7 +5,6 @@ body {
 }
 
 
-
 .container {
     max-width: 700px;
     margin: auto;
@@ -39,7 +38,14 @@ details > ol {
 .bloco {
     display: none;
     margin-left: 40px;
+    text-align: left;
 }
+
+table {
+    display: flex;
+    justify-content: center;
+}
+
 
 select {
     width: 158px;
@@ -56,7 +62,7 @@ select option {
 }
 
 .pergunta * {
-    text-align: right;
+    text-align: center;
 }
 
 .resposta {
@@ -69,9 +75,9 @@ input, select {
     margin: 5px 0;
 }
 
-.butao_duplica {
+.butao_adiciona {
     padding: 5px 10px;
-    margin-left: auto;
+    margin-left: 5px;
     background: orange;
     border-radius: 5px;
     border: 0;
@@ -118,6 +124,17 @@ h3 button {
 
 }
 
-.ar-condicionado-com-potencia-media-de{
+.ar-condicionado-com-potencia-media-de {
     display: none;
 }
+
+#boxResposta {
+    display: flex;
+    align-items: center;
+}
+
+#boxResposta > div {
+    margin-left: 10px; /* Adicionando margem entre os elementos */
+}
+
+
