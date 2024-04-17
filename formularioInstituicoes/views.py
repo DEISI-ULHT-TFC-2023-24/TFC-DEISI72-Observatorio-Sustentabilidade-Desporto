@@ -40,7 +40,6 @@ def guarda_perguntas():
 
             subtemas_todos = list(valores_escluidos) + [subtema_outro]
 
-
         for subtema in subtemas_todos:
             formulario = {}
 
@@ -55,6 +54,12 @@ def guarda_perguntas():
             elif perguntas_todos.filter(texto='Com potência de').exists():
                 valores_escluidos = perguntas_todos.exclude(texto='Com potência de')
                 pergunta_escluida = perguntas_todos.get(texto='Com potência de')
+
+                perguntas_todos = list(valores_escluidos) + [pergunta_escluida]
+
+            elif perguntas_todos.filter(texto='Com valor de').exists():
+                valores_escluidos = perguntas_todos.exclude(texto='Com valor de')
+                pergunta_escluida = perguntas_todos.get(texto='Com valor de')
 
                 perguntas_todos = list(valores_escluidos) + [pergunta_escluida]
 
@@ -84,7 +89,7 @@ def guarda_perguntas():
                         opcao_outro = pergunta.opcoes.get(nome='Outro')
                         opcoes = list(opcoes) + [opcao_outro]
 
-                    for count, opcao in enumerate(opcoes, start=1):
+                    for count, opcao in enumerate(opcoes, start=0):
                         escolha = (str(count), opcao.nome)
                         escolhas.append(escolha)
 
@@ -181,6 +186,9 @@ def post(request):
 
 
                             elif tiporesposta == "opcoes":
+
+                                print(int(valor))
+                                print(Pergunta.objects.get(id=int(id_pergunta_retirado)).opcoes.order_by('nome'))
 
                                 resposta_txt = RespostaTextual(
                                     avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom

@@ -173,9 +173,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function adicionarValorPergunta() {
 
-    const currentTr = event.target.closest('div#boxResposta');
+    const currentTr = event.target.closest('tr');
 
-    const inputElement = currentTr.querySelector('div > p > input');
+    const inputElement = currentTr.querySelector('td#resposta > div#boxResposta > div > p > input');
 
     const divBoxResposta = currentTr.querySelector('td#resposta > div#boxResposta');
 
@@ -184,10 +184,10 @@ function adicionarValorPergunta() {
     if (divBoxResposta.childElementCount === 3) {
         const divsDentroBoxResposta = divBoxResposta.querySelectorAll('div');
         unidade = divsDentroBoxResposta[1].cloneNode(true);
-        console.log(unidade);
     }
 
     const cloneInputElement = inputElement.cloneNode(true);
+
     cloneInputElement.value = '';
 
     var novoItem = document.createElement('div');
@@ -225,6 +225,7 @@ function adicionarValorPergunta() {
     const currentRow = currentTr.id.split(':')[1];
 
     var listaValoresDiv = document.getElementById(currentRow);
+    listaValoresDiv.style.display = 'block'
     listaValoresDiv.appendChild(novoItem);
 }
 
