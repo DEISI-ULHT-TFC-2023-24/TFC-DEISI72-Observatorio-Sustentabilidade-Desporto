@@ -215,8 +215,8 @@
                                     <h3>{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}
                                         {% if subtema.resposta_duplicavel %}
                                             <input type="hidden" value="{{ tema.id }}" name="temaId">
-                                            <button type="button" class="adicionar-formulario"
-                                                    data-subtema="{{ subtema.id }}" data-tema="{{ tema.id }}">+
+                                            <button type="button" class="butao_adiciona"
+                                                    onclick="adicionarValorSubtema()">+
                                             </button>
 
                                         {% endif %}
@@ -234,7 +234,7 @@
                                                             {{ resposta.as_p }}
                                                         </div>
                                                         {% if pergunta.unidade %}
-                                                            <div>
+                                                            <div class="unidade">
                                                                 {% if "^" in pergunta.unidade.unidade %}
                                                                     {% with pergunta.unidade.unidade|split:"|" as toda %}
                                                                         {% for cada in toda %}
@@ -259,14 +259,15 @@
                                                         {% if pergunta.resposta_duplicavel %}
                                                             <div>
                                                                 <button type="button" class="butao_adiciona"
-                                                                        id="butao_adiciona" onclick="adicionarValor()">+
+                                                                        id="butao_adiciona"
+                                                                        onclick="adicionarValorPergunta()">+
                                                                 </button>
                                                             </div>
                                                         {% else %}
                                                             <div style="display: none;"></div>
                                                         {% endif %}
                                                     </div>
-                                                        <div id='{{ pergunta.texto|slugify }}'></div>
+                                                    <div id='{{ pergunta.texto|slugify }}'></div>
 
                                                 </td>
 

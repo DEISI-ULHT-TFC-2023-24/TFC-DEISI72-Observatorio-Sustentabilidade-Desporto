@@ -75,13 +75,18 @@ input, select {
     margin: 5px 0;
 }
 
-.butao_adiciona {
+.butao_adiciona, .butao_remove {
     padding: 5px 10px;
     margin-left: 5px;
     background: orange;
     border-radius: 5px;
     border: 0;
     transition: background-color 0.3s ease;
+}
+
+.butao_remove{
+    display: flex;
+    align-items: center;
 }
 
 input[type="submit"] {
@@ -128,13 +133,13 @@ h3 button {
     display: none;
 }
 
-#boxResposta {
+#boxResposta, #boxRespostaNova {
     display: flex;
     align-items: center;
 }
 
-#boxResposta > div {
-    margin-left: 10px; /* Adicionando margem entre os elementos */
+#boxResposta > div, #boxRespostaNova > div {
+    margin-left: 10px;
 }
 
 

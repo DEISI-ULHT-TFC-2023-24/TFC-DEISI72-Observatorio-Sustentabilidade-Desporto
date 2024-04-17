@@ -171,17 +171,31 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-
-
-function adicionarValor() {
+function adicionarValorPergunta() {
 
     const currentTr = event.target.closest('tr');
 
     const inputElement = currentTr.querySelector('td#resposta > div#boxResposta > div > p > input');
 
+    const divBoxResposta = currentTr.querySelector('td#resposta > div#boxResposta');
+
+    let unidade = null;
+
+    if (divBoxResposta.childElementCount === 3){
+        const divsDentroBoxResposta = divBoxResposta.querySelectorAll('div');
+        unidade = divsDentroBoxResposta[1].cloneNode(true);
+        console.log(unidade);
+    }
+
     const cloneInputElement = inputElement.cloneNode(true);
+    cloneInputElement.value = '';
 
     var novoItem = document.createElement('div');
+    novoItem.id = 'boxRespostaNova';
+
+    var novoDiv = document.createElement('div');
+    var novoDiv2 = document.createElement('div');
+    var novoP = document.createElement('p');
 
     var novoInput = cloneInputElement;
     novoInput.type = 'text'; // Define o tipo do input
@@ -192,19 +206,33 @@ function adicionarValor() {
     botaoRemover.className = 'butao_remove'; // Adiciona uma classe ao botão
     botaoRemover.innerText = '-'; // Define o texto do botão
 
-    botaoRemover.addEventListener('click', function() {
+    botaoRemover.addEventListener('click', function () {
         // Remove o div pai do botão (que contém o input e o botão)
-        this.parentNode.parentNode.removeChild(this.parentNode);
+        const divPai = this;
+        const divBoxResposta = divPai.closest('#boxRespostaNova');
+
+        console.log(divBoxResposta)
+        divBoxResposta.remove();
+
     });
 
-    novoItem.appendChild(novoInput);
-    novoItem.appendChild(botaoRemover);
+    novoItem.appendChild(novoDiv).appendChild(novoP).appendChild(novoInput);
+
+    if(unidade != null){
+
+        novoItem.appendChild(unidade);
+    }
+
+    novoItem.appendChild(novoDiv2).appendChild(botaoRemover);
 
     const currentRow = currentTr.id.split(':')[1];
 
     var listaValoresDiv = document.getElementById(currentRow);
     listaValoresDiv.appendChild(novoItem);
 }
+
+
+
 
 
 
