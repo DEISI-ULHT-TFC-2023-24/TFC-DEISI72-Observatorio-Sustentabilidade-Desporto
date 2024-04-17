@@ -173,15 +173,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function adicionarValorPergunta() {
 
-    const currentTr = event.target.closest('tr');
+    const currentTr = event.target.closest('div#boxResposta');
 
-    const inputElement = currentTr.querySelector('td#resposta > div#boxResposta > div > p > input');
+    const inputElement = currentTr.querySelector('div > p > input');
 
     const divBoxResposta = currentTr.querySelector('td#resposta > div#boxResposta');
 
     let unidade = null;
 
-    if (divBoxResposta.childElementCount === 3){
+    if (divBoxResposta.childElementCount === 3) {
         const divsDentroBoxResposta = divBoxResposta.querySelectorAll('div');
         unidade = divsDentroBoxResposta[1].cloneNode(true);
         console.log(unidade);
@@ -198,27 +198,24 @@ function adicionarValorPergunta() {
     var novoP = document.createElement('p');
 
     var novoInput = cloneInputElement;
-    novoInput.type = 'text'; // Define o tipo do input
-    novoInput.className = 'input-resposta'; // Adiciona uma classe ao input
+    novoInput.type = 'text';
+    novoInput.className = 'input-resposta';
 
     var botaoRemover = document.createElement('button');
     botaoRemover.type = 'button';
-    botaoRemover.className = 'butao_remove'; // Adiciona uma classe ao botão
-    botaoRemover.innerText = '-'; // Define o texto do botão
+    botaoRemover.className = 'butao_remove';
+    botaoRemover.innerText = '-';
 
     botaoRemover.addEventListener('click', function () {
-        // Remove o div pai do botão (que contém o input e o botão)
         const divPai = this;
         const divBoxResposta = divPai.closest('#boxRespostaNova');
-
-        console.log(divBoxResposta)
         divBoxResposta.remove();
 
     });
 
     novoItem.appendChild(novoDiv).appendChild(novoP).appendChild(novoInput);
 
-    if(unidade != null){
+    if (unidade != null) {
 
         novoItem.appendChild(unidade);
     }
@@ -231,7 +228,37 @@ function adicionarValorPergunta() {
     listaValoresDiv.appendChild(novoItem);
 }
 
+function adicionarValorSubtema() {
+    const currentDiv = event.target.closest('div');
 
+    const currentDivClone = currentDiv.cloneNode(true);
+    const inputElements = currentDivClone.querySelectorAll('input');
+    inputElements.forEach(input => input.value = '');
+
+
+    currentDivClone.querySelector('h3 > button').remove()
+
+    var botaoRemover = document.createElement('button');
+    botaoRemover.type = 'button';
+    botaoRemover.className = 'butao_remove';
+    botaoRemover.innerText = '-';
+
+    botaoRemover.addEventListener('click', function () {
+
+        const currentDiv = event.target.closest('div');
+        currentDiv.remove()
+
+    });
+
+    currentDivClone.querySelector('h3').appendChild(botaoRemover)
+
+    const closestForm = event.target.closest('form');
+    const submitButton = closestForm.querySelector('input[type="submit"]');
+
+    closestForm.appendChild(currentDivClone);
+    closestForm.appendChild(submitButton);
+
+}
 
 
 

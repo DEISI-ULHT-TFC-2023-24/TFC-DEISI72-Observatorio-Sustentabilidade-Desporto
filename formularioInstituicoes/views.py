@@ -34,6 +34,13 @@ def guarda_perguntas():
 
             subtemas_todos = list(valores_escluidos) + [subtema_outro]
 
+        elif subtemas_todos.filter(nome='Outros').exists():
+            valores_escluidos = subtemas_todos.exclude(nome='Outros')
+            subtema_outro = subtemas_todos.get(nome='Outros')
+
+            subtemas_todos = list(valores_escluidos) + [subtema_outro]
+
+
         for subtema in subtemas_todos:
             formulario = {}
 
