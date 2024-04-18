@@ -1,9 +1,13 @@
 import os
 from pathlib import Path
 
+from django.contrib.auth import authenticate, logout, login
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.template.defaulttags import register
+from django.urls import reverse
+
 from .models import *
 from .forms import *
 
@@ -361,8 +365,6 @@ def dashboard_view(request):
 
     faturas = zip(consumos_labels, faturasMinimaskWh, faturasMinimasEur, faturasMaximaskWh, faturasMaximasEur)
 
-    print(faturas)
-
     return render(request, 'dashboard.html', {"consumos": consumos, "consumos_labels": consumos_labels,
                                               "custos": custos, "custosconsumo": custosconsumo, "faturas": faturas})
 
@@ -376,3 +378,37 @@ def getRespostaNumericaOr0(pergunta_id):
 
 def divByZero(n, d):
     return n / d if d else 0
+
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+
+            return redirect("/")
+
+    return render(request, 'login.html', {"authForm": AuthenticationForm()})
+
+
+def logout_view(request):
+    logout(request)
+    return redirect("/")
+
+
+def sign_up_view(request):
+    formUtilizador = FormUtilizador(request.POST or None)
+    formUser = UserCreationForm(request.POST or None)
+
+    if request.method == "POST":
+        user = formUser.save(commit=True)
+
+        utilizador = formUtilizador.save(commit=False)
+
+        utilizador.user = user
+        utilizador.save()
+
+    return render(request, 'signup.html', {"formUser": formUser, "formUtilizador": formUtilizador})

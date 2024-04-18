@@ -77,3 +77,10 @@ class FormMes(ModelForm):
         model = RespostaTextual
         fields = ['month']
         labels = {'month': ''}
+
+
+class FormUtilizador(ModelForm):
+    class Meta:
+        model = Utilizador
+        fields = []
+        labels = {}
