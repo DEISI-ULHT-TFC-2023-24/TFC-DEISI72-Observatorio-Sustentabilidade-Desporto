@@ -63,6 +63,12 @@ def guarda_perguntas():
 
                 perguntas_todos = list(valores_escluidos) + [pergunta_escluida]
 
+            elif perguntas_todos.filter(texto='Nome').exists():
+                valores_escluidos = perguntas_todos.exclude(texto='Nome')
+                pergunta_escluida = perguntas_todos.get(texto='Nome')
+
+                perguntas_todos = [pergunta_escluida] + list(valores_escluidos)
+
             for pergunta in perguntas_todos:
                 if pergunta.tipo == 'NUMERO_INTEIRO':
                     formint = FormNumerosInteiros(prefix=pergunta.id)
@@ -226,7 +232,15 @@ def formulario_view(request):
         'temas': temas,
     }
 
-    return render(request, 'index.html', context)
+    return render(request, 'formulario.html', context)
+
+
+def index_view(request):
+    return render(request, 'escolhas.html')
+
+
+def respostas_view(request):
+    return render(request, 'respostas.html')
 
 
 @register.filter(name='split')

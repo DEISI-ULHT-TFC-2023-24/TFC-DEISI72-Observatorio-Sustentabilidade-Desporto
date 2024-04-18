@@ -20,7 +20,9 @@ from django.conf.urls.static import static
 from django.views.static import serve
 
 urlpatterns = [
-    path('', views.formulario_view),
+    path('index', views.index_view),
+    path('form', views.formulario_view),
+    path('responses', views.respostas_view),
     path('dashboard', views.dashboard_view),
     path('adicionar_formulario', views.formulario_view),
     re_path(r'^download/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),

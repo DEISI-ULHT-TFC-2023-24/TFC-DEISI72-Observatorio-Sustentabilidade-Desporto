@@ -1,0 +1,32 @@
+body{
+    background: orange;
+}
+
+main{
+    display: flex;
+    flex-direction: row;
+}
+
+h1, h2, p{
+    text-align: center;
+}
+
+.box{
+    display: flex;
+    flex-direction: column;
+    border: 1px solid lightgrey;
+    margin: 10px;
+    background: whitesmoke;
+    padding: 5px 15px;
+    border-radius: 10px;
+    justify-content: center;
+}
+
+button{
+    background-color: white;
+    border-radius:10px;
+    padding: 1em;
+    color:#0096FF;
+    font-weight: bold;
+}
+
