@@ -240,7 +240,7 @@ def formulario_view(request):
 
 
 def index_view(request):
-    return render(request, 'escolhas.html')
+    return render(request, 'index.html')
 
 
 def respostas_view(request):

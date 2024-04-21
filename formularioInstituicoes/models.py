@@ -45,7 +45,6 @@ class Pergunta(models.Model):
     )
 
     tipo = models.CharField(max_length=30, choices=TIPO_RESPOSTA, blank=False, null=True)
-    obrigatoria = models.BooleanField(default=False)
     resposta_duplicavel = models.BooleanField(default=False)
 
     def __str__(self):
@@ -129,7 +128,8 @@ class Ficheiro(models.Model):
 
 class Utilizador(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    #instalacoes = models.ForeignKey(Instalacao, on_delete=models)      instalacoes e tal
+    entidade = models.OneToOneField(Entidade, on_delete=models.CASCADE, blank=True, null=True)
+    aprovado = models.BooleanField(default=False)
 
 
     def __str__(self):

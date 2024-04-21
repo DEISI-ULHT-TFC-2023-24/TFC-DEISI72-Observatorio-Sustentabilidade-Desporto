@@ -22,12 +22,11 @@ from django.views.static import serve
 urlpatterns = [
     path('index', views.index_view),
     path('form', views.formulario_view),
-    path('responses', views.respostas_view),
+    path('submmit', views.respostas_view),
     path('dashboard', views.dashboard_view),
     path('signup', views.sign_up_view),
     path('login', views.login_view),
     path('logout', views.logout_view),
-    path('adicionar_formulario', views.formulario_view),
     re_path(r'^download/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
