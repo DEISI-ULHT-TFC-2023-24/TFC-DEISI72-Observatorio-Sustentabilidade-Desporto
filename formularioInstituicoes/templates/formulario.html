@@ -1,124 +1,111 @@
-<!DOCTYPE html>
-<html lang="pt">
+{% extends 'navigator.html' %}
 
-{% load static %}
+{% block titulo %}
+    <h1>Avaliação desportiva</h1>
+{% endblock %}
 
-<head>
+{% block content %}
 
-    <title>IPDJ - SNID</title>
+    <div class="container">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/formulario.css' %}">
-    <script defer src="{% static 'js/formulario.js' %}"></script>
-    <meta charset="UTF-8">
-</head>
+        {% for key, value in respostas.items %}
+            <p>{{ key }}: {{ value }}</p>
+        {% endfor %}
 
-<body>
-<h1 class="cabecalho">Avaliação da Instalação</h1>
+        {% for tema, subtemas in temas.items %}
+            {% with forloop.counter as tema_counter %}
+                <div class="tema">
+                    <div class="titulo" onclick="toggle(this)">
+                        <span>{{ tema_counter }}. {{ tema.nome }} </span>
+                        <span style="float:right" id="sinal">+</span>
+                    </div>
+                    <div class="bloco">
+                        <form action="" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
 
-<div class="container">
+                            {% for subtema, perguntas in subtemas.items %}
+                                {% with forloop.counter as subtema_counter %}
+                                    <div id={{ tema_counter }}:{{ subtema.nome|slugify }} class="perto">
+                                        <h3>{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}
+                                            {% if subtema.resposta_duplicavel %}
+                                                <input type="hidden" value="{{ tema.id }}" name="temaId">
+                                                <button type="button" class="butao_adiciona"
+                                                        onclick="adicionarValorSubtema()">+
+                                                </button>
 
-    {% for key, value in respostas.items %}
-        <p>{{ key }}: {{ value }}</p>
-    {% endfor %}
-
-    {% for tema, subtemas in temas.items %}
-        {% with forloop.counter as tema_counter %}
-            <div class="tema">
-                <div class="titulo" onclick="toggle(this)">
-                    <span>{{ tema_counter }}. {{ tema.nome }} </span>
-                    <span style="float:right" id="sinal">+</span>
-                </div>
-                <div class="bloco">
-                    <form action="" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-
-                        {% for subtema, perguntas in subtemas.items %}
-                            {% with forloop.counter as subtema_counter %}
-                                <div id={{ tema_counter }}:{{ subtema.nome|slugify }} class="perto">
-                                    <h3>{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}
-                                        {% if subtema.resposta_duplicavel %}
-                                            <input type="hidden" value="{{ tema.id }}" name="temaId">
-                                            <button type="button" class="butao_adiciona"
-                                                    onclick="adicionarValorSubtema()">+
-                                            </button>
-
-                                        {% endif %}
-                                    </h3>
-                                    <table>
-                                        {% for pergunta, resposta in perguntas.items %}
-                                            <tr id="{{ tema_counter }}.{{ subtema_counter }}:{{ pergunta.texto|slugify }}">
-                                                <td id="pergunta">
-                                                    <input type="hidden" name="pergunta" value="{{ pergunta.id }}">
-                                                    {{ pergunta.texto }}
-                                                </td>
-                                                <td id="resposta">
-                                                    <div id="boxResposta">
-                                                        <div>
-                                                            {{ resposta.as_p }}
-                                                        </div>
-                                                        {% if pergunta.unidade %}
-                                                            <div class="unidade">
-                                                                {% if "^" in pergunta.unidade.unidade %}
-                                                                    {% with pergunta.unidade.unidade|split:"|" as toda %}
-                                                                        {% for cada in toda %}
-                                                                            {% if "^" in cada %}
-                                                                                {% with cada|split:"^" as parts %}
-                                                                                    {{ parts|first }}
-                                                                                    <sup>{{ parts|last }}</sup>
-                                                                                {% endwith %}
-                                                                            {% else %}
-                                                                                {{ cada }}
-                                                                            {% endif %}
-                                                                            {% if toda|length > 1 %}
-                                                                                {% if forloop.first %}|{% endif %}
-                                                                            {% endif %}
-                                                                        {% endfor %}
-                                                                    {% endwith %}
-                                                                {% else %}
-                                                                    {{ pergunta.unidade }}
-                                                                {% endif %}
-                                                            </div>
-                                                        {% endif %}
-                                                        {% if pergunta.resposta_duplicavel %}
+                                            {% endif %}
+                                        </h3>
+                                        <table>
+                                            {% for pergunta, resposta in perguntas.items %}
+                                                <tr id="{{ tema_counter }}.{{ subtema_counter }}:{{ pergunta.texto|slugify }}">
+                                                    <td id="pergunta">
+                                                        <input type="hidden" name="pergunta" value="{{ pergunta.id }}">
+                                                        {{ pergunta.texto }}
+                                                    </td>
+                                                    <td id="resposta">
+                                                        <div id="boxResposta">
                                                             <div>
-                                                                <button type="button" class="butao_adiciona"
-                                                                        id="butao_adiciona"
-                                                                        onclick="adicionarValorPergunta()">+
-                                                                </button>
+                                                                {{ resposta.as_p }}
                                                             </div>
-                                                        {% else %}
-                                                            <div style="display: none;"></div>
-                                                        {% endif %}
-                                                    </div>
-                                                    <div id='{{ pergunta.texto|slugify }}'></div>
+                                                            {% if pergunta.unidade %}
+                                                                <div class="unidade">
+                                                                    {% if "^" in pergunta.unidade.unidade %}
+                                                                        {% with pergunta.unidade.unidade|split:"|" as toda %}
+                                                                            {% for cada in toda %}
+                                                                                {% if "^" in cada %}
+                                                                                    {% with cada|split:"^" as parts %}
+                                                                                        {{ parts|first }}
+                                                                                        <sup>{{ parts|last }}</sup>
+                                                                                    {% endwith %}
+                                                                                {% else %}
+                                                                                    {{ cada }}
+                                                                                {% endif %}
+                                                                                {% if toda|length > 1 %}
+                                                                                    {% if forloop.first %}|{% endif %}
+                                                                                {% endif %}
+                                                                            {% endfor %}
+                                                                        {% endwith %}
+                                                                    {% else %}
+                                                                        {{ pergunta.unidade }}
+                                                                    {% endif %}
+                                                                </div>
+                                                            {% endif %}
+                                                            {% if pergunta.resposta_duplicavel %}
+                                                                <div>
+                                                                    <button type="button" class="butao_adiciona"
+                                                                            id="butao_adiciona"
+                                                                            onclick="adicionarValorPergunta()">+
+                                                                    </button>
+                                                                </div>
+                                                            {% else %}
+                                                                <div style="display: none;"></div>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div id='{{ pergunta.texto|slugify }}'></div>
 
-                                                </td>
+                                                    </td>
 
-                                            </tr>
-                                        {% endfor %}
+                                                </tr>
+                                            {% endfor %}
 
 
-                                    </table>
-                                </div>
+                                        </table>
+                                    </div>
 
-                            {% endwith %}
-                        {% endfor %}
+                                {% endwith %}
+                            {% endfor %}
 
-                        <input type="submit" value="Gravar" name="submitButton" id="ButaoSubmeter">
+                            <input type="submit" value="Gravar" name="submitButton" id="ButaoSubmeter">
 
-                    </form>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        {% endwith %}
+            {% endwith %}
 
-    {% endfor %}
-
-
-</div>
+        {% endfor %}
 
 
-</body>
+    </div>
 
-</html>
+{% endblock %}
 

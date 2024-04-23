@@ -8,13 +8,6 @@ main {
     grid-column-gap: 20px
 }
 
-.hero {
-    display: grid;
-    grid-auto-columns: auto auto auto;
-    flex-direction: column;
-    align-items: center;
-}
-
 nav {
     background: whitesmoke;
     padding: 0 5%;
@@ -32,7 +25,18 @@ nav {
 }
 
 .elem1 {
-    justify-self: left;
+    display: flex;
+}
+
+.elem1 h2{
+    margin-right: 35px;
+}
+
+.elem1 h2 a i{
+    color: black;
+    border-radius: 50%;
+    padding: 10px;
+    background: lightgray;
 }
 
 .elem2 {
@@ -67,7 +71,7 @@ nav {
 }
 
 .profile {
-    background: whitesmoke;
+    background: white;
     padding: 20px;
     margin: 10px;
     border-radius: 10px;
@@ -76,10 +80,9 @@ nav {
 .user-info {
     display: flex;
     align-items: center;
-    margin-bottom: 5px;
 }
 
-.user-info  i{
+.user-info i{
     font-size: 25px;
     color: black;
     border-radius: 50%;
@@ -103,6 +106,7 @@ nav {
     align-items: center;
     text-decoration: none;
     color: #525252;
+
 }
 
 .sub-menu-link p{
@@ -132,56 +136,145 @@ nav {
     font-weight: 600;
 }
 
-.box p {
+
+/*AQUI FICA O CSS DO FORMULÁRIO*/
+
+
+.container {
+    max-width: 700px;
+    margin: 100px auto auto;
+}
+
+.cabecalho {
     text-align: center;
 }
 
-.box {
-    display: grid;
-    place-items: center;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.tema {
     border: 1px solid lightgrey;
+    margin: 10px;
     background: whitesmoke;
     padding: 5px 15px;
     border-radius: 10px;
-    width: 500px;
-    height: 250px;
-    margin: 30px auto;
 }
 
-.box p {
-    width: 400px;
+.titulo {
+    font-size: 1.5em;
+    font-weight: bold;
+    padding: 1ch 0;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
 }
 
-.box button {
-    padding: 12px 30px;
+details > ol {
+    background: grey;
+}
+
+.bloco {
+    display: none;
+    margin-left: 40px;
+    text-align: left;
+}
+
+table {
+    display: flex;
+    justify-content: center;
+}
+
+
+select {
+    width: 158px;
+}
+
+select option {
+    white-space: normal;
+}
+
+.pergunta {
+    width: 30ch;
+    padding: 12px 10px 20px;
+    text-align: right;
+}
+
+.pergunta * {
+    text-align: center;
+}
+
+.resposta {
+    vertical-align: top;
+}
+
+input, select {
+    max-width: 300px;
+    padding: 5px 10px;
+    margin: 5px 0;
+}
+
+.butao_adiciona, .butao_remove {
+    padding: 5px 10px;
+    margin-left: 5px;
     background: orange;
     border-radius: 5px;
     border: 0;
     transition: background-color 0.3s ease;
-    margin: auto;
 }
 
-.imagem-logotipo {
-    width: 100%;
-    text-align: center;
-    margin-top: 130px;
+input[type="submit"] {
 
-}
-
-.imagem-logotipo img {
-    border: 1px solid lightgrey;
-    background: whitesmoke;
-    padding: 5px 15px;
-    border-radius: 10px;
     display: block;
     margin-left: auto;
-    margin-right: auto;
-    width: 400px;
-    top: 10%;
+    background: orange;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border: 0;
+    transition: background-color 0.3s ease;
 }
+
+input[type="submit"]:hover {
+    background-color: #ff7f00;
+}
+
+
+h3 button {
+    background-color: orange;
+    color: black;
+    font-weight: bold;
+}
+
+.orange-background:hover {
+
+    @media (max-width: 800px) {
+        .pergunta {
+            width: 20ch;
+        }
+
+        .bloco {
+            margin-left: 0;
+            margin-bottom: 30px;
+        }
+
+    }
+
+
+}
+
+.ar-condicionado-com-potencia-media-de {
+    display: none;
+}
+
+#boxResposta, #boxRespostaNova {
+    display: flex;
+    align-items: center;
+}
+
+#boxResposta > div, #boxRespostaNova > div {
+    margin-left: 10px;
+}
+
+
+/**/
+
 
 
 

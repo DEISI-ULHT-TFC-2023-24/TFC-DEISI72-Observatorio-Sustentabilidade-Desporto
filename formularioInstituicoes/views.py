@@ -243,6 +243,10 @@ def index_view(request):
     return render(request, 'index.html')
 
 
+def navigator_view(request):
+    return render(request, 'navigator.html')
+
+
 def respostas_view(request):
     return render(request, 'respostas.html')
 
