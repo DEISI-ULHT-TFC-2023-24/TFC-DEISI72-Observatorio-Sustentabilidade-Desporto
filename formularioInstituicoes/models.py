@@ -87,7 +87,7 @@ class Avaliacao(models.Model):
     ano = models.IntegerField()
 
     def __str__(self):
-        return f"{self.instalacao}: {self.questionario}"
+        return f"{self.instalacao}: {self.questionario}: {self.ano}"
 
 
 class Opcao(models.Model):

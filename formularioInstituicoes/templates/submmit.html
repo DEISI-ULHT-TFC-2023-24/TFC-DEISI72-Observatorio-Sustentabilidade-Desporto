@@ -1,18 +1,13 @@
 {% extends 'navigator.html' %}
 
 {% block titulo %}
-    <h1>Avaliação desportiva</h1>
+    <h1>Submissão</h1>
 {% endblock %}
 
 {% block content %}
-
     <div class="container">
+        {% for tema, subtemas in perguntas_respostas_submmit.items %}
 
-{#        {% for key, value in respostas.items %}#}
-{#            <p>{{ key }}: {{ value }}</p>#}
-{#        {% endfor %}#}
-
-        {% for tema, subtemas in perguntas_form.items %}
             {% with forloop.counter as tema_counter %}
                 <div class="tema">
                     <div class="titulo" onclick="toggle(this)">
@@ -27,13 +22,7 @@
                                 {% with forloop.counter as subtema_counter %}
                                     <div id={{ tema_counter }}:{{ subtema.nome|slugify }} class="perto">
                                         <h3>{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}
-                                            {% if subtema.resposta_duplicavel %}
-                                                <input type="hidden" value="{{ tema.id }}" name="temaId">
-                                                <button type="button" class="butao_adiciona"
-                                                        onclick="adicionarValorSubtema()">+
-                                                </button>
 
-                                            {% endif %}
                                         </h3>
                                         <table>
                                             {% for pergunta, resposta in perguntas.items %}
@@ -70,16 +59,7 @@
                                                                     {% endif %}
                                                                 </div>
                                                             {% endif %}
-                                                            {% if pergunta.resposta_duplicavel %}
-                                                                <div>
-                                                                    <button type="button" class="butao_adiciona"
-                                                                            id="butao_adiciona"
-                                                                            onclick="adicionarValorPergunta()">+
-                                                                    </button>
-                                                                </div>
-                                                            {% else %}
-                                                                <div style="display: none;"></div>
-                                                            {% endif %}
+
                                                         </div>
                                                         <div id='{{ pergunta.texto|slugify }}'></div>
 
@@ -95,17 +75,19 @@
                                 {% endwith %}
                             {% endfor %}
 
-                            <input type="submit" value="Gravar" name="saveButton" id="ButaoGravar">
+
 
                         </form>
+
                     </div>
+
                 </div>
+
             {% endwith %}
 
         {% endfor %}
-
-
+    <input type="submit" value="Submeter" name="submitButton" id="ButaoSubmeter">
     </div>
 
-{% endblock %}
 
+{% endblock %}

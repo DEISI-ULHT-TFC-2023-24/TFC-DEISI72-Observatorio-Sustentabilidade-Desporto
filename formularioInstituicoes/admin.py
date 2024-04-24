@@ -51,7 +51,7 @@ admin.site.register(Opcao, OpcaoAdmin)
 
 
 class RespostaNumericaAdmin(admin.ModelAdmin):
-    list_display = ('numero', 'pergunta')
+    list_display = ('numero', 'pergunta', 'avaliacao')
 
 
 admin.site.register(RespostaNumerica, RespostaNumericaAdmin)

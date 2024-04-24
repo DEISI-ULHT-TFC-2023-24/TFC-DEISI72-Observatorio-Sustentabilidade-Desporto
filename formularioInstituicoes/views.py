@@ -1,3 +1,4 @@
+import copy
 import os
 from pathlib import Path
 
@@ -11,10 +12,10 @@ from django.urls import reverse
 from .models import *
 from .forms import *
 
-temas = {}
+perguntas_form = {}
 
 
-def guarda_perguntas():
+def guarda_perguntas_form(perguntas_form_object):
     questionario = Questionario.objects.get(nome="Questionário Instalações Desportivas")
 
     for tema in questionario.temas.all():
@@ -118,7 +119,7 @@ def guarda_perguntas():
 
             subtemas[subtema] = formulario
 
-        temas[tema] = subtemas
+        perguntas_form_object[tema] = subtemas
 
 
 def post(request):
@@ -159,9 +160,10 @@ def post(request):
                             formdata = FormMes(prefix=pergunta.id)
                             perguntas[pergunta] = formdata
 
-                    temas.get(Tema.objects.get(id=tema_id))[subtema_adicionar] = perguntas
+                    perguntas_form.get(Tema.objects.get(id=tema_id))[subtema_adicionar] = perguntas
 
-                    print(temas.get(Tema.objects.get(id=tema_id)).get(SubTema.objects.get(id=subtema_id)).keys())
+                    print(
+                        perguntas_form.get(Tema.objects.get(id=tema_id)).get(SubTema.objects.get(id=subtema_id)).keys())
 
                 else:
                     pergunta_tiporesposta = chave.split('-')
@@ -224,16 +226,18 @@ def post(request):
                         ficheiro=resposta_recebida
                     )
                     file.save()
-        return HttpResponseRedirect(request.path_info)
 
 
 def formulario_view(request):
-    guarda_perguntas()
+    guarda_perguntas_form(perguntas_form)
 
     post(request)
 
+    if request.method == "POST" or request.method == "FILES":
+        return HttpResponseRedirect(request.path_info)
+
     context = {
-        'temas': temas,
+        'perguntas_form': perguntas_form,
     }
 
     return render(request, 'formulario.html', context)
@@ -243,12 +247,102 @@ def index_view(request):
     return render(request, 'index.html')
 
 
-def navigator_view(request):
-    return render(request, 'navigator.html')
+perguntas_respostas_submmit = {}
+
+
+def guarda_respostas_submmit(nome_instalacao, ano_questionario, perguntas_submmit_object):
+    instalacao = Instalacao.objects.get(nome=nome_instalacao)
+
+    avaliacoes = Avaliacao.objects.filter(instalacao__nome=instalacao.nome)
+
+    avaliacao = avaliacoes.get(ano=ano_questionario)
+
+    questionario = avaliacao.questionario
+
+    for tema in questionario.temas.all():
+
+        subtemas = {}
+
+        subtemas_todos = SubTema.objects.filter(tema_id=tema.id).order_by('nome')
+
+        if subtemas_todos.filter(nome='Valores relevantes').exists() & subtemas_todos.filter(nome='Outro').exists():
+            excluindo_valores = subtemas_todos.exclude(nome='Valores relevantes')
+            subtema_valores = subtemas_todos.get(nome='Valores relevantes')
+
+            valores_escluidos = excluindo_valores.exclude(nome='Outro')
+            subtema_outro = subtemas_todos.get(nome='Outro')
+
+            subtemas_todos = [subtema_valores] + list(valores_escluidos) + [subtema_outro]
+
+        elif subtemas_todos.filter(nome='Outro').exists():
+            valores_escluidos = subtemas_todos.exclude(nome='Outro')
+            subtema_outro = subtemas_todos.get(nome='Outro')
+
+            subtemas_todos = list(valores_escluidos) + [subtema_outro]
+
+        elif subtemas_todos.filter(nome='Outros').exists():
+            valores_escluidos = subtemas_todos.exclude(nome='Outros')
+            subtema_outro = subtemas_todos.get(nome='Outros')
+
+            subtemas_todos = list(valores_escluidos) + [subtema_outro]
+
+        for subtema in subtemas_todos:
+            resposta = {}
+
+            perguntas_todos = Pergunta.objects.filter(subtema_id=subtema.id).order_by('texto')
+
+            if perguntas_todos.filter(tipo='ESCOLHA_MULTIPLA_VARIAS').exists():
+                valores_escluidos = perguntas_todos.exclude(tipo='ESCOLHA_MULTIPLA_VARIAS')
+                pergunta_escluida = perguntas_todos.get(tipo='ESCOLHA_MULTIPLA_VARIAS')
+
+                perguntas_todos = [pergunta_escluida] + list(valores_escluidos)
+
+            elif perguntas_todos.filter(texto='Com potência de').exists():
+                valores_escluidos = perguntas_todos.exclude(texto='Com potência de')
+                pergunta_escluida = perguntas_todos.get(texto='Com potência de')
+
+                perguntas_todos = list(valores_escluidos) + [pergunta_escluida]
+
+            elif perguntas_todos.filter(texto='Com valor de').exists():
+                valores_escluidos = perguntas_todos.exclude(texto='Com valor de')
+                pergunta_escluida = perguntas_todos.get(texto='Com valor de')
+
+                perguntas_todos = list(valores_escluidos) + [pergunta_escluida]
+
+            elif perguntas_todos.filter(texto='Nome').exists():
+                valores_escluidos = perguntas_todos.exclude(texto='Nome')
+                pergunta_escluida = perguntas_todos.get(texto='Nome')
+
+                perguntas_todos = [pergunta_escluida] + list(valores_escluidos)
+
+            for pergunta in perguntas_todos:
+                if pergunta.tipo == 'NUMERO_INTEIRO':
+
+                    respostas_perguntas = RespostaNumerica.objects.filter(pergunta__texto=pergunta.texto)
+                    resposta_correta = respostas_perguntas.filter(avaliacao__instalacao=instalacao)
+                    print(resposta_correta)
+
+                elif pergunta.tipo == 'TEXTO_LIVRE' or pergunta.tipo == 'ESCOLHA_MULTIPLA_UNICA' or pergunta.tipo == 'ESCOLHA_MULTIPLA_VARIAS' or pergunta.tipo == 'MES':
+                    respostas_perguntas = RespostaTextual.objects.filter(pergunta__texto=pergunta.texto)
+                    resposta_correta = respostas_perguntas.filter(avaliacao__instalacao=instalacao)
+                    print(resposta_correta)
+
+                elif pergunta.tipo == 'FICHEIRO':
+                    print("\n")
+
+            subtemas[subtema] = resposta
+
+        perguntas_submmit_object[tema] = subtemas
 
 
 def respostas_view(request):
-    return render(request, 'respostas.html')
+    guarda_respostas_submmit('Instalacão Teste', 2024, perguntas_respostas_submmit)
+
+    context = {
+        'perguntas_respostas_submmit': perguntas_respostas_submmit,
+    }
+
+    return render(request, 'submmit.html', context)
 
 
 @register.filter(name='split')
