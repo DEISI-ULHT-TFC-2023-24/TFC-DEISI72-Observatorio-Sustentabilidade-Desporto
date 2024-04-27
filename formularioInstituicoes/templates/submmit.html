@@ -25,41 +25,56 @@
 
                                         </h3>
                                         <table>
-                                            {% for pergunta, resposta in perguntas.items %}
-                                                <tr id="{{ tema_counter }}.{{ subtema_counter }}:{{ pergunta.texto|slugify }}">
+                                            {% for pergunta, respostas in perguntas.items %}
+                                                <tr id="{{ tema_counter }}.{{ subtema_counter }}:{{ pergunta.texto|slugify }}"
+                                                    class="items">
                                                     <td id="pergunta">
                                                         <input type="hidden" name="pergunta" value="{{ pergunta.id }}">
-                                                        {{ pergunta.texto }}
+                                                        {{ pergunta.texto }}:
                                                     </td>
                                                     <td id="resposta">
                                                         <div id="boxResposta">
                                                             <div>
-                                                                {{ resposta.as_p }}
-                                                            </div>
-                                                            {% if pergunta.unidade %}
-                                                                <div class="unidade">
-                                                                    {% if "^" in pergunta.unidade.unidade %}
-                                                                        {% with pergunta.unidade.unidade|split:"|" as toda %}
-                                                                            {% for cada in toda %}
-                                                                                {% if "^" in cada %}
-                                                                                    {% with cada|split:"^" as parts %}
-                                                                                        {{ parts|first }}
-                                                                                        <sup>{{ parts|last }}</sup>
-                                                                                    {% endwith %}
-                                                                                {% else %}
-                                                                                    {{ cada }}
-                                                                                {% endif %}
-                                                                                {% if toda|length > 1 %}
-                                                                                    {% if forloop.first %}|{% endif %}
-                                                                                {% endif %}
-                                                                            {% endfor %}
-                                                                        {% endwith %}
-                                                                    {% else %}
-                                                                        {{ pergunta.unidade }}
-                                                                    {% endif %}
-                                                                </div>
-                                                            {% endif %}
+                                                                {% if respostas %}
+                                                                    {% for resposta in respostas %}
+                                                                        {{ resposta }}
+                                                                        {% if pergunta.unidade is false %}
+                                                                            <a href="" class="remove_resposta" style="text-decoration: none;">🗑️</a><br>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                {% else %}
+                                                                    <p>Não respondeu</p>
+                                                                {% endif %}
 
+                                                            </div>
+                                                            {% if respostas %}
+                                                                {% if pergunta.unidade %}
+                                                                    <div class="unidade">
+                                                                        {% if "^" in pergunta.unidade.unidade %}
+                                                                            {% with pergunta.unidade.unidade|split:"|" as toda %}
+                                                                                {% for cada in toda %}
+                                                                                    {% if "^" in cada %}
+                                                                                        {% with cada|split:"^" as parts %}
+                                                                                            {{ parts|first }}
+                                                                                            <sup>{{ parts|last }}</sup>
+                                                                                            <a href="" class="remove_resposta" style="text-decoration: none;">🗑️</a>
+                                                                                        {% endwith %}
+                                                                                    {% else %}
+                                                                                        {{ cada }}
+
+                                                                                    {% endif %}
+                                                                                    {% if toda|length > 1 %}
+                                                                                        {% if forloop.first %}|
+                                                                                        {% endif %}
+                                                                                    {% endif %}
+                                                                                {% endfor %}
+                                                                            {% endwith %}
+                                                                        {% else %}
+                                                                            {{ pergunta.unidade }} <a href="" class="remove_resposta" style="text-decoration: none;">🗑️</a>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                {% endif %}
+                                                            {% endif %}
                                                         </div>
                                                         <div id='{{ pergunta.texto|slugify }}'></div>
 
@@ -76,7 +91,6 @@
                             {% endfor %}
 
 
-
                         </form>
 
                     </div>
@@ -86,7 +100,7 @@
             {% endwith %}
 
         {% endfor %}
-    <input type="submit" value="Submeter" name="submitButton" id="ButaoSubmeter">
+        <input type="submit" value="Submeter" name="submitButton" id="ButaoSubmeter">
     </div>
 
 

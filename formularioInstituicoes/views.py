@@ -173,6 +173,11 @@ def post(request):
 
                         if valor != '':
                             if tiporesposta == "numero":
+                                if Pergunta.objects.get(id=id_pergunta_retirado).resposta_permite_repetidos is False:
+                                    verificaResposta1 = RespostaNumerica.objects.filter(
+                                        avaliacao=Avaliacao.objects.get(id=3)).filter(pergunta_id=id_pergunta_retirado) # só com o login feito é que fica bom
+                                    verificaResposta1.delete() # ver se ele remove apenas o valor da conta associada, e não de todas as contas
+
                                 resposta_num = RespostaNumerica(
                                     avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
                                     pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
@@ -181,6 +186,13 @@ def post(request):
                                 resposta_num.save()
 
                             elif tiporesposta == "texto" or tiporesposta == "month":
+
+                                if Pergunta.objects.get(id=id_pergunta_retirado).resposta_permite_repetidos is False:
+                                    verificaResposta1 = RespostaTextual.objects.filter(
+                                        avaliacao=Avaliacao.objects.get(id=3)).filter(
+                                        pergunta_id=id_pergunta_retirado)  # só com o login feito é que fica bom
+                                    verificaResposta1.delete()  # ver se ele remove apenas o valor da conta associada, e não de todas as contas
+
                                 resposta_txt = RespostaTextual(
                                     avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
                                     pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
@@ -189,6 +201,13 @@ def post(request):
                                 resposta_txt.save()
 
                             elif tiporesposta == "opcao":
+
+                                verificaResposta1 = RespostaTextual.objects.filter(
+                                    avaliacao=Avaliacao.objects.get(id=3)).filter(
+                                    pergunta_id=id_pergunta_retirado)  # só com o login feito é que fica bom
+                                verificaResposta1.delete()  # ver se ele remove apenas o valor da conta associada, e não de todas as contas
+
+
                                 resposta_txt = RespostaTextual(
                                     avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
                                     pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
@@ -199,9 +218,6 @@ def post(request):
 
                             elif tiporesposta == "opcoes":
 
-                                print(int(valor))
-                                print(Pergunta.objects.get(id=int(id_pergunta_retirado)).opcoes.order_by('nome'))
-
                                 resposta_txt = RespostaTextual(
                                     avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
                                     pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
@@ -209,6 +225,19 @@ def post(request):
                                         int(valor)],
                                 )
                                 resposta_txt.save()
+
+                                verificaResposta1 = RespostaTextual.objects.filter(
+                                    avaliacao=Avaliacao.objects.get(id=3)).filter(
+                                    pergunta_id=id_pergunta_retirado).values('texto').distinct()  # só com o login feito é que fica bom
+                                 # ver se ele remove apenas o valor da conta associada, e não de todas as contas
+
+                                for resposta in verificaResposta1:
+                                    duplicados = RespostaTextual.objects.filter(texto=resposta['texto'])
+                                    duplicados.exclude(pk=duplicados.first().pk).delete()
+
+
+
+
 
         print(request.FILES)
         files = request.FILES
@@ -287,7 +316,7 @@ def guarda_respostas_submmit(nome_instalacao, ano_questionario, perguntas_submmi
             subtemas_todos = list(valores_escluidos) + [subtema_outro]
 
         for subtema in subtemas_todos:
-            resposta = {}
+            respostas = {}
 
             perguntas_todos = Pergunta.objects.filter(subtema_id=subtema.id).order_by('texto')
 
@@ -318,19 +347,26 @@ def guarda_respostas_submmit(nome_instalacao, ano_questionario, perguntas_submmi
             for pergunta in perguntas_todos:
                 if pergunta.tipo == 'NUMERO_INTEIRO':
 
-                    respostas_perguntas = RespostaNumerica.objects.filter(pergunta__texto=pergunta.texto)
-                    resposta_correta = respostas_perguntas.filter(avaliacao__instalacao=instalacao)
-                    print(resposta_correta)
+                    respostas_perguntas = RespostaNumerica.objects.filter(pergunta_id=pergunta.id)
+                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao=instalacao)
+
+                    respostas[pergunta] = []
+                    for resposta_dada in respostas_dadas:
+                        respostas[pergunta].append(resposta_dada.numero)
 
                 elif pergunta.tipo == 'TEXTO_LIVRE' or pergunta.tipo == 'ESCOLHA_MULTIPLA_UNICA' or pergunta.tipo == 'ESCOLHA_MULTIPLA_VARIAS' or pergunta.tipo == 'MES':
-                    respostas_perguntas = RespostaTextual.objects.filter(pergunta__texto=pergunta.texto)
-                    resposta_correta = respostas_perguntas.filter(avaliacao__instalacao=instalacao)
-                    print(resposta_correta)
+                    respostas_perguntas = RespostaTextual.objects.filter(pergunta_id=pergunta.id)
+                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao=instalacao)
+
+                    respostas[pergunta] = []
+                    for resposta_dada in respostas_dadas:
+                        respostas[pergunta].append(resposta_dada.texto)
+
 
                 elif pergunta.tipo == 'FICHEIRO':
-                    print("\n")
+                    print("File")
 
-            subtemas[subtema] = resposta
+            subtemas[subtema] = respostas
 
         perguntas_submmit_object[tema] = subtemas
 
