@@ -73,4 +73,3 @@ admin.site.register(Avaliacao)
 admin.site.register(Entidade)
 admin.site.register(Ficheiro)
 
-admin.site.register(Utilizador)

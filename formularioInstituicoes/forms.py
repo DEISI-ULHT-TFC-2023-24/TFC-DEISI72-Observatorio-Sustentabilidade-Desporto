@@ -6,7 +6,6 @@ from django.forms import ModelForm
 from django import forms
 from .models import *
 
-
 class FormNumerosInteiros(ModelForm):
     class Meta:
         model = RespostaNumerica
@@ -79,8 +78,8 @@ class FormMes(ModelForm):
         labels = {'month': ''}
 
 
-class FormUtilizador(ModelForm):
+class FormEntidade(ModelForm):
     class Meta:
-        model = Utilizador
-        fields = []
-        labels = {}
+        model = Entidade
+        fields = ['nome']
+        labels = {'nome' : "Nome da Entidade"}

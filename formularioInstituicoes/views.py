@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 
 from django.contrib.auth import authenticate, logout, login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -14,6 +15,11 @@ from .forms import *
 
 perguntas_form = {}
 
+def getEntidade(request) -> Entidade:
+    if Entidade.objects.filter(user__id=request.user.id).first():
+        return Entidade.objects.filter(user__id=request.user.id).first()
+    else:
+        return None
 
 def guarda_perguntas_form(perguntas_form_object):
     questionario = Questionario.objects.get(nome="Questionário Instalações Desportivas")
@@ -257,6 +263,7 @@ def post(request):
                     file.save()
 
 
+@login_required
 def formulario_view(request):
     guarda_perguntas_form(perguntas_form)
 
@@ -277,7 +284,6 @@ def index_view(request):
 
 
 perguntas_respostas_submmit = {}
-
 
 def guarda_respostas_submmit(nome_instalacao, ano_questionario, perguntas_submmit_object):
     instalacao = Instalacao.objects.get(nome=nome_instalacao)
@@ -371,6 +377,7 @@ def guarda_respostas_submmit(nome_instalacao, ano_questionario, perguntas_submmi
         perguntas_submmit_object[tema] = subtemas
 
 
+@login_required
 def respostas_view(request):
     guarda_respostas_submmit('Instalacão Teste', 2024, perguntas_respostas_submmit)
 
@@ -386,6 +393,7 @@ def split(value, key):
     return value.split(key)
 
 
+@login_required
 def dashboard_view(request):
     consumosAnuaisElectricidade = getRespostaNumericaOr0(11)
     consumosAnuaisGasNatural = getRespostaNumericaOr0(21)
@@ -515,6 +523,7 @@ def divByZero(n, d):
 
 
 def login_view(request):
+    print(getEntidade(request))
     if request.method == 'POST':
         username = request.POST["username"]
         password = request.POST["password"]
@@ -523,26 +532,27 @@ def login_view(request):
         if user is not None:
             login(request, user)
 
-            return redirect("/")
+            return redirect("/index")
 
     return render(request, 'login.html', {"authForm": AuthenticationForm()})
 
 
+@login_required
 def logout_view(request):
     logout(request)
-    return redirect("/")
+    return redirect("/index")
 
 
 def sign_up_view(request):
-    formUtilizador = FormUtilizador(request.POST or None)
+    formEntidade = FormEntidade(request.POST or None)
     formUser = UserCreationForm(request.POST or None)
 
     if request.method == "POST":
         user = formUser.save(commit=True)
 
-        utilizador = formUtilizador.save(commit=False)
+        utilizador = formEntidade.save(commit=False)
 
         utilizador.user = user
         utilizador.save()
 
-    return render(request, 'signup.html', {"formUser": formUser, "formUtilizador": formUtilizador})
+    return render(request, 'signup.html', {"formUser": formUser, "formUtilizador": formEntidade})

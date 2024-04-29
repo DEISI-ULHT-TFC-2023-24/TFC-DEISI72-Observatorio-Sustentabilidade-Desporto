@@ -8,8 +8,8 @@
 <body>
 <form method="post">
     {% csrf_token %}
-    {{ formUser.as_p }}
     {{ formUtilizador.as_p }}
+    {{ formUser.as_p }}
     <input type="submit" value="Submit">
 </form>
 

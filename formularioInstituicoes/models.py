@@ -60,6 +60,7 @@ class Questionario(models.Model):
 
 
 class Entidade(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     nome = models.CharField(max_length=100)
 
     def __str__(self):
@@ -124,13 +125,3 @@ class Ficheiro(models.Model):
 
     def __str__(self):
         return f"{self.ficheiro.name}"
-
-
-class Utilizador(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    entidade = models.OneToOneField(Entidade, on_delete=models.CASCADE, blank=True, null=True)
-    aprovado = models.BooleanField(default=False)
-
-
-    def __str__(self):
-        return f"{self.user.username}"
