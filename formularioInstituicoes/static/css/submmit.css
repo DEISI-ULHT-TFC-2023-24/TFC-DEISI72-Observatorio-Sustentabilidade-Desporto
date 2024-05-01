@@ -1,7 +1,6 @@
-
 .container {
     max-width: 700px;
-    margin: auto;
+    margin: 100px auto auto;
 }
 
 .cabecalho {
@@ -131,5 +130,6 @@ h3 button {
     margin-left: 10px;
 }
 
-
-
+.items td{
+    padding: 7px;
+}

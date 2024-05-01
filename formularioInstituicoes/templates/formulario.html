@@ -1,10 +1,14 @@
 {% extends 'navigator.html' %}
+{% load static %}
 
 {% block titulo %}
     <h1>Avaliação desportiva</h1>
 {% endblock %}
 
 {% block content %}
+
+    <link rel="stylesheet" href="{% static 'css/formulario.css' %}">
+    <script src="{% static 'js/formulario.js' %}"></script>
 
     <div class="container">
 
@@ -25,7 +29,7 @@
 
                             {% for subtema, perguntas in subtemas.items %}
                                 {% with forloop.counter as subtema_counter %}
-                                    <div id={{ tema_counter }}:{{ subtema.nome|slugify }} class="perto">
+                                    <div id={{ tema_counter }}:{{ subtema.nome|slugify }} class="bloco_subtema">
                                         <h3>{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}
                                             {% if subtema.resposta_duplicavel %}
                                                 <input type="hidden" value="{{ tema.id }}" name="temaId">

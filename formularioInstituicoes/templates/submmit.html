@@ -1,10 +1,16 @@
 {% extends 'navigator.html' %}
+{% load static %}
 
 {% block titulo %}
     <h1>Submissão</h1>
 {% endblock %}
 
+
 {% block content %}
+
+    <link rel="stylesheet" href="{% static 'css/submmit.css' %}">
+    <script src="{% static 'js/submmit.js' %}"></script>
+
     <div class="container">
         {% for tema, subtemas in perguntas_respostas_submmit.items %}
 
@@ -20,8 +26,8 @@
 
                             {% for subtema, perguntas in subtemas.items %}
                                 {% with forloop.counter as subtema_counter %}
-                                    <div id={{ tema_counter }}:{{ subtema.nome|slugify }} class="perto">
-                                        <h3>{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}
+                                    <div id={{ tema_counter }}:{{ subtema.nome|slugify }} class="bloco_subtema">
+                                        <h3 id="{{ subtema.nome|slugify }}">{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}
 
                                         </h3>
                                         <table>
@@ -37,13 +43,20 @@
                                                             <div>
                                                                 {% if respostas %}
                                                                     {% for resposta in respostas %}
-                                                                        {{ resposta }}
-                                                                        {% if pergunta.unidade is false %}
-                                                                            <a href="" class="remove_resposta" style="text-decoration: none;">🗑️</a><br>
-                                                                        {% endif %}
+                                                                        <div id="resposta_dada">
+                                                                            {{ resposta }}
+                                                                            {% if pergunta.unidade is false %}
+                                                                                <a href="" class="remove_resposta"
+                                                                                   style="text-decoration: none;">🗑️</a>
+                                                                                <br>
+
+                                                                            {% endif %}
+                                                                        </div>
                                                                     {% endfor %}
                                                                 {% else %}
-                                                                    <p>Não respondeu</p>
+                                                                    <div id="resposta_dada">
+                                                                        Não respondeu
+                                                                    </div>
                                                                 {% endif %}
 
                                                             </div>
@@ -57,7 +70,9 @@
                                                                                         {% with cada|split:"^" as parts %}
                                                                                             {{ parts|first }}
                                                                                             <sup>{{ parts|last }}</sup>
-                                                                                            <a href="" class="remove_resposta" style="text-decoration: none;">🗑️</a>
+                                                                                            <a href=""
+                                                                                               class="remove_resposta"
+                                                                                               style="text-decoration: none;">🗑️</a>
                                                                                         {% endwith %}
                                                                                     {% else %}
                                                                                         {{ cada }}
@@ -70,7 +85,9 @@
                                                                                 {% endfor %}
                                                                             {% endwith %}
                                                                         {% else %}
-                                                                            {{ pergunta.unidade }} <a href="" class="remove_resposta" style="text-decoration: none;">🗑️</a>
+                                                                            {{ pergunta.unidade }}
+                                                                            <a href="" class="remove_resposta"
+                                                                               style="text-decoration: none;">🗑️</a>
                                                                         {% endif %}
                                                                     </div>
                                                                 {% endif %}

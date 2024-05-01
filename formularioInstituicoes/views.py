@@ -15,11 +15,13 @@ from .forms import *
 
 perguntas_form = {}
 
+
 def getEntidade(request) -> Entidade:
     if Entidade.objects.filter(user__id=request.user.id).first():
         return Entidade.objects.filter(user__id=request.user.id).first()
     else:
         return None
+
 
 def guarda_perguntas_form(perguntas_form_object):
     questionario = Questionario.objects.get(nome="Questionário Instalações Desportivas")
@@ -130,7 +132,7 @@ def guarda_perguntas_form(perguntas_form_object):
 
 def post(request):
     if request.method == "POST":
-        print(request.POST)
+        # print(request.POST)
 
         post = request.POST
         post_dicionario = dict(post)
@@ -168,8 +170,8 @@ def post(request):
 
                     perguntas_form.get(Tema.objects.get(id=tema_id))[subtema_adicionar] = perguntas
 
-                    print(
-                        perguntas_form.get(Tema.objects.get(id=tema_id)).get(SubTema.objects.get(id=subtema_id)).keys())
+                    # print(
+                    #     perguntas_form.get(Tema.objects.get(id=tema_id)).get(SubTema.objects.get(id=subtema_id)).keys())
 
                 else:
                     pergunta_tiporesposta = chave.split('-')
@@ -181,8 +183,9 @@ def post(request):
                             if tiporesposta == "numero":
                                 if Pergunta.objects.get(id=id_pergunta_retirado).resposta_permite_repetidos is False:
                                     verificaResposta1 = RespostaNumerica.objects.filter(
-                                        avaliacao=Avaliacao.objects.get(id=3)).filter(pergunta_id=id_pergunta_retirado) # só com o login feito é que fica bom
-                                    verificaResposta1.delete() # ver se ele remove apenas o valor da conta associada, e não de todas as contas
+                                        avaliacao=Avaliacao.objects.get(id=3)).filter(
+                                        pergunta_id=id_pergunta_retirado)  # só com o login feito é que fica bom
+                                    verificaResposta1.delete()  # ver se ele remove apenas o valor da conta associada, e não de todas as contas
 
                                 resposta_num = RespostaNumerica(
                                     avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
@@ -213,7 +216,6 @@ def post(request):
                                     pergunta_id=id_pergunta_retirado)  # só com o login feito é que fica bom
                                 verificaResposta1.delete()  # ver se ele remove apenas o valor da conta associada, e não de todas as contas
 
-
                                 resposta_txt = RespostaTextual(
                                     avaliacao=Avaliacao.objects.get(id=3),  # só com o login feito é que fica bom
                                     pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
@@ -234,18 +236,15 @@ def post(request):
 
                                 verificaResposta1 = RespostaTextual.objects.filter(
                                     avaliacao=Avaliacao.objects.get(id=3)).filter(
-                                    pergunta_id=id_pergunta_retirado).values('texto').distinct()  # só com o login feito é que fica bom
-                                 # ver se ele remove apenas o valor da conta associada, e não de todas as contas
+                                    pergunta_id=id_pergunta_retirado).values(
+                                    'texto').distinct()  # só com o login feito é que fica bom
+                                # ver se ele remove apenas o valor da conta associada, e não de todas as contas
 
                                 for resposta in verificaResposta1:
                                     duplicados = RespostaTextual.objects.filter(texto=resposta['texto'])
                                     duplicados.exclude(pk=duplicados.first().pk).delete()
 
-
-
-
-
-        print(request.FILES)
+        # print(request.FILES)
         files = request.FILES
         for chave, resposta_recebida in files.items():
             pergunta_tiporesposta = chave.split('-')
@@ -254,7 +253,7 @@ def post(request):
                 tipofile = pergunta_tiporesposta[1]
 
                 if tipofile == "ficheiro":
-                    print(resposta_recebida)
+                    # print(resposta_recebida)
                     file = Ficheiro(
                         avaliacao=Avaliacao.objects.get(id=2),  # só com o login feito é que fica bom
                         pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
@@ -284,6 +283,7 @@ def index_view(request):
 
 
 perguntas_respostas_submmit = {}
+
 
 def guarda_respostas_submmit(nome_instalacao, ano_questionario, perguntas_submmit_object):
     instalacao = Instalacao.objects.get(nome=nome_instalacao)
@@ -370,7 +370,8 @@ def guarda_respostas_submmit(nome_instalacao, ano_questionario, perguntas_submmi
 
 
                 elif pergunta.tipo == 'FICHEIRO':
-                    print("File")
+                    break
+                    # print("File")
 
             subtemas[subtema] = respostas
 

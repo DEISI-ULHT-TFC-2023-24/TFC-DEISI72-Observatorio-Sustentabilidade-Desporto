@@ -1,18 +1,3 @@
-function toggle(element) {
-    document.querySelectorAll(".bloco").forEach(function (e) {
-        e.style.display = "none";
-    });
-    const bloco = element.nextElementSibling;
-    const sinal = element.querySelector("#sinal");
-    if (bloco.style.display === "none" || bloco.style.display === "") {
-        bloco.style.display = "block";
-        sinal.innerText = '-';
-    } else {
-        bloco.style.display = "none";
-        sinal.innerText = '+';
-    }
-}
-
 function slugify(texto) {
     const caracteresEspeciais = {
         á: 'a',
@@ -87,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const labelId = checkbox.id;
         const labelElement = document.querySelector(`label[for="${labelId}"]`);
         const labelText = slugify(labelElement.textContent);
-        const subtemaNumero = checkbox.closest('.perto').querySelector('h3').textContent.split('.')[0];
+        const subtemaNumero = checkbox.closest('.bloco_subtema').querySelector('h3').textContent.split('.')[0];
         const labelProcurar = `${subtemaNumero}:${labelText}`
 
         const elementoDiv = document.getElementById(labelProcurar);
@@ -105,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const labelId = checkbox.id;
         const labelElement = document.querySelector(`label[for="${labelId}"]`);
         const labelText = slugify(labelElement.textContent);
-        const subtemaNumero = checkbox.closest('.perto').querySelector('h3').textContent.split('.')[0];
+        const subtemaNumero = checkbox.closest('.bloco_subtema').querySelector('h3').textContent.split('.')[0];
         const labelProcurar = `${subtemaNumero}:${labelText}`
         const elementoDiv = document.getElementById(labelProcurar);
 
@@ -140,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const labelElement = document.querySelector(`label[for="${labelId}"]`);
         const labelText = slugify(labelElement.textContent);
 
-        const subtemaNumero = checkbox.closest('.perto').querySelector('h3').textContent.split(' ')[0];
+        const subtemaNumero = checkbox.closest('.bloco_subtema').querySelector('h3').textContent.split(' ')[0];
 
         const labelProcurar = `${subtemaNumero}:${labelText}-com-potencia-media-de`
 
