@@ -27,6 +27,7 @@ urlpatterns = [
     path('signup', views.sign_up_view),
     path('login', views.login_view),
     path('logout', views.logout_view),
+    path('post/', views.post_request),
     re_path(r'^download/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

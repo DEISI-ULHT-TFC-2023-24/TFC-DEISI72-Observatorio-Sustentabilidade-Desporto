@@ -152,13 +152,6 @@ window.onload = function () {
                     }
                 }
             })
-            console.log(perguntas)
         }
-
-
-
-
-
     }
-
 };

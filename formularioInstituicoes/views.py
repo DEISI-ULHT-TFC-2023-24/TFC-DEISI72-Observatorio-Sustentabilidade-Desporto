@@ -5,7 +5,7 @@ from pathlib import Path
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.template.defaulttags import register
 from django.urls import reverse
@@ -387,6 +387,12 @@ def respostas_view(request):
     }
 
     return render(request, 'submmit.html', context)
+
+
+@login_required
+def post_request(request):
+    print(request.POST)
+    return HttpResponse("POST request")
 
 
 @register.filter(name='split')

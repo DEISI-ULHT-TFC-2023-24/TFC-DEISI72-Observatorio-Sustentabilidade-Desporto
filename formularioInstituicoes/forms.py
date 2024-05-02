@@ -12,7 +12,10 @@ class FormNumerosInteiros(ModelForm):
         fields = ['numero']
         labels = {'numero': ''}
 
-        numero = forms.Textarea(attrs={'required': False})
+        numero = forms.NumberInput(attrs={
+            'required': False,
+            'min': 0,
+        })
 
 
 class FormTextoLivre(ModelForm):

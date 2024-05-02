@@ -133,3 +133,10 @@ h3 button {
 .items td{
     padding: 7px;
 }
+
+.botao_submmit {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    outline: none; /* Remove o contorno padrão do botão */
+}

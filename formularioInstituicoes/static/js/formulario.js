@@ -246,10 +246,3 @@ function adicionarValorSubtema() {
 
 }
 
-
-
-
-
-
-
-

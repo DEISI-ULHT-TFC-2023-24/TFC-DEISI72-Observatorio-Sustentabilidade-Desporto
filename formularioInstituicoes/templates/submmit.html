@@ -21,94 +21,104 @@
                         <span style="float:right" id="sinal">+</span>
                     </div>
                     <div class="bloco">
-                        <form action="" method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
+                        {% csrf_token %}
 
-                            {% for subtema, perguntas in subtemas.items %}
-                                {% with forloop.counter as subtema_counter %}
-                                    <div id={{ tema_counter }}:{{ subtema.nome|slugify }} class="bloco_subtema">
-                                        <h3 id="{{ subtema.nome|slugify }}">{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}
+                        {% for subtema, perguntas in subtemas.items %}
+                            {% with forloop.counter as subtema_counter %}
+                                <div id={{ tema_counter }}:{{ subtema.nome|slugify }} class="bloco_subtema">
+                                    <h3 id="{{ subtema.nome|slugify }}">{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}
 
-                                        </h3>
-                                        <table>
-                                            {% for pergunta, respostas in perguntas.items %}
-                                                <tr id="{{ tema_counter }}.{{ subtema_counter }}:{{ pergunta.texto|slugify }}"
-                                                    class="items">
-                                                    <td id="pergunta">
-                                                        <input type="hidden" name="pergunta" value="{{ pergunta.id }}">
-                                                        {{ pergunta.texto }}:
-                                                    </td>
-                                                    <td id="resposta">
-                                                        <div id="boxResposta">
-                                                            <div>
-                                                                {% if respostas %}
-                                                                    {% for resposta in respostas %}
-                                                                        <div id="resposta_dada">
-                                                                            {{ resposta }}
-                                                                            {% if pergunta.unidade is false %}
-                                                                                <a href="" class="remove_resposta"
-                                                                                   style="text-decoration: none;">🗑️</a>
-                                                                                <br>
+                                    </h3>
+                                    <table>
+                                        {% for pergunta, respostas in perguntas.items %}
+                                            <tr id="{{ tema_counter }}.{{ subtema_counter }}:{{ pergunta.texto|slugify }}"
+                                                class="items">
+                                                <td id="pergunta">
 
-                                                                            {% endif %}
-                                                                        </div>
-                                                                    {% endfor %}
-                                                                {% else %}
-                                                                    <div id="resposta_dada">
-                                                                        Não respondeu
-                                                                    </div>
-                                                                {% endif %}
-
-                                                            </div>
+                                                    {{ pergunta.texto }}:
+                                                </td>
+                                                <td id="resposta">
+                                                    <div id="boxResposta">
+                                                        <div>
                                                             {% if respostas %}
-                                                                {% if pergunta.unidade %}
-                                                                    <div class="unidade">
-                                                                        {% if "^" in pergunta.unidade.unidade %}
-                                                                            {% with pergunta.unidade.unidade|split:"|" as toda %}
-                                                                                {% for cada in toda %}
-                                                                                    {% if "^" in cada %}
-                                                                                        {% with cada|split:"^" as parts %}
-                                                                                            {{ parts|first }}
-                                                                                            <sup>{{ parts|last }}</sup>
-                                                                                            <a href=""
-                                                                                               class="remove_resposta"
-                                                                                               style="text-decoration: none;">🗑️</a>
-                                                                                        {% endwith %}
-                                                                                    {% else %}
-                                                                                        {{ cada }}
+                                                                {% for resposta in respostas %}
+                                                                    <div id="resposta_dada">
+                                                                        <input type="hidden" value="{{ resposta.id }}" id="respostaId">
+                                                                        {{ resposta }}
+                                                                        {% if pergunta.unidade is false %}
+                                                                            <button id="post_edit"
+                                                                                    class="botao_submmit">✏️
+                                                                            </button>
+                                                                            <button id="post_remove"
+                                                                                    class="botao_submmit">🗑️
+                                                                            </button>
+                                                                            <br>
 
-                                                                                    {% endif %}
-                                                                                    {% if toda|length > 1 %}
-                                                                                        {% if forloop.first %}|
-                                                                                        {% endif %}
-                                                                                    {% endif %}
-                                                                                {% endfor %}
-                                                                            {% endwith %}
-                                                                        {% else %}
-                                                                            {{ pergunta.unidade }}
-                                                                            <a href="" class="remove_resposta"
-                                                                               style="text-decoration: none;">🗑️</a>
                                                                         {% endif %}
                                                                     </div>
-                                                                {% endif %}
+                                                                {% endfor %}
+                                                            {% else %}
+                                                                <div id="resposta_dada">
+                                                                    Não respondeu
+                                                                </div>
                                                             {% endif %}
+
                                                         </div>
-                                                        <div id='{{ pergunta.texto|slugify }}'></div>
+                                                        {% if respostas %}
+                                                            {% if pergunta.unidade %}
+                                                                <div class="unidade">
+                                                                    {% if "^" in pergunta.unidade.unidade %}
+                                                                        {% with pergunta.unidade.unidade|split:"|" as toda %}
+                                                                            {% for cada in toda %}
+                                                                                {% if "^" in cada %}
+                                                                                    {% with cada|split:"^" as parts %}
+                                                                                        {{ parts|first }}
+                                                                                        <sup>{{ parts|last }}</sup>
+                                                                                        <button id="post_edit"
+                                                                                                class="botao_submmit">
+                                                                                            ✏️
+                                                                                        </button>
+                                                                                        <button id="post_remove"
+                                                                                                class="botao_submmit">
+                                                                                            🗑️
+                                                                                        </button>
+                                                                                    {% endwith %}
+                                                                                {% else %}
+                                                                                    {{ cada }}
 
-                                                    </td>
+                                                                                {% endif %}
+                                                                                {% if toda|length > 1 %}
+                                                                                    {% if forloop.first %}|
+                                                                                    {% endif %}
+                                                                                {% endif %}
+                                                                            {% endfor %}
+                                                                        {% endwith %}
+                                                                    {% else %}
+                                                                        {{ pergunta.unidade }}
+                                                                        <button id="post_edit"
+                                                                                class="botao_submmit">✏️
+                                                                        </button>
+                                                                        <button id="post_remove"
+                                                                                class="botao_submmit">🗑️
+                                                                        </button>
+                                                                    {% endif %}
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    </div>
+                                                    <div id='{{ pergunta.texto|slugify }}'></div>
 
-                                                </tr>
-                                            {% endfor %}
+                                                </td>
+
+                                            </tr>
+                                        {% endfor %}
 
 
-                                        </table>
-                                    </div>
+                                    </table>
+                                </div>
 
-                                {% endwith %}
-                            {% endfor %}
-
-
-                        </form>
+                            {% endwith %}
+                        {% endfor %}
 
                     </div>
 
@@ -120,5 +130,33 @@
         <input type="submit" value="Submeter" name="submitButton" id="ButaoSubmeter">
     </div>
 
+    <script>
+        var csrftoken = '{{ csrf_token }}'
 
+        document.getElementById('post_edit').onclick = () => {
+            const requestObj = new XMLHttpRequest()
+
+            requestObj.open("POST", '/post/')
+            requestObj.setRequestHeader("X-CSRFToken", csrftoken)
+
+            const formdata = new FormData()
+            formdata.append('metodo', 'post')
+            formdata.append('tipo', 'editar')
+            //tentar mandar o id da resposta no post para se poder realizar alterações/remoçoes
+            requestObj.send(formdata)
+        }
+
+        document.getElementById('post_remove').onclick = () => {
+            const requestObj = new XMLHttpRequest()
+
+            requestObj.open("POST", '/post/')
+            requestObj.setRequestHeader("X-CSRFToken", csrftoken)
+
+            const formdata = new FormData()
+            formdata.append('metodo', 'post')
+            formdata.append('tipo', 'remover')
+            //tentar mandar o id da resposta no post para se poder realizar alterações/remoçoes
+            requestObj.send(formdata)
+        }
+    </script>
 {% endblock %}
