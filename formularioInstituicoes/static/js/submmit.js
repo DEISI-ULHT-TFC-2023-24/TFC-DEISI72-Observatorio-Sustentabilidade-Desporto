@@ -62,7 +62,6 @@ function slugify(texto) {
 
 window.onload = function () {
     const valores_relevantes_h3 = document.querySelectorAll('[id="valores-relevantes"]');
-
     for (const valor_relevante of valores_relevantes_h3) {
         var div_valor_relevante = valor_relevante.closest("div")
 
@@ -85,14 +84,16 @@ window.onload = function () {
             }
         }
 
+
+
         var numero_pergunta = div_valor_relevante.id.split(":")[0]
 
-        var form_subtemas = div_valor_relevante.closest("form").querySelectorAll("div.bloco_subtema")
-
+        var form_subtemas = div_valor_relevante.closest("div.bloco").querySelectorAll("div.bloco_subtema")
         for (const subtema of form_subtemas) {
             if (subtema.id !== `${numero_pergunta}:valores-relevantes`) {
                 subtema.style.display = 'none'
             }
+
         }
 
         for (const subtema of form_subtemas) {
@@ -134,7 +135,7 @@ window.onload = function () {
         }
 
         pergunta_tr_mudar = div_subtema.querySelectorAll('table > tbody > tr')
-
+        console.log(pergunta_tr_mudar)
         for (const perguntas of pergunta_tr_mudar) {
             perguntas.style.display = 'none'
         }

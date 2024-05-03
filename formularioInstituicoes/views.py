@@ -358,7 +358,7 @@ def guarda_respostas_submmit(nome_instalacao, ano_questionario, perguntas_submmi
 
                     respostas[pergunta] = []
                     for resposta_dada in respostas_dadas:
-                        respostas[pergunta].append(resposta_dada.numero)
+                        respostas[pergunta].append(resposta_dada)
 
                 elif pergunta.tipo == 'TEXTO_LIVRE' or pergunta.tipo == 'ESCOLHA_MULTIPLA_UNICA' or pergunta.tipo == 'ESCOLHA_MULTIPLA_VARIAS' or pergunta.tipo == 'MES':
                     respostas_perguntas = RespostaTextual.objects.filter(pergunta_id=pergunta.id)
@@ -366,7 +366,7 @@ def guarda_respostas_submmit(nome_instalacao, ano_questionario, perguntas_submmi
 
                     respostas[pergunta] = []
                     for resposta_dada in respostas_dadas:
-                        respostas[pergunta].append(resposta_dada.texto)
+                        respostas[pergunta].append(resposta_dada)
 
 
                 elif pergunta.tipo == 'FICHEIRO':
@@ -390,8 +390,26 @@ def respostas_view(request):
 
 
 @login_required
-def post_request(request):
-    print(request.POST)
+def post_request_submmit(request):
+    post = request.POST
+
+    post_dicionario = dict(post)
+    lista_items = list(post_dicionario.items())
+    print(lista_items)
+
+    if lista_items[0][0] == 'metodo' and lista_items[0][1][0] == 'post':
+        if lista_items[1][0] == 'tipo_query' and lista_items[1][1][0] == 'editar':
+            print('edit')
+        elif lista_items[1][0] == 'tipo_query' and lista_items[1][1][0] == 'remover':
+            if lista_items[2][0] == 'tipo_resposta' and lista_items[2][1][0] == 'NUMERO_INTEIRO':
+
+                resposta = RespostaNumerica.objects.get(id=int(lista_items[3][1][0]))
+                # resposta.delete()
+
+            elif lista_items[2][0] == 'tipo_resposta' and lista_items[2][1][0] == 'TEXTO_LIVRE':
+                resposta = RespostaTextual.objects.get(id=int(lista_items[3][1][0]))
+                # resposta.delete()
+
     return HttpResponse("POST request")
 
 
