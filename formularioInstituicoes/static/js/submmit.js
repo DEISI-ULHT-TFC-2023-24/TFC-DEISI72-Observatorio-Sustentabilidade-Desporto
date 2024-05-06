@@ -65,11 +65,12 @@ window.onload = function () {
     for (const valor_relevante of valores_relevantes_h3) {
         var div_valor_relevante = valor_relevante.closest("div")
 
-        var respostas_usadas = div_valor_relevante.querySelectorAll('table > tbody > tr > td#resposta > div#boxResposta > div > div');
+        var respostas_usadas = div_valor_relevante.querySelectorAll('table > tbody > tr > td#resposta > div#boxResposta > div > div > span');
 
         var lista_valores_nao_esconder = []
 
         for (const resposta_usada of respostas_usadas) {
+
             const childNodes = resposta_usada.childNodes;
 
             let texto = '';
@@ -85,7 +86,6 @@ window.onload = function () {
         }
 
 
-
         var numero_pergunta = div_valor_relevante.id.split(":")[0]
 
         var form_subtemas = div_valor_relevante.closest("div.bloco").querySelectorAll("div.bloco_subtema")
@@ -97,7 +97,6 @@ window.onload = function () {
         }
 
         for (const subtema of form_subtemas) {
-
             lista_valores_nao_esconder.forEach(item => {
                 var id_procurar = slugify(`${numero_pergunta}:${item[0]}`)
                 if (item[1] === false) {
@@ -117,7 +116,7 @@ window.onload = function () {
 
         var resposta_dada_div_first = div_subtema.querySelectorAll('table > tbody > tr')[0]
 
-        var resposta_dada_div = resposta_dada_div_first.querySelectorAll('td#resposta > div#boxResposta > div > div')
+        var resposta_dada_div = resposta_dada_div_first.querySelectorAll('td#resposta > div#boxResposta > div > div > span')
 
         lista_valores_nao_esconder = []
 
@@ -135,7 +134,6 @@ window.onload = function () {
         }
 
         pergunta_tr_mudar = div_subtema.querySelectorAll('table > tbody > tr')
-        console.log(pergunta_tr_mudar)
         for (const perguntas of pergunta_tr_mudar) {
             perguntas.style.display = 'none'
         }
@@ -156,3 +154,45 @@ window.onload = function () {
         }
     }
 };
+document.addEventListener("DOMContentLoaded", function (){
+    var todos_subtemas = document.querySelectorAll('div.bloco_subtema')
+    var array_subtemas = Array.from(todos_subtemas);
+    for (const subtemas of todos_subtemas){
+        console.log(subtemas)
+    }
+})
+function editar(csrftoken, resposta_id, tipo_resposta) {
+
+    const requestObj = new XMLHttpRequest()
+
+    requestObj.open("POST", '/post/')
+    requestObj.setRequestHeader("X-CSRFToken", csrftoken)
+
+    const formdata = new FormData()
+    formdata.append('metodo', 'post')
+    formdata.append('tipo_query', 'editar')
+    formdata.append('tipo_resposta', tipo_resposta)
+    formdata.append('id_resposta', resposta_id);
+    requestObj.send(formdata)
+
+}
+
+function remover(csrftoken, resposta_id, tipo_resposta) {
+    const requestObj = new XMLHttpRequest()
+
+    requestObj.open("POST", '/post/')
+    requestObj.setRequestHeader("X-CSRFToken", csrftoken)
+
+    const formdata = new FormData()
+    formdata.append('metodo', 'post')
+    formdata.append('tipo_query', 'remover')
+    formdata.append('tipo_resposta', tipo_resposta)
+    formdata.append('id_resposta', resposta_id);
+    requestObj.send(formdata)
+
+    var div_element = document.getElementById(`botao_remover:${resposta_id}`).closest('div#resposta_dada')
+
+    div_element.querySelectorAll('button')[1].remove()
+    div_element.querySelector('span').textContent = "Não Respondeu"
+
+}

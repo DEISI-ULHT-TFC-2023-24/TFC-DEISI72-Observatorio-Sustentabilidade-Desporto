@@ -45,14 +45,14 @@
                                                                     <div id="resposta_dada">
                                                                         <input type="hidden" value="{{ resposta.id }}"
                                                                                id="respostaId">
-                                                                        {{ resposta }}
+                                                                        <span class="respostaValue">{{ resposta }}</span>
                                                                         {% if pergunta.unidade is false %}
                                                                             <button id="botao_editar:{{ resposta.id }}"
-                                                                                    onclick="editar ('{{ resposta.id }}', '{{ pergunta.tipo }}')"
+                                                                                    onclick="editar ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
                                                                                     class="botao_submmit">✏️
                                                                             </button>
                                                                             <button id="botao_remover:{{ resposta.id }}"
-                                                                                    onclick="remover ('{{ resposta.id }}', '{{ pergunta.tipo }}')"
+                                                                                    onclick="remover ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
                                                                                     class="botao_submmit">🗑️
                                                                             </button>
 
@@ -67,12 +67,12 @@
                                                                                                     {{ parts|first }}
                                                                                                     <sup>{{ parts|last }}</sup>
                                                                                                     <button id="botao_editar:{{ resposta.id }}"
-                                                                                                            onclick="editar ('{{ resposta.id }}', '{{ pergunta.tipo }}')"
+                                                                                                            onclick="editar ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
                                                                                                             class="botao_submmit">
                                                                                                         ✏️
                                                                                                     </button>
                                                                                                     <button id="botao_remover:{{ resposta.id }}"
-                                                                                                            onclick="remover ('{{ resposta.id }}', '{{ pergunta.tipo }}')"
+                                                                                                            onclick="remover ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
                                                                                                             class="botao_submmit">
                                                                                                         🗑️
                                                                                                     </button>
@@ -90,11 +90,11 @@
                                                                                 {% else %}
                                                                                     {{ pergunta.unidade }}
                                                                                     <button id="botao_editar:{{ resposta.id }}"
-                                                                                            onclick="editar ('{{ resposta.id }}', '{{ pergunta.tipo }}')"
+                                                                                            onclick="editar ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
                                                                                             class="botao_submmit">✏️
                                                                                     </button>
                                                                                     <button id="botao_remover:{{ resposta.id }}"
-                                                                                            onclick="remover ('{{ resposta.id }}', '{{ pergunta.tipo }}')"
+                                                                                            onclick="remover ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
                                                                                             class="botao_submmit">🗑️
                                                                                     </button>
 
@@ -109,7 +109,7 @@
                                                                 <div id="resposta_dada">
                                                                     Não respondeu
                                                                     <button id="post_edit"
-                                                                            onclick="editar ('{{ resposta.id }}', '{{ pergunta.tipo }}')"
+                                                                            onclick="editar ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
                                                                             class="botao_submmit">✏️
                                                                     </button>
                                                                 </div>
@@ -145,45 +145,4 @@
         <input type="submit" value="Submeter" name="submitButton" id="ButaoSubmeter">
     </div>
 
-    <script>
-        const csrftoken = '{{ csrf_token }}';
-
-        function editar(resposta_id, tipo_resposta) {
-
-            const requestObj = new XMLHttpRequest()
-
-            requestObj.open("POST", '/post/')
-            requestObj.setRequestHeader("X-CSRFToken", csrftoken)
-
-            const formdata = new FormData()
-            formdata.append('metodo', 'post')
-            formdata.append('tipo_query', 'editar')
-            formdata.append('tipo_resposta', tipo_resposta)
-            formdata.append('id_resposta', resposta_id);
-            requestObj.send(formdata)
-
-        }
-
-        function remover(resposta_id, tipo_resposta) {
-            const requestObj = new XMLHttpRequest()
-
-            requestObj.open("POST", '/post/')
-            requestObj.setRequestHeader("X-CSRFToken", csrftoken)
-
-            const formdata = new FormData()
-            formdata.append('metodo', 'post')
-            formdata.append('tipo_query', 'remover')
-            formdata.append('tipo_resposta', tipo_resposta)
-            formdata.append('id_resposta', resposta_id);
-            requestObj.send(formdata)
-
-            div_element = document.getElementById(`botao_remover:${resposta_id}`).closest('div')
-            var textNode = div_element.childNodes[0];
-
-            var novoTexto = document.createTextNode('a');
-
-            div_element.replaceChild(novoTexto, textNode);
-            console.log(div_element)
-        }
-    </script>
 {% endblock %}
