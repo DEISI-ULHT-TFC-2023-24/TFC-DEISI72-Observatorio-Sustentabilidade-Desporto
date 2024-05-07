@@ -186,38 +186,80 @@ function remover(csrftoken, resposta_id, tipo_resposta) {
 
     var div_element = document.getElementById(`botao_remover:${resposta_id}`).closest('div#resposta_dada')
 
-    var numero_valores_resposta = div_element.closest('div#boxResposta')
-
     var texto_pergunta = div_element.querySelector('span').textContent
 
     var subtema_pergunta = div_element.closest('div.bloco_subtema').closest('div.bloco_subtema').querySelector('h3').id
-
-    console.log(subtema_pergunta)
-
-    div_element.querySelectorAll('button')[1].remove()
-    div_element.querySelector('span').textContent = "Não Respondeu"
-
 
     var div_tema = div_element.closest('div.bloco_subtema').closest('div.tema')
     var div_subtemas_todos = div_tema.querySelectorAll('div.bloco > div.bloco_subtema')
     var subtema_esconder = slugify(texto_pergunta)
 
-    for (const div_subtema_cada  of div_subtemas_todos){
+    var perguntas_not_hidden = []
+    var subtemas_not_hidden = []
 
-        if(div_subtema_cada.querySelector('h3').id === subtema_esconder){
+    var div_subtemas_perguntas = div_tema.querySelectorAll('div.bloco > div')
+
+    for (const div_subtema of div_subtemas_perguntas) {
+        var id_pergunta = div_subtema.id.split(":")[1]
+        if (id_pergunta === subtema_pergunta) {
+            var tr_perguntas = div_subtema.querySelectorAll('table > tbody > tr')
+            for (const tr_pergunta of tr_perguntas) {
+                if (tr_pergunta.id.includes('-com-potencia-media-de')) {
+                    if (tr_pergunta.style.display !== 'none') {
+                        perguntas_not_hidden.push(tr_pergunta)
+                    }
+                }
+            }
+        }
+    }
+
+    for (let i = 0; i < div_subtemas_todos.length; i++) {
+        const div_subtema_cada = div_subtemas_todos[i];
+        if (i !== 0 && div_subtema_cada.style.display !== 'none') {
+            console.log(div_subtema_cada)
+            subtemas_not_hidden.push(div_subtema_cada);
+        }
+    }
+
+    console.log(perguntas_not_hidden.length)
+    console.log(subtemas_not_hidden.length)
+
+    if(subtemas_not_hidden.length !== 0){
+        if (subtemas_not_hidden.length <= 1) {
+            div_element.querySelectorAll('button')[1].remove()
+            div_element.querySelector('span').textContent = "Não Respondeu"
+        } else {
+            div_element.remove()
+        }
+    }else if (perguntas_not_hidden.length !== 0) {
+        if (perguntas_not_hidden.length <= 1) {
+            div_element.querySelectorAll('button')[1].remove()
+            div_element.querySelector('span').textContent = "Não Respondeu"
+        } else {
+            div_element.remove()
+        }
+    }else {
+        div_element.querySelectorAll('button')[1].remove()
+        div_element.querySelector('span').textContent = "Não Respondeu"
+    }
+
+
+    for (const div_subtema_cada of div_subtemas_todos) {
+
+        if (div_subtema_cada.querySelector('h3').id === subtema_esconder) {
             div_subtema_cada.style.display = 'none'
         }
     }
 
-    var div_subtemas_perguntas = div_tema.querySelectorAll('div.bloco > div')
-
-    for (const div_subtema  of div_subtemas_perguntas){
+    for (const div_subtema of div_subtemas_perguntas) {
         var id_pergunta = div_subtema.id.split(":")[1]
-        if(id_pergunta === subtema_pergunta){
-            console.log(div_subtema)
+        if (id_pergunta === subtema_pergunta) {
+            var tr_perguntas = div_subtema.querySelectorAll('table > tbody > tr')
+            for (const tr_pergunta of tr_perguntas) {
+                if (slugify(tr_pergunta.id.split('-com-potencia-media-de')[0].split(':')[1]) === slugify(texto_pergunta)) {
+                    tr_pergunta.style.display = 'none'
+                }
+            }
         }
-
     }
-
-
 }
