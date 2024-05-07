@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 from django.views.static import serve
 
 urlpatterns = [
-    path('index', views.index_view),
+    path('', views.index_view),
     path('form', views.formulario_view),
     path('submmit', views.respostas_view),
     path('dashboard', views.dashboard_view),

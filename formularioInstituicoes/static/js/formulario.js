@@ -79,9 +79,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (elementoDiv) {
             elementoDiv.style.display = 'none';
-            console.log(elementoDiv);
-        } else {
-            console.log('Elemento não encontrado:', labelProcurar);
         }
 
     }
@@ -115,7 +112,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
         });
-        console.log(elementoDiv)
     }
 
 

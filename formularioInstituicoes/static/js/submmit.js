@@ -154,13 +154,7 @@ window.onload = function () {
         }
     }
 };
-document.addEventListener("DOMContentLoaded", function (){
-    var todos_subtemas = document.querySelectorAll('div.bloco_subtema')
-    var array_subtemas = Array.from(todos_subtemas);
-    for (const subtemas of todos_subtemas){
-        console.log(subtemas)
-    }
-})
+
 function editar(csrftoken, resposta_id, tipo_resposta) {
 
     const requestObj = new XMLHttpRequest()
@@ -192,7 +186,38 @@ function remover(csrftoken, resposta_id, tipo_resposta) {
 
     var div_element = document.getElementById(`botao_remover:${resposta_id}`).closest('div#resposta_dada')
 
+    var numero_valores_resposta = div_element.closest('div#boxResposta')
+
+    var texto_pergunta = div_element.querySelector('span').textContent
+
+    var subtema_pergunta = div_element.closest('div.bloco_subtema').closest('div.bloco_subtema').querySelector('h3').id
+
+    console.log(subtema_pergunta)
+
     div_element.querySelectorAll('button')[1].remove()
     div_element.querySelector('span').textContent = "Não Respondeu"
+
+
+    var div_tema = div_element.closest('div.bloco_subtema').closest('div.tema')
+    var div_subtemas_todos = div_tema.querySelectorAll('div.bloco > div.bloco_subtema')
+    var subtema_esconder = slugify(texto_pergunta)
+
+    for (const div_subtema_cada  of div_subtemas_todos){
+
+        if(div_subtema_cada.querySelector('h3').id === subtema_esconder){
+            div_subtema_cada.style.display = 'none'
+        }
+    }
+
+    var div_subtemas_perguntas = div_tema.querySelectorAll('div.bloco > div')
+
+    for (const div_subtema  of div_subtemas_perguntas){
+        var id_pergunta = div_subtema.id.split(":")[1]
+        if(id_pergunta === subtema_pergunta){
+            console.log(div_subtema)
+        }
+
+    }
+
 
 }

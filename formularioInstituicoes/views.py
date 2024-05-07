@@ -362,7 +362,7 @@ def guarda_respostas_submmit(nome_instalacao, ano_questionario, perguntas_submmi
 
                 elif pergunta.tipo == 'TEXTO_LIVRE' or pergunta.tipo == 'ESCOLHA_MULTIPLA_UNICA' or pergunta.tipo == 'ESCOLHA_MULTIPLA_VARIAS' or pergunta.tipo == 'MES':
                     respostas_perguntas = RespostaTextual.objects.filter(pergunta_id=pergunta.id)
-                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao=instalacao)
+                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao=instalacao).order_by('texto')
 
                     respostas[pergunta] = []
                     for resposta_dada in respostas_dadas:
@@ -402,15 +402,57 @@ def post_request_submmit(request):
             print('edit')
         elif lista_items[1][0] == 'tipo_query' and lista_items[1][1][0] == 'remover':
             if lista_items[2][0] == 'tipo_resposta' and lista_items[2][1][0] == 'NUMERO_INTEIRO':
-
                 resposta = RespostaNumerica.objects.get(id=int(lista_items[3][1][0]))
                 # resposta.delete()
 
-            elif lista_items[2][0] == 'tipo_resposta' and lista_items[2][1][0] == 'TEXTO_LIVRE':
+            elif lista_items[2][0] == 'tipo_resposta' and (
+                    lista_items[2][1][0] == 'TEXTO_LIVRE' or lista_items[2][1][0] == 'ESCOLHA_MULTIPLA_UNICA'):
                 resposta = RespostaTextual.objects.get(id=int(lista_items[3][1][0]))
                 # resposta.delete()
 
+            elif lista_items[2][0] == 'tipo_resposta' and lista_items[2][1][0] == 'ESCOLHA_MULTIPLA_VARIAS':
+                eliminar_valores_escolha_multipla(lista_items)
+
     return HttpResponse("POST request")
+
+
+def eliminar_valores_escolha_multipla(lista_items):
+    resposta = RespostaTextual.objects.get(id=int(lista_items[3][1][0]))
+    subtema_resposta = resposta.pergunta.subtema
+    tema = Tema.objects.get(nome=subtema_resposta.tema.nome)
+    try:
+        subtema = SubTema.objects.filter(tema_id=tema.id).get(nome=resposta.texto)
+
+        perguntas = Pergunta.objects.filter(subtema_id=subtema.id)
+
+        for pergunta in perguntas:
+            if pergunta.tipo == 'NUMERO_INTEIRO':
+                resposta_eliminar = RespostaNumerica.objects.get(pergunta_id=pergunta.id)
+                # resposta_eliminar.delete()
+
+            elif pergunta.tipo == 'TEXTO_LIVRE' or pergunta.tipo == 'MES' or pergunta.tipo == 'ESCOLHA_MULTIPLA_UNICA':
+                resposta_eliminar = RespostaTextual.objects.get(pergunta_id=pergunta.id)
+                # resposta_eliminar.delete()
+
+    except SubTema.DoesNotExist:
+        subtema = SubTema.objects.get(id=subtema_resposta.id)
+        perguntas = Pergunta.objects.filter(subtema_id=subtema.id)
+        lista_perguntas = list(perguntas)
+
+        pergunta_remover = None
+        for pergunta in lista_perguntas:
+            if pergunta.texto.split("com potência média de")[0].strip() == resposta.texto:
+                pergunta_remover = pergunta
+
+        if pergunta_remover != None:
+            if pergunta.tipo == 'NUMERO_INTEIRO':
+                resposta_eliminar = RespostaNumerica.objects.get(pergunta_id=pergunta.id)
+                # resposta_eliminar.delete()
+
+            elif pergunta.tipo == 'TEXTO_LIVRE' or pergunta.tipo == 'MES' or pergunta.tipo == 'ESCOLHA_MULTIPLA_UNICA':
+                resposta_eliminar = RespostaTextual.objects.get(pergunta_id=pergunta.id)
+                # resposta_eliminar.delete()
+    # resposta.delete()
 
 
 @register.filter(name='split')
