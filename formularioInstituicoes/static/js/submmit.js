@@ -221,9 +221,6 @@ function remover(csrftoken, resposta_id, tipo_resposta) {
         }
     }
 
-    console.log(perguntas_not_hidden.length)
-    console.log(subtemas_not_hidden.length)
-
     if(subtemas_not_hidden.length !== 0){
         if (subtemas_not_hidden.length <= 1) {
             div_element.querySelectorAll('button')[1].remove()

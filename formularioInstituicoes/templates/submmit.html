@@ -29,102 +29,106 @@
                                     <h3 id="{{ subtema.nome|slugify }}">{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}
 
                                     </h3>
+
+
                                     <table>
                                         {% for pergunta, respostas in perguntas.items %}
                                             <tr id="{{ tema_counter }}.{{ subtema_counter }}:{{ pergunta.texto|slugify }}"
                                                 class="items">
                                                 <td id="pergunta">
 
-                                                    {{ pergunta.texto }}:
-                                                </td>
-                                                <td id="resposta">
-                                                    <div id="boxResposta">
-                                                        <div>
-                                                            {% if respostas %}
-                                                                {% for resposta in respostas %}
-                                                                    <div id="resposta_dada">
-                                                                        <input type="hidden" value="{{ resposta.id }}"
-                                                                               id="respostaId">
-                                                                        <span class="respostaValue">{{ resposta }}</span>
-                                                                        {% if pergunta.unidade is false %}
-                                                                            <button id="botao_editar:{{ resposta.id }}"
-                                                                                    onclick="editar ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
-                                                                                    class="botao_submmit">✏️
-                                                                            </button>
-                                                                            <button id="botao_remover:{{ resposta.id }}"
-                                                                                    onclick="remover ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
-                                                                                    class="botao_submmit">🗑️
-                                                                            </button>
+                                                        {{ pergunta.texto }}:
+                                                    </td>
+                                                    <td id="resposta">
+                                                        <div id="boxResposta">
+                                                            <div>
+                                                                {% if respostas %}
+                                                                    {% for resposta in respostas %}
 
-                                                                        {% endif %}
-                                                                        {% if respostas %}
-                                                                            {% if pergunta.unidade %}
-                                                                                {% if "^" in pergunta.unidade.unidade %}
-                                                                                    {% with pergunta.unidade.unidade|split:"|" as toda %}
-                                                                                        {% for cada in toda %}
-                                                                                            {% if "^" in cada %}
-                                                                                                {% with cada|split:"^" as parts %}
-                                                                                                    {{ parts|first }}
-                                                                                                    <sup>{{ parts|last }}</sup>
-                                                                                                    <button id="botao_editar:{{ resposta.id }}"
-                                                                                                            onclick="editar ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
-                                                                                                            class="botao_submmit">
-                                                                                                        ✏️
-                                                                                                    </button>
-                                                                                                    <button id="botao_remover:{{ resposta.id }}"
-                                                                                                            onclick="remover ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
-                                                                                                            class="botao_submmit">
-                                                                                                        🗑️
-                                                                                                    </button>
-                                                                                                {% endwith %}
-                                                                                            {% else %}
-                                                                                                {{ cada }}
-
-                                                                                            {% endif %}
-                                                                                            {% if toda|length > 1 %}
-                                                                                                {% if forloop.first %}|
-                                                                                                {% endif %}
-                                                                                            {% endif %}
-                                                                                        {% endfor %}
-                                                                                    {% endwith %}
-                                                                                {% else %}
-                                                                                    {{ pergunta.unidade }}
-                                                                                    <button id="botao_editar:{{ resposta.id }}"
-                                                                                            onclick="editar ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
-                                                                                            class="botao_submmit">✏️
-                                                                                    </button>
-                                                                                    <button id="botao_remover:{{ resposta.id }}"
-                                                                                            onclick="remover ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
-                                                                                            class="botao_submmit">🗑️
-                                                                                    </button>
-
-                                                                                {% endif %}
+                                                                        <div id="resposta_dada">
+                                                                            <input type="hidden"
+                                                                                   value="{{ resposta.id }}"
+                                                                                   id="respostaId">
+                                                                            <span class="respostaValue">{{ resposta }}</span>
+                                                                            {% if pergunta.unidade is false %}
+                                                                                <button id="botao_editar:{{ resposta.id }}"
+                                                                                        onclick="editar ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
+                                                                                        class="botao_submmit">✏️
+                                                                                </button>
+                                                                                <button id="botao_remover:{{ resposta.id }}"
+                                                                                        onclick="remover ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
+                                                                                        class="botao_submmit">🗑️
+                                                                                </button>
 
                                                                             {% endif %}
-                                                                        {% endif %}
-                                                                    </div>
+                                                                            {% if respostas %}
+                                                                                {% if pergunta.unidade %}
+                                                                                    {% if "^" in pergunta.unidade.unidade %}
+                                                                                        {% with pergunta.unidade.unidade|split:"|" as toda %}
+                                                                                            {% for cada in toda %}
+                                                                                                {% if "^" in cada %}
+                                                                                                    {% with cada|split:"^" as parts %}
+                                                                                                        {{ parts|first }}
+                                                                                                        <sup>{{ parts|last }}</sup>
+                                                                                                        <button id="botao_editar:{{ resposta.id }}"
+                                                                                                                onclick="editar ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
+                                                                                                                class="botao_submmit">
+                                                                                                            ✏️
+                                                                                                        </button>
+                                                                                                        <button id="botao_remover:{{ resposta.id }}"
+                                                                                                                onclick="remover ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
+                                                                                                                class="botao_submmit">
+                                                                                                            🗑️
+                                                                                                        </button>
+                                                                                                    {% endwith %}
+                                                                                                {% else %}
+                                                                                                    {{ cada }}
 
-                                                                {% endfor %}
-                                                            {% else %}
-                                                                <div id="resposta_dada">
-                                                                    Não respondeu
-                                                                    <button id="post_edit"
-                                                                            onclick="editar ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
-                                                                            class="botao_submmit">✏️
-                                                                    </button>
-                                                                </div>
-                                                            {% endif %}
+                                                                                                {% endif %}
+                                                                                                {% if toda|length > 1 %}
+                                                                                                    {% if forloop.first %}
+                                                                                                        |
+                                                                                                    {% endif %}
+                                                                                                {% endif %}
+                                                                                            {% endfor %}
+                                                                                        {% endwith %}
+                                                                                    {% else %}
+                                                                                        {{ pergunta.unidade }}
+                                                                                        <button id="botao_editar:{{ resposta.id }}"
+                                                                                                onclick="editar ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
+                                                                                                class="botao_submmit">✏️
+                                                                                        </button>
+                                                                                        <button id="botao_remover:{{ resposta.id }}"
+                                                                                                onclick="remover ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
+                                                                                                class="botao_submmit">
+                                                                                            🗑️
+                                                                                        </button>
+
+                                                                                    {% endif %}
+
+                                                                                {% endif %}
+                                                                            {% endif %}
+                                                                        </div>
+                                                                    {% endfor %}
+                                                                {% else %}
+                                                                    <div id="resposta_dada">
+                                                                        Não respondeu
+                                                                        <button id="post_edit"
+                                                                                onclick="editar ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
+                                                                                class="botao_submmit">✏️
+                                                                        </button>
+                                                                    </div>
+                                                                {% endif %}
+
+                                                            </div>
 
                                                         </div>
+                                                        <div id='{{ pergunta.texto|slugify }}'></div>
 
-                                                    </div>
-                                                    <div id='{{ pergunta.texto|slugify }}'></div>
+                                                    </td>
+                                                    <td>
 
-                                                </td>
-                                                <td>
-
-                                                </td>
-
+                                                    </td>
                                             </tr>
                                         {% endfor %}
 

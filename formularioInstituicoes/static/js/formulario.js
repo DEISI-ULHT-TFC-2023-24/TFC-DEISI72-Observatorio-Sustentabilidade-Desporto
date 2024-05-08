@@ -205,7 +205,8 @@ function adicionarValorPergunta() {
 
     const currentRow = currentTr.id.split(':')[1];
 
-    var listaValoresDiv = document.getElementById(currentRow);
+    var listaValoresDiv = document.getElementById(currentTr.id).querySelector('#resposta');
+    console.log(listaValoresDiv)
     listaValoresDiv.style.display = 'block'
     listaValoresDiv.appendChild(novoItem);
 }

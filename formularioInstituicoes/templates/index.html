@@ -1,60 +1,14 @@
-<!DOCTYPE html>
-<html lang="pt">
+{% extends 'navigator.html' %}
 
 {% load static %}
 
-<head>
+{% block titulo %}
+    <h1>Página inicial</h1>
+{% endblock %}
 
-    <title>IPDJ - SNID</title>
+{% block content %}
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <meta charset="UTF-8">
-</head>
-
-<body>
-<div class="hero">
-    <nav>
-        <div class="elem1">
-            <h3>IPDJ - Observatório de sustentabilidade</h3>
-        </div>
-        <div class="elem2">
-            <h1>Página inicial</h1>
-        </div>
-        <div class="elem3">
-            <h1><i class="fa-solid fa-user" onclick="toggleMenu()"></i></h1>
-        </div>
-
-         <div class="profile-navigator" id="profile-nav">
-        <div class="profile">
-            <div class="user-info">
-                <i class="fa-solid fa-user"></i>
-                <h4>Nome Entidade</h4>
-            </div>
-            <hr>
-            <a href="" class="sub-menu-link">
-                <i class="fa-solid fa-user"></i>
-                <p>Edite o seu perfil</p>
-                <span>></span>
-            </a>
-            <a href="" class="sub-menu-link">
-                <i class="fa-solid fa-circle-question"></i>
-                <p>Ajuda e Suporte</p>
-                <span>></span>
-            </a>
-            <a href="" class="sub-menu-link">
-                <i class="material-icons">logout</i>
-                <p>Logout</p>
-                <span>></span>
-            </a>
-
-
-        </div>
-    </div>
-
-    </nav>
 
     <div class="imagem-logotipo">
         <img src="{% static 'img/ipdj_image.png' %}" alt="logotipo" class="logoIPDJ">
@@ -88,7 +42,7 @@
             </a>
         </div>
     </main>
-</div>
+{% endblock %}
 
 <script>
 
@@ -99,5 +53,3 @@
     }
 
 </script>
-</body>
-</html>
