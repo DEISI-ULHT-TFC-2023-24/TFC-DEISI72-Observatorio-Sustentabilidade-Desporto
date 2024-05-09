@@ -53,25 +53,7 @@
                                                             </div>
                                                             {% if pergunta.unidade %}
                                                                 <div class="unidade">
-                                                                    {% if "^" in pergunta.unidade.unidade %}
-                                                                        {% with pergunta.unidade.unidade|split:"|" as toda %}
-                                                                            {% for cada in toda %}
-                                                                                {% if "^" in cada %}
-                                                                                    {% with cada|split:"^" as parts %}
-                                                                                        {{ parts|first }}
-                                                                                        <sup>{{ parts|last }}</sup>
-                                                                                    {% endwith %}
-                                                                                {% else %}
-                                                                                    {{ cada }}
-                                                                                {% endif %}
-                                                                                {% if toda|length > 1 %}
-                                                                                    {% if forloop.first %}|{% endif %}
-                                                                                {% endif %}
-                                                                            {% endfor %}
-                                                                        {% endwith %}
-                                                                    {% else %}
-                                                                        {{ pergunta.unidade }}
-                                                                    {% endif %}
+                                                                    {{ pergunta.unidade }}
                                                                 </div>
                                                             {% endif %}
                                                             {% if pergunta.resposta_permite_repetidos %}

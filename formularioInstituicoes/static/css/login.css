@@ -1,0 +1,57 @@
+
+.loginform {
+    display: grid;
+    place-items: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid lightgrey;
+    background: whitesmoke;
+    padding: 5px 15px;
+    border-radius: 10px;
+    width: 500px;
+    height: 250px;
+    margin: 30px auto;
+
+}
+
+body {
+    background-color: orange;
+}
+
+.botao{
+    display: grid;
+     place-items: center;
+}
+
+input {
+    padding: 12px 30px;
+    background: orange;
+    border-radius: 5px;
+    border: 0;
+    transition: background-color 0.3s ease;
+    margin: auto;
+}
+
+label{
+    font-size: 18px;
+}
+
+.imagem-logotipo {
+    width: 100%;
+    text-align: center;
+    margin-top: 70px;
+
+}
+
+.imagem-logotipo img {
+    border: 1px solid lightgrey;
+    background: whitesmoke;
+    padding: 5px 15px;
+    border-radius: 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 400px;
+    top: 10%;
+}

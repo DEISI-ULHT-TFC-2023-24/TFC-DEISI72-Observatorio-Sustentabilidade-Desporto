@@ -1,16 +1,26 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
 </head>
 <body>
-<form method="post">
-    {% csrf_token %}
+<div class="imagem-logotipo">
+    <img src="{% static 'img/ipdj_image.png' %}" alt="logotipo" class="logoIPDJ">
+</div>
+<div class="loginform">
+    <form method="post">
+        {% csrf_token %}
 
-    {{ authForm.as_p }}
+        {{ authForm.as_p }}
 
-    <input type="submit" value="Submit">
-</form>
+        <div class="botao">
+            <input type="submit" value="Submit">
+        </div>
+
+    </form>
+</div>
 </body>
 </html>

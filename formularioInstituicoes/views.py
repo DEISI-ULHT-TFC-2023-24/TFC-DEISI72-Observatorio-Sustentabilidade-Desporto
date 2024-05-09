@@ -23,7 +23,7 @@ def getEntidade(request) -> Entidade:
         return None
 
 
-def guarda_perguntas_form(perguntas_form_object):
+def criar_perguntas_form(perguntas_form_object):
     questionario = Questionario.objects.get(nome="Questionário Instalações Desportivas")
 
     for tema in questionario.temas.all():
@@ -288,7 +288,7 @@ def post(request, ano_questionario):
 
 @login_required
 def formulario_view(request):
-    guarda_perguntas_form(perguntas_form)
+    criar_perguntas_form(perguntas_form)
 
     post(request, 2024)
 
@@ -503,7 +503,7 @@ def dashboard_view(request):
     consumosAnuaisGasoleo = getRespostaNumericaOr0(41)
     consumosAnuaisGasolina = getRespostaNumericaOr0(51)
     consumosAnuaisFotovoltaica = getRespostaNumericaOr0(61)
-    consumosAnuaisBiomassa = getRespostaNumericaOr0(71)
+    consumosAnuaisBiomassa = getRespostaNumericaOr0(208)
     consumosAnuaisEolica = getRespostaNumericaOr0(81)
     consumosAnuaisTermica = getRespostaNumericaOr0(91)
     consumosAnuaisOutros = getRespostaNumericaOr0(101)
@@ -521,7 +521,7 @@ def dashboard_view(request):
     custosAnuaisGasoleo = getRespostaNumericaOr0(42)
     custosAnuaisGasolina = getRespostaNumericaOr0(52)
     custosAnuaisFotovoltaica = getRespostaNumericaOr0(62)
-    custosAnuaisBiomassa = getRespostaNumericaOr0(72)
+    custosAnuaisBiomassa = getRespostaNumericaOr0(209)
     custosAnuaisEolica = getRespostaNumericaOr0(82)
     custosAnuaisTermica = getRespostaNumericaOr0(92)
     custosAnuaisOutros = getRespostaNumericaOr0(103)
@@ -544,17 +544,6 @@ def dashboard_view(request):
 
     ]
 
-    faturaMinimaElectricidade = getRespostaNumericaOr0(15)
-    faturaMinimaGasNatural = getRespostaNumericaOr0(25)
-    faturaMinimaPropano = getRespostaNumericaOr0(35)
-    faturaMinimaGasoleo = getRespostaNumericaOr0(45)
-    faturaMinimaGasolina = getRespostaNumericaOr0(55)
-    faturaMinimaFotovoltaica = getRespostaNumericaOr0(65)
-    faturaMinimaBiomassa = getRespostaNumericaOr0(75)
-    faturaMinimaEolica = getRespostaNumericaOr0(85)
-    faturaMinimaTermica = getRespostaNumericaOr0(95)
-    faturaMinimaOutros = getRespostaNumericaOr0(106)
-
     faturasMinimaskWh = [
         getRespostaNumericaOr0(15),
         getRespostaNumericaOr0(25),
@@ -562,7 +551,7 @@ def dashboard_view(request):
         getRespostaNumericaOr0(45),
         getRespostaNumericaOr0(55),
         getRespostaNumericaOr0(65),
-        getRespostaNumericaOr0(75),
+        getRespostaNumericaOr0(211),
         getRespostaNumericaOr0(85),
         getRespostaNumericaOr0(95),
         getRespostaNumericaOr0(106)
@@ -575,7 +564,7 @@ def dashboard_view(request):
         getRespostaNumericaOr0(48),
         getRespostaNumericaOr0(58),
         getRespostaNumericaOr0(68),
-        getRespostaNumericaOr0(78),
+        getRespostaNumericaOr0(214),
         getRespostaNumericaOr0(88),
         getRespostaNumericaOr0(98),
         getRespostaNumericaOr0(103)
@@ -588,7 +577,7 @@ def dashboard_view(request):
         getRespostaNumericaOr0(47),
         getRespostaNumericaOr0(57),
         getRespostaNumericaOr0(67),
-        getRespostaNumericaOr0(77),
+        getRespostaNumericaOr0(213),
         getRespostaNumericaOr0(87),
         getRespostaNumericaOr0(97),
         getRespostaNumericaOr0(108)
@@ -601,7 +590,7 @@ def dashboard_view(request):
         getRespostaNumericaOr0(50),
         getRespostaNumericaOr0(60),
         getRespostaNumericaOr0(70),
-        getRespostaNumericaOr0(80),
+        getRespostaNumericaOr0(216),
         getRespostaNumericaOr0(90),
         getRespostaNumericaOr0(100),
         getRespostaNumericaOr0(105)

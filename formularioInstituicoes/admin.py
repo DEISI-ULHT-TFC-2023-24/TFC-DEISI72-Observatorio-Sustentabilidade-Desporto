@@ -30,7 +30,7 @@ admin.site.register(Instalacao, InstalacaoAdmin)
 
 
 class PerguntaAdmin(admin.ModelAdmin):
-    list_display = ('texto', 'subtema')
+    list_display = ('texto','id', 'subtema')
 
 
 admin.site.register(Pergunta, PerguntaAdmin)
