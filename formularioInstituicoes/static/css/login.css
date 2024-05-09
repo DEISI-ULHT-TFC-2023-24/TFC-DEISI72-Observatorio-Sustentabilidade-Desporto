@@ -26,11 +26,15 @@ body {
 
 input {
     padding: 12px 30px;
-    background: orange;
+
     border-radius: 5px;
     border: 0;
     transition: background-color 0.3s ease;
     margin: auto;
+}
+
+input[type=submit]{
+    background: orange;
 }
 
 label{

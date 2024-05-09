@@ -15,7 +15,7 @@ admin.site.register(Tema, TemaAdmin)
 
 
 class SubTemaAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'tema')
+    list_display = ('nome', 'id', 'tema')
     ordering = ('tema', 'nome',)
 
 
@@ -30,7 +30,7 @@ admin.site.register(Instalacao, InstalacaoAdmin)
 
 
 class PerguntaAdmin(admin.ModelAdmin):
-    list_display = ('texto','id', 'subtema')
+    list_display = ('texto', 'id', 'subtema')
 
 
 admin.site.register(Pergunta, PerguntaAdmin)
@@ -72,4 +72,3 @@ admin.site.register(Questionario, QuestionarioAdmin)
 admin.site.register(Avaliacao)
 admin.site.register(Entidade)
 admin.site.register(Ficheiro)
-

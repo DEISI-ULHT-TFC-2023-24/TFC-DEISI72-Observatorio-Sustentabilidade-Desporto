@@ -12,10 +12,6 @@
 
     <div class="container">
 
-{#        {% for key, value in respostas.items %}#}
-{#            <p>{{ key }}: {{ value }}</p>#}
-{#        {% endfor %}#}
-
         {% for tema, subtemas in perguntas_form.items %}
             {% with forloop.counter as tema_counter %}
                 <div class="tema">
@@ -80,7 +76,6 @@
 
                                 {% endwith %}
                             {% endfor %}
-
                             <input type="submit" value="Gravar" name="saveButton" id="ButaoGravar">
 
                         </form>

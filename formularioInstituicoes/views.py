@@ -26,7 +26,7 @@ def getEntidade(request) -> Entidade:
 def criar_perguntas_form(perguntas_form_object):
     questionario = Questionario.objects.get(nome="Questionário Instalações Desportivas")
 
-    for tema in questionario.temas.all():
+    for tema in questionario.temas.all().order_by('ordem_perguntas_formulario'):
 
         subtemas = {}
 
@@ -58,7 +58,13 @@ def criar_perguntas_form(perguntas_form_object):
 
             perguntas_todos = Pergunta.objects.filter(subtema_id=subtema.id).order_by('texto')
 
-            if perguntas_todos.filter(tipo='ESCOLHA_MULTIPLA_VARIAS').exists():
+            if perguntas_todos.filter(texto='Número de veículos da instalação').exists():
+                valores_escluidos = perguntas_todos.exclude(texto='Número de veículos da instalação')
+                pergunta_escluida = perguntas_todos.get(texto='Número de veículos da instalação')
+
+                perguntas_todos = [pergunta_escluida] + list(valores_escluidos)
+
+            elif perguntas_todos.filter(tipo='ESCOLHA_MULTIPLA_VARIAS').exists():
                 valores_escluidos = perguntas_todos.exclude(tipo='ESCOLHA_MULTIPLA_VARIAS')
                 pergunta_escluida = perguntas_todos.get(tipo='ESCOLHA_MULTIPLA_VARIAS')
 
@@ -81,6 +87,14 @@ def criar_perguntas_form(perguntas_form_object):
                 pergunta_escluida = perguntas_todos.get(texto='Nome')
 
                 perguntas_todos = [pergunta_escluida] + list(valores_escluidos)
+
+            elif perguntas_todos.filter(texto='Tipos de atividade desportiva').exists():
+                valores_escluidos = perguntas_todos.exclude(texto='Tipos de atividade desportiva')
+                pergunta_escluida = perguntas_todos.get(texto='Tipos de atividade desportiva')
+
+                perguntas_todos = [pergunta_escluida] + list(valores_escluidos)
+
+
 
             for pergunta in perguntas_todos:
                 if pergunta.tipo == 'NUMERO_INTEIRO':
@@ -319,7 +333,7 @@ def guarda_respostas_submmit(entidade, ano_questionario, perguntas_submmit_objec
 
     questionario = avaliacao.questionario
 
-    for tema in questionario.temas.all():
+    for tema in questionario.temas.all().order_by('ordem_perguntas_formulario'):
 
         subtemas = {}
 
@@ -376,6 +390,13 @@ def guarda_respostas_submmit(entidade, ano_questionario, perguntas_submmit_objec
                 pergunta_escluida = perguntas_todos.get(texto='Nome')
 
                 perguntas_todos = [pergunta_escluida] + list(valores_escluidos)
+
+            elif perguntas_todos.filter(texto='Número de veículos da instalação').exists():
+                valores_escluidos = perguntas_todos.exclude(texto='Nome')
+                pergunta_escluida = perguntas_todos.get(texto='Nome')
+
+                perguntas_todos = [pergunta_escluida] + list(valores_escluidos)
+
 
             for pergunta in perguntas_todos:
 

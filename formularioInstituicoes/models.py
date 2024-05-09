@@ -7,7 +7,7 @@ from django.db import models
 
 class Tema(models.Model):
     nome = models.CharField(max_length=100)
-
+    ordem_perguntas_formulario = models.IntegerField()
     def __str__(self):
         return self.nome
 
@@ -48,7 +48,7 @@ class Pergunta(models.Model):
     resposta_permite_repetidos = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.texto}"
+        return f"{self.texto} : {self.subtema.tema.nome}-{self.subtema.tema.nome}"
 
 
 class Questionario(models.Model):
@@ -97,7 +97,7 @@ class Opcao(models.Model):
     valor = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.nome
+        return f"{self.nome}"
 
 
 class RespostaTextual(models.Model):
