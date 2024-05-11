@@ -7,7 +7,7 @@ from django.db import models
 
 class Tema(models.Model):
     nome = models.CharField(max_length=100)
-    ordem_perguntas_formulario = models.IntegerField()
+    ordem_perguntas_formulario = models.IntegerField(null=True, blank=True)
     def __str__(self):
         return self.nome
 
@@ -61,10 +61,9 @@ class Questionario(models.Model):
 
 class Entidade(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    nome = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.nome
+        return self.user.username
 
 
 class Instalacao(models.Model):

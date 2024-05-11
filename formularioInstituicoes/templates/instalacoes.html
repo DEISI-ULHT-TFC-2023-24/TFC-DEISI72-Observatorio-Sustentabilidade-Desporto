@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+{% extends 'navigator.html' %}
+
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Instalações</title>
+</head>
+
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/instalacoes.css' %}">
+
+
+    <div class="instalacoes">
+        {% for instalacao in instalacoes %}
+            <a href="form" class="box">
+                <h1>{{ instalacao.nome }}</h1>
+                <h2>{{ instalacao.entidade }}</h2>
+                <p>{{ instalacao.morada }}</p>
+                <p>{{ instalacao.distrito }}</p>
+            </a>
+        {% endfor %}
+    </div>
+
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ instalacaoForm.as_p }}
+
+        <input type="submit" value="Registar">
+
+    </form>
+
+{% endblock %}
+
+</html>

@@ -94,8 +94,6 @@ def criar_perguntas_form(perguntas_form_object):
 
                 perguntas_todos = [pergunta_escluida] + list(valores_escluidos)
 
-
-
             for pergunta in perguntas_todos:
                 if pergunta.tipo == 'NUMERO_INTEIRO':
                     formint = FormNumerosInteiros(prefix=pergunta.id)
@@ -397,7 +395,6 @@ def guarda_respostas_submmit(entidade, ano_questionario, perguntas_submmit_objec
 
                 perguntas_todos = [pergunta_escluida] + list(valores_escluidos)
 
-
             for pergunta in perguntas_todos:
 
                 if pergunta.tipo == 'NUMERO_INTEIRO':
@@ -412,7 +409,8 @@ def guarda_respostas_submmit(entidade, ano_questionario, perguntas_submmit_objec
                 elif pergunta.tipo == 'TEXTO_LIVRE' or pergunta.tipo == 'ESCOLHA_MULTIPLA_UNICA' or pergunta.tipo == 'ESCOLHA_MULTIPLA_VARIAS' or pergunta.tipo == 'MES':
 
                     respostas_perguntas = RespostaTextual.objects.filter(pergunta_id=pergunta.id)
-                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao.id).order_by('texto')
+                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao.id).order_by(
+                        'texto')
 
                     respostas[pergunta] = []
                     for resposta_dada in respostas_dadas:
@@ -430,7 +428,6 @@ def guarda_respostas_submmit(entidade, ano_questionario, perguntas_submmit_objec
 
 @login_required
 def respostas_view(request):
-
     entidade = getEntidade(request)
     print(entidade)
 
@@ -644,7 +641,7 @@ def login_view(request):
         if user is not None:
             login(request, user)
 
-            return redirect("/index")
+            return redirect("/")
 
     return render(request, 'login.html', {"authForm": AuthenticationForm()})
 
@@ -668,3 +665,23 @@ def sign_up_view(request):
         utilizador.save()
 
     return render(request, 'signup.html', {"formUser": formUser, "formUtilizador": formEntidade})
+
+
+@login_required
+def instalacoes_view(request):
+    entidade = getEntidade(request)
+
+    instalacaoForm = FormInstalacoes(request.POST or None)
+
+    if request.method == "POST":
+        instalacao = instalacaoForm.save(commit=False)
+
+        entidade.instalacoes.add(instalacao, bulk=False)
+
+        instalacao = instalacaoForm.save(commit=True)
+
+        avaliacao = Avaliacao(instalacao=instalacao, ano=datetime.date.today().year, questionario=Questionario.objects.filter(id=3).first())
+
+        avaliacao.save()
+
+    return render(request, 'instalacoes.html', {'instalacoes': Instalacao.objects.filter(entidade=entidade), 'instalacaoForm': instalacaoForm})

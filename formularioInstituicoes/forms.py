@@ -6,6 +6,7 @@ from django.forms import ModelForm
 from django import forms
 from .models import *
 
+
 class FormNumerosInteiros(ModelForm):
     class Meta:
         model = RespostaNumerica
@@ -25,8 +26,6 @@ class FormTextoLivre(ModelForm):
         labels = {'texto': ''}
 
         texto = forms.Textarea(attrs={'required': False})
-
-
 
 
 class FormEscolhaMultiplaUnica(ModelForm):
@@ -84,5 +83,12 @@ class FormMes(ModelForm):
 class FormEntidade(ModelForm):
     class Meta:
         model = Entidade
-        fields = ['nome']
-        labels = {'nome' : "Nome da Entidade"}
+        fields = []
+        labels = {}
+
+
+class FormInstalacoes(ModelForm):
+    class Meta:
+        model = Instalacao
+        fields = ['nome', 'morada', 'distrito', 'concelho', 'freguesia', 'telefone', 'email']
+        labels = {'nome': "Nome da Instalacao"}
