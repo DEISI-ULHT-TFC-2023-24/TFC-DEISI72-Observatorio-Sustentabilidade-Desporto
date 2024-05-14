@@ -155,7 +155,43 @@ window.onload = function () {
     }
 };
 
-function editar(csrftoken, resposta_id, tipo_resposta) {
+document.addEventListener("DOMContentLoaded", function () {
+    const botoes_editar = document.querySelectorAll('button.botao_submmit')
+
+    for (const botao of botoes_editar) {
+        botao.style.display = "none"
+    }
+})
+
+function toggle(element) {
+    document.querySelectorAll(".bloco").forEach(function (e) {
+        e.style.display = "none";
+        e.closest('div.tema').querySelector('div.titulo').querySelector('button').style.display = "none";
+        e.closest('div.tema').querySelector('div.titulo').querySelector('span#sinal').innerText = "+";
+    });
+
+    const bloco = element.nextElementSibling;
+    const sinal = element.querySelector("#sinal");
+
+    const button = bloco.closest('div.tema').querySelector('div.titulo').querySelector('button');
+
+    if (bloco.style.display === "none" || bloco.style.display === "") {
+        bloco.style.display = "block";
+        sinal.innerText = '-';
+        button.style.display = "inline";
+
+
+        var scrollPosition = bloco.offsetTop - 170;
+
+        window.scrollTo({
+            top: scrollPosition,
+            behavior: "smooth"
+        })
+    }
+}
+
+
+function editar(csrftoken, tema_id) {
 
     const requestObj = new XMLHttpRequest()
 
@@ -165,9 +201,9 @@ function editar(csrftoken, resposta_id, tipo_resposta) {
     const formdata = new FormData()
     formdata.append('metodo', 'post')
     formdata.append('tipo_query', 'editar')
-    formdata.append('tipo_resposta', tipo_resposta)
-    formdata.append('id_resposta', resposta_id);
     requestObj.send(formdata)
+
+    window.location.href = `/update_form/${tema_id}`;
 
 }
 
@@ -221,21 +257,21 @@ function remover(csrftoken, resposta_id, tipo_resposta) {
         }
     }
 
-    if(subtemas_not_hidden.length !== 0){
+    if (subtemas_not_hidden.length !== 0) {
         if (subtemas_not_hidden.length <= 1) {
             div_element.querySelectorAll('button')[1].remove()
             div_element.querySelector('span').textContent = "Não Respondeu"
         } else {
             div_element.remove()
         }
-    }else if (perguntas_not_hidden.length !== 0) {
+    } else if (perguntas_not_hidden.length !== 0) {
         if (perguntas_not_hidden.length <= 1) {
             div_element.querySelectorAll('button')[1].remove()
             div_element.querySelector('span').textContent = "Não Respondeu"
         } else {
             div_element.remove()
         }
-    }else {
+    } else {
         div_element.querySelectorAll('button')[1].remove()
         div_element.querySelector('span').textContent = "Não Respondeu"
     }

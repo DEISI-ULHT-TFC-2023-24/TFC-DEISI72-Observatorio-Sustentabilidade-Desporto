@@ -22,6 +22,7 @@ from django.views.static import serve
 urlpatterns = [
     path('index', views.index_view),
     path('form', views.formulario_view),
+    path('update_form/<tema_id>', views.update_form_view),
     path('submmit', views.respostas_view),
     path('dashboard', views.dashboard_view),
     path('signup', views.sign_up_view),

@@ -19,6 +19,7 @@
     font-size: 1.5em;
     font-weight: bold;
     padding: 1ch 0;
+    display: flex;
     justify-content: space-between;
     flex-direction: row;
 }
@@ -127,15 +128,4 @@ h3 button {
 
 #boxResposta > div, #boxRespostaNova > div {
     margin-left: 10px;
-}
-
-.items td{
-    padding: 7px;
-}
-
-.botao_submmit {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    outline: none; /* Remove o contorno padrão do botão */
 }

@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="{% static 'css/formulario.css' %}">
     <script src="{% static 'js/formulario.js' %}"></script>
+    <script src="{% static 'js/update_form.js' %}"></script>
 
     <div class="container">
 
@@ -36,7 +37,7 @@
                                             {% endif %}
                                         </h3>
                                         <table>
-                                            {% for pergunta, resposta in perguntas.items %}
+                                            {% for pergunta, respostas in perguntas.items %}
                                                 <tr id="{{ tema_counter }}.{{ subtema_counter }}:{{ pergunta.texto|slugify }}">
                                                     <td id="pergunta">
                                                         <input type="hidden" name="pergunta" value="{{ pergunta.id }}">
@@ -45,7 +46,14 @@
                                                     <td id="resposta">
                                                         <div id="boxResposta">
                                                             <div>
-                                                                {{ resposta.as_p }}
+                                                                {% for resposta in respostas %}
+                                                                    <div id="resposta_dada">
+                                                                        <input type="hidden"
+                                                                               value="{{ resposta.id }}"
+                                                                               id="respostaId">
+                                                                        <span class="respostaValue">{{ resposta }}</span>
+                                                                    </div>
+                                                                {% endfor %}
                                                             </div>
                                                             {% if pergunta.unidade %}
                                                                 <div class="unidade">
@@ -76,7 +84,13 @@
 
                                 {% endwith %}
                             {% endfor %}
-                            <input type="submit" value="Gravar" name="saveButton" id="ButaoGravar">
+
+                            <div class="button-group">
+                                <input type="button" value="Limpar" name="clearButton" id="ButaoLimpar" onclick="limpar_valores_form()">
+                                <input type="submit" value="Gravar" name="saveButton" id="ButaoGravar">
+                            </div>
+
+
                         </form>
                     </div>
                 </div>
@@ -88,4 +102,3 @@
     </div>
 
 {% endblock %}
-

@@ -16,8 +16,12 @@
 
             {% with forloop.counter as tema_counter %}
                 <div class="tema">
-                    <div class="titulo" onclick="toggle(this)">
+                    <div class="titulo" onclick="toggle(this)" id="{{ tema.id }}">
                         <span>{{ tema_counter }}. {{ tema.nome }} </span>
+                        <button id="botao_editar:{{ resposta.id }}"
+                                onclick="editar ('{{ csrf_token }}', '{{ tema.id }}')"
+                                class="botao_submmit">✏️
+                        </button>
                         <span style="float:right" id="sinal">+</span>
                     </div>
                     <div class="bloco">
@@ -27,13 +31,7 @@
                             {% with forloop.counter as subtema_counter %}
                                 <div id={{ tema_counter }}:{{ subtema.nome|slugify }} class="bloco_subtema">
                                     <h3 id="{{ subtema.nome|slugify }}">{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}
-                                        <button id="botao_editar:{{ resposta.id }}"
-                                                onclick="editar ('{{ csrf_token }}', '{{ resposta.id }}', '{{ pergunta.tipo }}')"
-                                                class="botao_submmit">✏️
-                                        </button>
                                     </h3>
-
-
                                     <table>
                                         {% for pergunta, respostas in perguntas.items %}
                                             <tr id="{{ tema_counter }}.{{ subtema_counter }}:{{ pergunta.texto|slugify }}"
@@ -55,30 +53,7 @@
                                                                         <span class="respostaValue">{{ resposta }}</span>
                                                                         {% if respostas %}
                                                                             {% if pergunta.unidade %}
-                                                                                {% if "^" in pergunta.unidade.unidade %}
-                                                                                    {% with pergunta.unidade.unidade|split:"|" as toda %}
-                                                                                        {% for cada in toda %}
-                                                                                            {% if "^" in cada %}
-                                                                                                {% with cada|split:"^" as parts %}
-                                                                                                    {{ parts|first }}
-                                                                                                    <sup>{{ parts|last }}</sup>
-
-                                                                                                {% endwith %}
-                                                                                            {% else %}
-                                                                                                {{ cada }}
-
-                                                                                            {% endif %}
-                                                                                            {% if toda|length > 1 %}
-                                                                                                {% if forloop.first %}
-                                                                                                    |
-                                                                                                {% endif %}
-                                                                                            {% endif %}
-                                                                                        {% endfor %}
-                                                                                    {% endwith %}
-                                                                                {% else %}
-                                                                                    {{ pergunta.unidade }}
-
-                                                                                {% endif %}
+                                                                                {{ pergunta.unidade }}
 
                                                                             {% endif %}
                                                                         {% endif %}

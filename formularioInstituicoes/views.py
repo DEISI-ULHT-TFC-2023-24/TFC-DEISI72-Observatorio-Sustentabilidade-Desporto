@@ -14,6 +14,7 @@ from .models import *
 from .forms import *
 
 perguntas_form = {}
+perguntas_update_form = {}
 
 
 def getEntidade(request) -> Entidade:
@@ -142,6 +143,238 @@ def criar_perguntas_form(perguntas_form_object):
         perguntas_form_object[tema] = subtemas
 
 
+def update_respostas_view(request, perguntas_form_object, entidade, ano_questionario):
+    instalacao = Instalacao.objects.get(entidade=entidade)
+
+    avaliacoes = Avaliacao.objects.filter(instalacao__nome=instalacao.nome)
+
+    avaliacao = avaliacoes.get(ano=ano_questionario)
+
+    questionario = avaliacao.questionario
+
+    for tema in questionario.temas.all().order_by('ordem_perguntas_formulario'):
+
+        subtemas = {}
+
+        subtemas_todos = SubTema.objects.filter(tema_id=tema.id).order_by('nome')
+
+        if subtemas_todos.filter(nome='Valores relevantes').exists() & subtemas_todos.filter(nome='Outro').exists():
+            excluindo_valores = subtemas_todos.exclude(nome='Valores relevantes')
+            subtema_valores = subtemas_todos.get(nome='Valores relevantes')
+
+            valores_escluidos = excluindo_valores.exclude(nome='Outro')
+            subtema_outro = subtemas_todos.get(nome='Outro')
+
+            subtemas_todos = [subtema_valores] + list(valores_escluidos) + [subtema_outro]
+
+        elif subtemas_todos.filter(nome='Outro').exists():
+            valores_escluidos = subtemas_todos.exclude(nome='Outro')
+            subtema_outro = subtemas_todos.get(nome='Outro')
+
+            subtemas_todos = list(valores_escluidos) + [subtema_outro]
+
+        elif subtemas_todos.filter(nome='Outros').exists():
+            valores_escluidos = subtemas_todos.exclude(nome='Outros')
+            subtema_outro = subtemas_todos.get(nome='Outros')
+
+            subtemas_todos = list(valores_escluidos) + [subtema_outro]
+
+        for subtema in subtemas_todos:
+            formulario = {}
+
+            perguntas_todos = Pergunta.objects.filter(subtema_id=subtema.id).order_by('texto')
+
+            if perguntas_todos.filter(texto='Número de veículos da instalação').exists():
+                valores_escluidos = perguntas_todos.exclude(texto='Número de veículos da instalação')
+                pergunta_escluida = perguntas_todos.get(texto='Número de veículos da instalação')
+
+                perguntas_todos = [pergunta_escluida] + list(valores_escluidos)
+
+            elif perguntas_todos.filter(tipo='ESCOLHA_MULTIPLA_VARIAS').exists():
+                valores_escluidos = perguntas_todos.exclude(tipo='ESCOLHA_MULTIPLA_VARIAS')
+                pergunta_escluida = perguntas_todos.get(tipo='ESCOLHA_MULTIPLA_VARIAS')
+
+                perguntas_todos = [pergunta_escluida] + list(valores_escluidos)
+
+            elif perguntas_todos.filter(texto='Com potência de').exists():
+                valores_escluidos = perguntas_todos.exclude(texto='Com potência de')
+                pergunta_escluida = perguntas_todos.get(texto='Com potência de')
+
+                perguntas_todos = list(valores_escluidos) + [pergunta_escluida]
+
+            elif perguntas_todos.filter(texto='Com valor de').exists():
+                valores_escluidos = perguntas_todos.exclude(texto='Com valor de')
+                pergunta_escluida = perguntas_todos.get(texto='Com valor de')
+
+                perguntas_todos = list(valores_escluidos) + [pergunta_escluida]
+
+            elif perguntas_todos.filter(texto='Nome').exists():
+                valores_escluidos = perguntas_todos.exclude(texto='Nome')
+                pergunta_escluida = perguntas_todos.get(texto='Nome')
+
+                perguntas_todos = [pergunta_escluida] + list(valores_escluidos)
+
+            elif perguntas_todos.filter(texto='Tipos de atividade desportiva').exists():
+                valores_escluidos = perguntas_todos.exclude(texto='Tipos de atividade desportiva')
+                pergunta_escluida = perguntas_todos.get(texto='Tipos de atividade desportiva')
+
+                perguntas_todos = [pergunta_escluida] + list(valores_escluidos)
+
+            for pergunta in perguntas_todos:
+
+                if pergunta.tipo == 'NUMERO_INTEIRO':
+                    respostas_perguntas = RespostaNumerica.objects.filter(pergunta_id=pergunta.id)
+                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao.id)
+                    formulario[pergunta] = []
+
+                    pergunta_tem_resposta = RespostaNumerica.objects.filter(pergunta_id=pergunta).filter(
+                        avaliacao=avaliacao).count()
+
+                    if pergunta_tem_resposta == 0:
+                        formint = FormNumerosInteiros(prefix=pergunta.id)
+                        formulario[pergunta].append(formint)
+                    else:
+                        for resposta_dada in respostas_dadas:
+                            formint = FormNumerosInteiros(prefix=pergunta.id, instance=resposta_dada)
+                            formulario[pergunta].append(formint)
+
+
+                elif pergunta.tipo == 'TEXTO_LIVRE':
+
+                    respostas_perguntas = RespostaTextual.objects.filter(pergunta_id=pergunta.id)
+                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao.id)
+                    formulario[pergunta] = []
+
+                    pergunta_tem_resposta = RespostaTextual.objects.filter(pergunta_id=pergunta).filter(
+                        avaliacao=avaliacao).count()
+
+                    if pergunta_tem_resposta == 0:
+                        formtxt = FormTextoLivre(prefix=pergunta.id)
+                        formulario[pergunta].append(formtxt)
+                    else:
+                        for resposta_dada in respostas_dadas:
+                            formtxt = FormTextoLivre(prefix=pergunta.id, instance=resposta_dada)
+                            formulario[pergunta].append(formtxt)
+
+                elif pergunta.tipo == 'ESCOLHA_MULTIPLA_UNICA':  # AQUI NÃO TENHO A CERTEZA PQ NÃO TENHO PERGUNTAS DE DESOLHA MULTIPLA UNICA
+
+                    respostas_perguntas = RespostaTextual.objects.filter(pergunta_id=pergunta.id)
+                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao.id)
+                    formulario[pergunta] = []
+
+                    pergunta_tem_resposta = RespostaTextual.objects.filter(pergunta_id=pergunta).filter(
+                        avaliacao=avaliacao).count()
+
+                    if pergunta_tem_resposta == 0:
+                        formescolha = FormEscolhaMultiplaUnica(request.POST or None, prefix=pergunta.id)
+                        formescolha.fields['opcao'].queryset = pergunta.opcoes.all().order_by('nome')
+                        formulario[pergunta].append(formescolha)
+                    else:
+                        for resposta_dada in respostas_dadas:
+                            formescolha = FormEscolhaMultiplaUnica(request.POST or None, prefix=pergunta.id,
+                                                                   instance=resposta_dada)
+                            formescolha.fields['opcao'].queryset = pergunta.opcoes.all().order_by('nome')
+                            formulario[pergunta].append(formescolha)
+
+                elif pergunta.tipo == 'ESCOLHA_MULTIPLA_VARIAS':
+
+                    respostas_perguntas = RespostaTextual.objects.filter(pergunta_id=pergunta.id)
+                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao.id)
+
+                    formulario[pergunta] = []
+
+                    pergunta_tem_resposta = RespostaTextual.objects.filter(pergunta_id=pergunta).filter(
+                        avaliacao=avaliacao).count()
+
+                    if pergunta_tem_resposta == 0:
+                        formescolha = FormEscolhaMultiplaVarias(prefix=pergunta.id)
+
+                        escolhas = []
+
+                        opcoes = pergunta.opcoes.all().order_by('nome')
+
+                        if opcoes.filter(nome='Outro').exists():
+                            opcoes = opcoes.exclude(nome='Outro')
+                            opcao_outro = pergunta.opcoes.get(nome='Outro')
+                            opcoes = list(opcoes) + [opcao_outro]
+
+                        for count, opcao in enumerate(opcoes, start=0):
+                            escolha = (str(count), opcao.nome)
+                            escolhas.append(escolha)
+
+                        escolhas_final = tuple(escolhas)
+
+                        formescolha.fields['opcoes'].choices = escolhas_final
+                        formulario[pergunta] = formescolha
+                    else:
+
+                        formescolha = FormEscolhaMultiplaVarias(prefix=pergunta.id)
+
+                        escolhas = []
+
+                        opcoes = pergunta.opcoes.all().order_by('nome')
+
+                        if opcoes.filter(nome='Outro').exists():
+                            opcoes = opcoes.exclude(nome='Outro')
+                            opcao_outro = pergunta.opcoes.get(nome='Outro')
+                            opcoes = list(opcoes) + [opcao_outro]
+
+                        valores_init = None
+
+                        for count, opcao in enumerate(opcoes, start=0):
+                            escolha = (str(count), opcao.nome)
+
+                            for resposta_dada in respostas_dadas:
+                                opcao_resposta = resposta_dada.texto
+                                if opcao_resposta == escolha[1]:
+                                    if valores_init is None:
+                                        valores_init = escolha
+                                    else:
+                                        valores_init = valores_init + escolha
+
+                            escolhas.append(escolha)
+
+                        formescolha.fields['opcoes'].initial = valores_init
+
+                        escolhas_final = tuple(escolhas)
+
+                        formescolha.fields['opcoes'].choices = escolhas_final
+
+
+                        formulario[pergunta] = formescolha
+
+                elif pergunta.tipo == 'FICHEIRO': #FALTA FAZER
+                    formficheiro = FormFicheiro(prefix=pergunta.id)
+                    formulario[pergunta] = formficheiro
+
+                elif pergunta.tipo == 'MES':
+
+                    respostas_perguntas = RespostaTextual.objects.filter(pergunta_id=pergunta.id)
+                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao.id)
+                    formulario[pergunta] = []
+
+                    pergunta_tem_resposta = RespostaTextual.objects.filter(pergunta_id=pergunta).filter(
+                        avaliacao=avaliacao).count()
+
+                    if pergunta_tem_resposta == 0:
+                        formdata = FormMes(prefix=pergunta.id)
+                        formulario[pergunta] = formdata
+                    else:
+                        formdata = FormMes(prefix=pergunta.id)
+
+                        for resposta_dada in respostas_dadas:
+
+                            for opcao in formdata.fields['month'].choices:
+                                if opcao[1] == resposta_dada.texto:
+                                    formdata.fields['month'].initial = opcao
+
+                        formulario[pergunta] = formdata
+
+            subtemas[subtema] = formulario
+
+        perguntas_form_object[tema] = subtemas
+
+
 def post(request, ano_questionario):
     entidade = getEntidade(request)
 
@@ -226,12 +459,13 @@ def post(request, ano_questionario):
 
                                 subtema_repetido = Pergunta.objects.get(
                                     id=id_pergunta_retirado).subtema.resposta_duplicavel
+                                print(subtema_repetido)
                                 pergunta_repetida = Pergunta.objects.get(
                                     id=id_pergunta_retirado).resposta_permite_repetidos
 
                                 if not (subtema_repetido is True and pergunta_repetida is False):
                                     if not (subtema_repetido is False and pergunta_repetida is True):
-                                        verificaResposta1 = RespostaNumerica.objects.filter(
+                                        verificaResposta1 = RespostaTextual.objects.filter(
                                             avaliacao=avaliacao).filter(
                                             pergunta_id=id_pergunta_retirado)  # só com o login feito é que fica bom
                                         verificaResposta1.delete()  # ver se ele remove apenas o valor da conta associada, e não de todas as contas
@@ -275,10 +509,12 @@ def post(request, ano_questionario):
                                 respostas_duplicadas = list()
 
                                 for opcao in opcoes_pergunta:
-                                    if (opcao.texto in respostas_duplicadas):
+                                    if opcao.texto in respostas_duplicadas:
                                         opcao.delete()
                                     else:
                                         respostas_duplicadas.append(opcao.texto)
+
+
 
         # print(request.FILES)
         files = request.FILES
@@ -312,6 +548,25 @@ def formulario_view(request):
     }
 
     return render(request, 'formulario.html', context)
+
+
+@login_required
+def update_form_view(request, tema_id):
+    entidade = getEntidade(request)
+    ano_questionario = 2024
+
+    update_respostas_view(request, perguntas_update_form, entidade, ano_questionario)
+
+    post(request, 2024)
+
+    if request.method == "POST" or request.method == "FILES":
+        return HttpResponseRedirect(request.path_info)
+
+    context = {
+        'perguntas_form': perguntas_update_form,
+    }
+
+    return render(request, 'update_formulario.html', context)
 
 
 @login_required
@@ -429,9 +684,10 @@ def guarda_respostas_submmit(entidade, ano_questionario, perguntas_submmit_objec
 @login_required
 def respostas_view(request):
     entidade = getEntidade(request)
-    print(entidade)
 
-    guarda_respostas_submmit(entidade, 2024, perguntas_respostas_submmit)
+    ano_questionario = 2024
+
+    guarda_respostas_submmit(entidade, ano_questionario, perguntas_respostas_submmit)
 
     context = {
         'perguntas_respostas_submmit': perguntas_respostas_submmit,
@@ -680,8 +936,10 @@ def instalacoes_view(request):
 
         instalacao = instalacaoForm.save(commit=True)
 
-        avaliacao = Avaliacao(instalacao=instalacao, ano=datetime.date.today().year, questionario=Questionario.objects.filter(id=3).first())
+        avaliacao = Avaliacao(instalacao=instalacao, ano=datetime.date.today().year,
+                              questionario=Questionario.objects.filter(id=3).first())
 
         avaliacao.save()
 
-    return render(request, 'instalacoes.html', {'instalacoes': Instalacao.objects.filter(entidade=entidade), 'instalacaoForm': instalacaoForm})
+    return render(request, 'instalacoes.html',
+                  {'instalacoes': Instalacao.objects.filter(entidade=entidade), 'instalacaoForm': instalacaoForm})

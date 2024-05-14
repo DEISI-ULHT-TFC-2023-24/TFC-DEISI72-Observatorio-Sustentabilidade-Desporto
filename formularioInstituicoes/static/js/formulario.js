@@ -60,7 +60,7 @@ function slugify(texto) {
         .replace(/[^\w\s-]/g, (caractere) => caracteresEspeciais[caractere] || caractere);
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+function checkboes_display() {
     const elementosComPotenciaMedia = document.querySelectorAll('[id*="com-potencia-media-de"]');
     for (const elemento of elementosComPotenciaMedia) {
         elemento.style.display = 'none';
@@ -91,6 +91,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const labelProcurar = `${subtemaNumero}:${labelText}`
         const elementoDiv = document.getElementById(labelProcurar);
 
+        if (elementoDiv) {
+            if (checkbox.checked === true) {
+                elementoDiv.style.display = 'block';
+            }
+        }
+
 
         checkbox.addEventListener('change', function () {
             if (elementoDiv) {
@@ -116,7 +122,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     for (const checkbox of checkboxes) {
-
         const labelId = checkbox.id;
         const labelElement = document.querySelector(`label[for="${labelId}"]`);
         const labelText = slugify(labelElement.textContent);
@@ -126,6 +131,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const labelProcurar = `${subtemaNumero}:${labelText}-com-potencia-media-de`
 
         const elementoDiv = document.getElementById(labelProcurar);
+
+        if (elementoDiv) {
+            if (checkbox.checked === true) {
+                elementoDiv.style.display = 'table-row';
+            }
+        }
 
         checkbox.addEventListener('change', function () {
             if (elementoDiv) {
@@ -148,9 +159,55 @@ document.addEventListener("DOMContentLoaded", function () {
 
         });
     }
+}
 
+document.addEventListener("DOMContentLoaded", function () {
+    checkboes_display();
 });
 
+
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+window.onload = function () {
+    var id_tema = getParameterByName('id');
+    var string = 'temaID:' + id_tema
+
+    const div_titulo = document.getElementById(string)
+
+    const div_bloco = div_titulo.closest('div.tema').querySelector('div.bloco')
+    div_bloco.style.display = 'block'
+}
+
+
+function toggle(element) {
+    document.querySelectorAll(".bloco").forEach(function (e) {
+        e.style.display = "none"
+        e.closest('div.tema').querySelector('div.titulo').querySelector('span#sinal').innerText = "+"
+    });
+
+    const bloco = element.nextElementSibling;
+    const sinal = element.querySelector("#sinal");
+
+    if (bloco.style.display === "none" || bloco.style.display === "") {
+        bloco.style.display = "block";
+        sinal.innerText = '-';
+    }
+
+    var scrollPosition = bloco.offsetTop - 170;
+
+    window.scrollTo({
+        top: scrollPosition,
+        behavior: "smooth"
+    })
+}
 
 function adicionarValorPergunta() {
 
@@ -206,7 +263,6 @@ function adicionarValorPergunta() {
     const currentRow = currentTr.id.split(':')[1];
 
     var listaValoresDiv = document.getElementById(currentTr.id).querySelector('#resposta');
-    console.log(listaValoresDiv)
     listaValoresDiv.style.display = 'block'
     listaValoresDiv.appendChild(novoItem);
 }
@@ -241,5 +297,47 @@ function adicionarValorSubtema() {
     closestForm.appendChild(currentDivClone);
     closestForm.appendChild(submitButton);
 
+}
+
+function limpar_valores_form() {
+
+    var confirmation = window.confirm("Are you sure you want to perform this action?");
+
+    // If OK is clicked, perform the action
+    if (confirmation) {
+        var div_tema = event.target.closest('div').closest('form');
+
+        var allSubtemas = div_tema.querySelectorAll('div.bloco_subtema')
+
+        var elementosVisiveis = Array.from(allSubtemas).filter(function (elemento) {
+            var display = window.getComputedStyle(elemento).getPropertyValue('display');
+            return display !== 'none';
+        });
+
+        elementosVisiveis.forEach(function (elemento) {
+
+            var alltr = elemento.querySelectorAll('tr')
+            alltr.forEach(function (tr) {
+
+                var allrespostas = tr.querySelectorAll('div#resposta_dada')
+                allrespostas.forEach(function (resposta) {
+
+                    var allinputs = resposta.querySelectorAll('input')
+                    allinputs.forEach(function (input) {
+                        if (input.type === 'number' || input.type === 'text') {
+                            input.value = '';
+                        } else if (input.type === 'checkbox') {
+                            input.checked = false;
+                        }
+                    })
+                    var allselects = resposta.querySelectorAll('select')
+                    allselects.forEach(function (select) {
+                        select.value = '';
+                    })
+
+                });
+            });
+        });
+    }
 }
 

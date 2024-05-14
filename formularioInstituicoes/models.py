@@ -48,7 +48,7 @@ class Pergunta(models.Model):
     resposta_permite_repetidos = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.texto} : {self.subtema.tema.nome}-{self.subtema.tema.nome}"
+        return f"{self.texto} : {self.subtema.tema.nome}-{self.subtema.nome}"
 
 
 class Questionario(models.Model):
