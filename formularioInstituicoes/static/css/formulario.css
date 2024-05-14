@@ -75,6 +75,7 @@ input, select {
     border-radius: 5px;
     border: 0;
     transition: background-color 0.3s ease;
+    width: 25px;
 }
 
 input[type="submit"], input[type="button"] {
@@ -137,4 +138,8 @@ h3 button {
 
 .button-group input {
     margin-left: 5px;
+}
+
+div#resposta_dada{
+    display: ruby-text;
 }

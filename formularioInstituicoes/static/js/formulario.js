@@ -260,8 +260,6 @@ function adicionarValorPergunta() {
 
     novoItem.appendChild(novoDiv2).appendChild(botaoRemover);
 
-    const currentRow = currentTr.id.split(':')[1];
-
     var listaValoresDiv = document.getElementById(currentTr.id).querySelector('#resposta');
     listaValoresDiv.style.display = 'block'
     listaValoresDiv.appendChild(novoItem);
@@ -301,7 +299,7 @@ function adicionarValorSubtema() {
 
 function limpar_valores_form() {
 
-    var confirmation = window.confirm("Are you sure you want to perform this action?");
+    var confirmation = window.confirm("Têm a certeza que deseja limpar o formulário?");
 
     // If OK is clicked, perform the action
     if (confirmation) {

@@ -23,4 +23,45 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+function adicionarValorPerguntaUpdate(){
+    console.log('add')
+}
+
+function removeValorPerguntaUpdate(){
+    console.log('rm')
+}
+
+window.onload = function () {
+    var all_perguntas = document.getElementsByClassName('multipla-resposta:True');
+    var array_perguntas = Array.from(all_perguntas);
+
+    array_perguntas.forEach(function (pergunta) {
+        var resposta_dada = pergunta.querySelectorAll('div#resposta_dada');
+
+        resposta_dada.forEach(function (resposta, index) {
+            if (index === 0) {
+
+                var botao = document.createElement("button");
+                botao.type = "button";
+                botao.className = "butao_adiciona";
+                botao.id = "butao_adiciona";
+                botao.textContent = "+";
+                botao.onclick = adicionarValorPerguntaUpdate;
+
+                resposta.appendChild(botao);
+            }else{
+                var botao = document.createElement("button");
+                botao.type = "button";
+                botao.className = "butao_remove";
+                botao.id = "butao_remove";
+                botao.textContent = "-";
+                botao.onclick = removeValorPerguntaUpdate;
+
+                resposta.appendChild(botao);
+            }
+        });
+    });
+};
+
+
 
