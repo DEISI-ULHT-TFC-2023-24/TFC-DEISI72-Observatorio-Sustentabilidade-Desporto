@@ -20,7 +20,6 @@ from django.conf.urls.static import static
 from django.views.static import serve
 
 urlpatterns = [
-    path('index', views.index_view),
     path('form', views.formulario_view),
     path('update_form/<tema_id>', views.update_form_view),
     path('submmit', views.respostas_view),

@@ -60,7 +60,7 @@ function slugify(texto) {
         .replace(/[^\w\s-]/g, (caractere) => caracteresEspeciais[caractere] || caractere);
 }
 
-function checkboes_display() {
+function checkboxes_display() {
     const elementosComPotenciaMedia = document.querySelectorAll('[id*="com-potencia-media-de"]');
     for (const elemento of elementosComPotenciaMedia) {
         elemento.style.display = 'none';
@@ -162,7 +162,7 @@ function checkboes_display() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    checkboes_display();
+    checkboxes_display();
 });
 
 
@@ -297,45 +297,5 @@ function adicionarValorSubtema() {
 
 }
 
-function limpar_valores_form() {
 
-    var confirmation = window.confirm("Têm a certeza que deseja limpar o formulário?");
-
-    // If OK is clicked, perform the action
-    if (confirmation) {
-        var div_tema = event.target.closest('div').closest('form');
-
-        var allSubtemas = div_tema.querySelectorAll('div.bloco_subtema')
-
-        var elementosVisiveis = Array.from(allSubtemas).filter(function (elemento) {
-            var display = window.getComputedStyle(elemento).getPropertyValue('display');
-            return display !== 'none';
-        });
-
-        elementosVisiveis.forEach(function (elemento) {
-
-            var alltr = elemento.querySelectorAll('tr')
-            alltr.forEach(function (tr) {
-
-                var allrespostas = tr.querySelectorAll('div#resposta_dada')
-                allrespostas.forEach(function (resposta) {
-
-                    var allinputs = resposta.querySelectorAll('input')
-                    allinputs.forEach(function (input) {
-                        if (input.type === 'number' || input.type === 'text') {
-                            input.value = '';
-                        } else if (input.type === 'checkbox') {
-                            input.checked = false;
-                        }
-                    })
-                    var allselects = resposta.querySelectorAll('select')
-                    allselects.forEach(function (select) {
-                        select.value = '';
-                    })
-
-                });
-            });
-        });
-    }
-}
 

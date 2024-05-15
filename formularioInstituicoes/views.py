@@ -569,11 +569,6 @@ def update_form_view(request, tema_id):
     return render(request, 'update_formulario.html', context)
 
 
-@login_required
-def index_view(request):
-    return render(request, 'index.html')
-
-
 perguntas_respostas_submmit = {}
 
 
