@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.template.defaulttags import register
 from django.urls import reverse
+from slugify import slugify
 
 from .models import *
 from .forms import *
@@ -298,7 +299,9 @@ def update_respostas_view(request, perguntas_form_object, entidade, ano_question
                             opcao_outro = pergunta.opcoes.get(nome='Outro')
                             opcoes = list(opcoes) + [opcao_outro]
 
-                        for count, opcao in enumerate(opcoes, start=0):
+                        escolhas.append(('0', 'hidden'))
+
+                        for count, opcao in enumerate(opcoes, start=1):
                             escolha = (str(count), opcao.nome)
                             escolhas.append(escolha)
 
@@ -321,7 +324,9 @@ def update_respostas_view(request, perguntas_form_object, entidade, ano_question
 
                         valores_init = None
 
-                        for count, opcao in enumerate(opcoes, start=0):
+                        escolhas.append(('0', 'hidden'))
+
+                        for count, opcao in enumerate(opcoes, start=1):
                             escolha = (str(count), opcao.nome)
 
                             for resposta_dada in respostas_dadas:
@@ -375,7 +380,7 @@ def update_respostas_view(request, perguntas_form_object, entidade, ano_question
         perguntas_form_object[tema] = subtemas
 
 
-def post(request, ano_questionario):
+def post(request, ano_questionario, update):
     entidade = getEntidade(request)
 
     instalacao = Instalacao.objects.get(entidade=entidade)
@@ -390,8 +395,8 @@ def post(request, ano_questionario):
         post = request.POST
         post_dicionario = dict(post)
 
-        for chave, resposta_recebida in post_dicionario.items():
-            for valor in resposta_recebida:
+        for chave, respostas_recebida in post_dicionario.items():
+            for valor in respostas_recebida:
                 if chave == 'tema_subtema':
                     tema_id, subtema_id = valor.split('-')
 
@@ -423,16 +428,89 @@ def post(request, ano_questionario):
 
                     perguntas_form.get(Tema.objects.get(id=tema_id))[subtema_adicionar] = perguntas
 
-                    # print(
-                    #     perguntas_form.get(Tema.objects.get(id=tema_id)).get(SubTema.objects.get(id=subtema_id)).keys())
-
                 else:
+
                     pergunta_tiporesposta = chave.split('-')
                     id_pergunta_retirado = pergunta_tiporesposta[0]
                     if id_pergunta_retirado.isdigit():
                         tiporesposta = pergunta_tiporesposta[1]
 
-                        if valor != '':
+                        len_bd_valores_texto = len(RespostaTextual.objects.filter(
+                                    avaliacao=avaliacao).filter(
+                                    pergunta_id=id_pergunta_retirado))
+
+                        len_bd_valores_num = len(RespostaNumerica.objects.filter(
+                            avaliacao=avaliacao).filter(
+                            pergunta_id=id_pergunta_retirado))
+
+
+                        if valor == '' or len_bd_valores_texto > len(respostas_recebida) or len_bd_valores_num > len(respostas_recebida):
+
+                            if update:
+                                if tiporesposta == "numero":
+
+                                    resposta_num = RespostaNumerica.objects.filter(avaliacao=avaliacao).filter(
+                                        pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)))
+
+                                    resposta_num_list = RespostaNumerica.objects.filter(
+                                        avaliacao=avaliacao,
+                                        pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado))
+                                    ).values_list('numero', flat=True)
+
+                                    respostas_post = list(resposta_num_list)
+                                    for resposta_recebida in respostas_recebida:
+                                        if resposta_recebida in resposta_num_list:
+                                            respostas_post.remove(resposta_recebida)
+
+                                    for elementos_remove in respostas_post:
+                                        delete = resposta_num.get(texto=elementos_remove)
+                                        delete.delete()
+
+                                elif tiporesposta == "texto" or tiporesposta == "month":
+                                    resposta_txt = RespostaTextual.objects.filter(avaliacao=avaliacao).filter(
+                                        pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)))
+
+                                    resposta_txt_list = RespostaTextual.objects.filter(
+                                        avaliacao=avaliacao,
+                                        pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado))
+                                    ).values_list('texto', flat=True)
+
+                                    respostas_post = list(resposta_txt_list)
+                                    for resposta_recebida in respostas_recebida:
+                                        if resposta_recebida in resposta_txt_list:
+                                            respostas_post.remove(resposta_recebida)
+
+                                    for elementos_remove in respostas_post:
+                                        delete = resposta_txt.get(texto=elementos_remove)
+                                        delete.delete()
+
+                                elif tiporesposta == "opcao":
+                                    resposta_txt = RespostaTextual(
+                                        avaliacao=avaliacao,  # só com o login feito é que fica bom
+                                        pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
+                                        texto=
+                                        Pergunta.objects.get(id=int(id_pergunta_retirado)).opcoes.order_by('nome')[
+                                            int(valor)],
+                                    )
+
+                                    print(resposta_txt)
+
+                                    # resposta_txt.save()
+                                    #
+                                    # pergunta = Pergunta.objects.get(id=id_pergunta_retirado)
+                                    #
+                                    # opcoes_pergunta = RespostaTextual.objects.filter(pergunta_id=pergunta.id)
+                                    #
+                                    # respostas_duplicadas = list()
+                                    #
+                                    # for opcao in opcoes_pergunta:
+                                    #     if opcao.texto in respostas_duplicadas:
+                                    #         opcao.delete()
+                                    #     else:
+                                    #         respostas_duplicadas.append(opcao.texto)
+                                elif tiporesposta == "opcoes":
+                                    print('opcoes')
+                        elif valor != '':
 
                             if tiporesposta == "numero":
 
@@ -445,21 +523,41 @@ def post(request, ano_questionario):
                                     if not (subtema_repetido is False and pergunta_repetida is True):
                                         verificaResposta1 = RespostaNumerica.objects.filter(
                                             avaliacao=avaliacao).filter(
-                                            pergunta_id=id_pergunta_retirado)  # só com o login feito é que fica bom
-                                        verificaResposta1.delete()  # ver se ele remove apenas o valor da conta associada, e não de todas as contas
+                                            pergunta_id=id_pergunta_retirado)
+                                        verificaResposta1.delete()
+
+                                if (subtema_repetido is True and pergunta_repetida is False) or (subtema_repetido is False and pergunta_repetida is True):
+                                    verificaResposta1 = RespostaNumerica.objects.filter(
+                                        avaliacao=avaliacao).filter(
+                                        pergunta_id=id_pergunta_retirado)
+
+                                    for item in verificaResposta1:
+                                        numero_repetido = item.numero
+                                        respostas_repetidas = RespostaNumerica.objects.filter(
+                                            avaliacao=avaliacao,
+                                            pergunta_id=id_pergunta_retirado,
+                                            numero=numero_repetido
+                                        ).order_by('id')[1:]
+
+                                        for resposta in respostas_repetidas:
+                                            resposta.delete()
 
                                 resposta_num = RespostaNumerica(
-                                    avaliacao=avaliacao,  # só com o login feito é que fica bom
+                                    avaliacao=avaliacao,
                                     pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
                                     numero=int(valor),
                                 )
-                                resposta_num.save()
+
+                                respostas_dadas = RespostaNumerica.objects.filter(avaliacao=avaliacao).filter(
+                                    pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado))).values_list('numero',
+                                                                                                             flat=True)
+                                if valor not in respostas_dadas:
+                                    resposta_num.save()
 
                             elif tiporesposta == "texto" or tiporesposta == "month":
 
                                 subtema_repetido = Pergunta.objects.get(
                                     id=id_pergunta_retirado).subtema.resposta_duplicavel
-                                print(subtema_repetido)
                                 pergunta_repetida = Pergunta.objects.get(
                                     id=id_pergunta_retirado).resposta_permite_repetidos
 
@@ -467,15 +565,34 @@ def post(request, ano_questionario):
                                     if not (subtema_repetido is False and pergunta_repetida is True):
                                         verificaResposta1 = RespostaTextual.objects.filter(
                                             avaliacao=avaliacao).filter(
-                                            pergunta_id=id_pergunta_retirado)  # só com o login feito é que fica bom
-                                        verificaResposta1.delete()  # ver se ele remove apenas o valor da conta associada, e não de todas as contas
+                                            pergunta_id=id_pergunta_retirado)
+                                        verificaResposta1.delete()
+
+                                if (subtema_repetido is True and pergunta_repetida is False) or (subtema_repetido is False and pergunta_repetida is True):
+                                    verificaResposta1 = RespostaTextual.objects.filter(
+                                        avaliacao=avaliacao).filter(
+                                        pergunta_id=id_pergunta_retirado)
+                                    for item in verificaResposta1:
+                                        texto_repetido = item.texto
+
+                                        respostas_repetidas = RespostaTextual.objects.filter(
+                                            avaliacao=avaliacao,
+                                            pergunta_id=id_pergunta_retirado,
+                                            texto=texto_repetido
+                                        ).order_by('id')[1:]
+
+                                        for resposta in respostas_repetidas:
+                                            resposta.delete()
 
                                 resposta_txt = RespostaTextual(
                                     avaliacao=avaliacao,  # só com o login feito é que fica bom
                                     pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
                                     texto=valor,
                                 )
-                                resposta_txt.save()
+
+                                respostas_dadas = RespostaTextual.objects.filter(avaliacao=avaliacao).filter(pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado))).values_list('texto', flat=True)
+                                if valor not in respostas_dadas:
+                                    resposta_txt.save()
 
                             elif tiporesposta == "opcao":
 
@@ -515,10 +632,9 @@ def post(request, ano_questionario):
                                         respostas_duplicadas.append(opcao.texto)
 
 
-
         # print(request.FILES)
         files = request.FILES
-        for chave, resposta_recebida in files.items():
+        for chave, respostas_recebida in files.items():
             pergunta_tiporesposta = chave.split('-')
             id_pergunta_retirado = pergunta_tiporesposta[0]
             if id_pergunta_retirado.isdigit():
@@ -529,7 +645,7 @@ def post(request, ano_questionario):
                     file = Ficheiro(
                         avaliacao=avaliacao,  # só com o login feito é que fica bom
                         pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
-                        ficheiro=resposta_recebida
+                        ficheiro=respostas_recebida
                     )
                     file.save()
 
@@ -538,7 +654,7 @@ def post(request, ano_questionario):
 def formulario_view(request):
     criar_perguntas_form(perguntas_form)
 
-    post(request, 2024)
+    post(request, 2024, update=False)
 
     if request.method == "POST" or request.method == "FILES":
         return HttpResponseRedirect(request.path_info)
@@ -557,7 +673,7 @@ def update_form_view(request, tema_id):
 
     update_respostas_view(request, perguntas_update_form, entidade, ano_questionario)
 
-    post(request, 2024)
+    post(request, 2024, update=True)
 
     if request.method == "POST" or request.method == "FILES":
         return HttpResponseRedirect(request.path_info)
