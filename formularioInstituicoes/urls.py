@@ -28,6 +28,8 @@ urlpatterns = [
     path('login', views.login_view),
     path('logout', views.logout_view),
     path('instalacoes', views.instalacoes_view),
+    path('editinstalacao', views.editinstalacao_view),
+    path('deleteinstalacao', views.deleteinstalacao_view),
     path('', views.instalacoes_view),
     path('post/', views.post_request_submmit),
     re_path(r'^download/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),

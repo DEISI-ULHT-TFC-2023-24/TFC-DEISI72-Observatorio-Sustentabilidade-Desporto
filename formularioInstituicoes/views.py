@@ -1244,5 +1244,31 @@ def instalacoes_view(request):
 
         avaliacao.save()
 
+    instalacaoForm = FormInstalacoes()
+
     return render(request, 'instalacoes.html',
                   {'instalacoes': Instalacao.objects.filter(entidade=entidade), 'instalacaoForm': instalacaoForm})
+
+
+@login_required
+def editinstalacao_view(request):
+    instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
+
+
+
+    print(instalacao)
+
+    if request.method == 'POST':
+        editInstalacaoForm = FormInstalacoes(request.POST, instance=instalacao)
+        editInstalacaoForm.save()
+        return redirect('/')
+
+    editInstalacaoForm = FormInstalacoes(instance=instalacao)
+    return render(request, 'editinstalacao.html', {"instalacaoForm": editInstalacaoForm})
+
+@login_required
+def deleteinstalacao_view(request):
+    instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
+    instalacao.delete()
+
+    return redirect('/')

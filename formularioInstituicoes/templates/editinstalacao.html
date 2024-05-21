@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends 'navigator.html' %}
+
+{% load static %}
+
+{% block titulo %}
+    <h1>Instalações</h1>
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+
+        {{ instalacaoForm.as_p }}
+
+        <input type="submit" value="Guardar">
+
+    </form>
+
+{% endblock %}
+</html>
