@@ -2,8 +2,12 @@ import calendar
 import datetime
 import locale
 
-from django.forms import ModelForm
+from django.contrib.auth.forms import UserCreationForm
+from django.forms import ModelForm, Form
 from django import forms
+from django_recaptcha.fields import ReCaptchaField
+from django_recaptcha.widgets import ReCaptchaV2Invisible, ReCaptchaV3
+
 from .models import *
 
 
@@ -81,6 +85,8 @@ class FormMes(ModelForm):
 
 
 class FormEntidade(ModelForm):
+    captcha = ReCaptchaField(label='')
+
     class Meta:
         model = Entidade
         fields = []
@@ -92,3 +98,8 @@ class FormInstalacoes(ModelForm):
         model = Instalacao
         fields = ['nome', 'morada', 'distrito', 'concelho', 'freguesia', 'telefone', 'email']
         labels = {'nome': "Nome da Instalacao"}
+
+class SignupForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ("username", "email",)

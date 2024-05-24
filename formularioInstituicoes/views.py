@@ -5,7 +5,8 @@ from pathlib import Path
 
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm, PasswordChangeForm
+from django.core.mail import send_mail
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.template.defaulttags import register
@@ -1213,15 +1214,18 @@ def logout_view(request):
 
 def sign_up_view(request):
     formEntidade = FormEntidade(request.POST or None)
-    formUser = UserCreationForm(request.POST or None)
+    formUser = SignupForm(request.POST or None)
 
     if request.method == "POST":
-        user = formUser.save(commit=True)
+        if formEntidade.is_valid():
+            user = formUser.save(commit=True)
 
-        utilizador = formEntidade.save(commit=False)
+            utilizador = formEntidade.save(commit=False)
 
-        utilizador.user = user
-        utilizador.save()
+            utilizador.user = user
+            utilizador.save()
+
+            return redirect("/login")
 
     return render(request, 'signup.html', {"formUser": formUser, "formUtilizador": formEntidade})
 
@@ -1254,8 +1258,6 @@ def instalacoes_view(request):
 def editinstalacao_view(request):
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
 
-
-
     print(instalacao)
 
     if request.method == 'POST':
@@ -1266,9 +1268,48 @@ def editinstalacao_view(request):
     editInstalacaoForm = FormInstalacoes(instance=instalacao)
     return render(request, 'editinstalacao.html', {"instalacaoForm": editInstalacaoForm})
 
+
 @login_required
 def deleteinstalacao_view(request):
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
     instalacao.delete()
 
     return redirect('/')
+
+
+def passwordreset_view(request):
+    form = PasswordResetForm()
+
+    if request.method == 'GET':
+        if "user" in request.GET and "token" in request.GET:
+            form = PasswordChangeForm(User.objects.filter(id=request.GET["user"]).first())
+            print("stuff")
+
+    if request.method == 'POST':
+        form = PasswordResetForm(request.POST)
+        if "email" in request.POST and form.is_valid() and User.objects.filter(email=request.POST["email"]).exists():
+
+            message = ("Password reset link: " + "http://127.0.0.1:8000/password_reset?user=" +
+                       str(User.objects.filter(email=request.POST["email"]).first().id) + "&token=" + str(1))
+
+
+
+            send_mail(
+                "Subject here",
+                message,
+                "from@example.com",
+                ["to@example.com"],
+                fail_silently=False,
+            )
+
+        else:
+            print(User.objects.filter(id=request.GET["user"]).first())
+            form = PasswordChangeForm(user=User.objects.filter(id=request.GET["user"]).first(), data=request.POST)
+            if form.is_valid():
+
+                form.save()
+                return redirect('/login')
+            pass
+
+
+    return render(request, 'passwordreset.html', {"form": form})

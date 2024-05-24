@@ -10,7 +10,7 @@
     padding: 5px 15px;
     border-radius: 10px;
     width: 500px;
-    height: 250px;
+    height: 400px;
     margin: 30px auto;
 
 }
@@ -19,7 +19,7 @@ body {
     background-color: orange;
 }
 
-.botao {
+.botao{
     display: grid;
      place-items: center;
 }
@@ -34,11 +34,6 @@ input {
 }
 
 input[type=submit]{
-    background: orange;
-}
-
-input[type=button]{
-    margin-top: 5px;
     background: orange;
 }
 

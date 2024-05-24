@@ -9,6 +9,8 @@
 
 {% block content %}
     <link rel="stylesheet" href="{% static 'css/instalacoes.css' %}">
+    <script src="{% static 'js/instalacoes.js' %}"></script>
+
 
 
     <div class="instalacoes">
@@ -46,17 +48,32 @@
                 </div>
             </div>
         {% endfor %}
+        <div class="instalcao_entry">
+            <a onclick="registarPopup();" style="cursor: pointer;" class="box">
+                <h1>Nova Instalacao</h1>
+                <img
+                        srcset="https://img.icons8.com/?size=256&amp;id=7914&amp;format=png 1x" width="27"
+                        height="28">
+            </a>
+        </div>
     </div>
 
 
-    <form method="post">
-        {% csrf_token %}
 
-        {{ instalacaoForm.as_p }}
 
-        <input type="submit" value="Registar">
+    <div id="popup" class="instalacaoformpopup">
 
-    </form>
+        <form class="instalacaoform" method="post">
+            <h2>Nova Instalacao</h2>
+            {% csrf_token %}
+
+            {{ instalacaoForm.as_p }}
+
+            <input type="submit" value="Registar">
+
+        </form>
+    </div>
+
 
 {% endblock %}
 

@@ -28,6 +28,7 @@ a {
     border-radius: 10px;
     width: 500px;
     margin: 30px auto;
+    min-height: 240px;
 }
 
 .buttonbox-right {
@@ -62,4 +63,41 @@ a {
 
 .deletebutton {
     margin: auto;
+}
+
+.instalacaoformpopup {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    visibility: hidden;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.instalacaoform {
+    margin: auto;
+    border: 2px solid lightgrey;
+    background: whitesmoke;
+    padding: 50px;
+    border-radius: 10px;
+    min-width: 23vw;
+    min-height: 40vh;
+}
+
+input {
+    padding: 12px 30px;
+    border-radius: 5px;
+    border: 0;
+    transition: background-color 0.3s ease;
+    margin: auto;
+}
+
+input[type=submit]{
+    background: orange;
+}
+
+label{
+    font-size: 18px;
 }

@@ -30,6 +30,7 @@ urlpatterns = [
     path('instalacoes', views.instalacoes_view),
     path('editinstalacao', views.editinstalacao_view),
     path('deleteinstalacao', views.deleteinstalacao_view),
+    path('password_reset', views.passwordreset_view),
     path('', views.instalacoes_view),
     path('post/', views.post_request_submmit),
     re_path(r'^download/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),

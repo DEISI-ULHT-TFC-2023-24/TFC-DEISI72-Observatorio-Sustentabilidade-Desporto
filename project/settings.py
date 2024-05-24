@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'formularioInstituicoes',
+    'django_recaptcha',
     # 'django_extensions',
 ]
 
@@ -140,3 +141,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')
 
 LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/login'
+
+RECAPTCHA_PUBLIC_KEY = '6LdWXucpAAAAAAaBp0pCxfy--0bjLRclLRjcUfED'
+RECAPTCHA_PRIVATE_KEY = '6LdWXucpAAAAAAIzov9lTI3SnLzB499Lsn6XezsF'
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
