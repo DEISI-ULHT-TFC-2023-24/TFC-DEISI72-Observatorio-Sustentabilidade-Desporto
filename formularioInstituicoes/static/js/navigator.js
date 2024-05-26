@@ -13,6 +13,29 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+function getValorInstalacaoFromURL() {
+
+    var url = window.location.href;
+    console.log(url)
+    var valor_instalacao = url.lastIndexOf("=");
+    return url.substring(valor_instalacao + 1);
+}
+
+function form_link(){
+    var instalacao = getValorInstalacaoFromURL();
+    window.location.href = `/form?instalacao=${instalacao}`;
+}
+
+function submmit_link(){
+    var instalacao = getValorInstalacaoFromURL();
+    window.location.href = `/submmit?instalacao=${instalacao}`;
+}
+
+function dash_link(){
+    var instalacao = getValorInstalacaoFromURL();
+    window.location.href = `/dashboard?instalacao=${instalacao}`;
+}
+
 
 
 

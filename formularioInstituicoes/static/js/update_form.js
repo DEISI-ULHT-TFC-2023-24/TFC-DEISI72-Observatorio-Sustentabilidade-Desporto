@@ -2,7 +2,7 @@ function getValorTemaFromURL() {
 
     var url = window.location.href;
     var valor_tema = url.lastIndexOf("/");
-    return url.substring(valor_tema + 1);
+    return url.substring(valor_tema + 1).split('?')[0];
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -103,7 +103,6 @@ function limpar_valores_form() {
                 var string = 'multipla-resposta:True'
                 var respostas_multiplas = Array.from(tr.getElementsByClassName(string))
 
-                console.log(respostas_multiplas)
 
                 respostas_multiplas.forEach(function (respostas){
                     respostas.querySelectorAll('div#resposta_dada').forEach(function (resposta, index){

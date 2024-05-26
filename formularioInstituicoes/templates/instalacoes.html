@@ -26,24 +26,18 @@
                             height="28">
                     </a>
                 </div>
-                <a href="form" class="box">
+                <a href="/form?instalacao={{ instalacao.id }}" class="box">
                     <h1>{{ instalacao.nome }}</h1>
                     <h2>{{ instalacao.entidade }}</h2>
                     <p>{{ instalacao.morada }}</p>
                     <p>{{ instalacao.distrito }}</p>
                 </a>
                 <div class="buttonbox-right">
-                    <a href="/form?instalacao={{ instalacao.id }}" class="formbutton"><img
-                            srcset="https://img.icons8.com/?size=256&amp;id=9887&amp;format=png 1x" width="27"
-                            height="28">
+                    <a href="/form?instalacao={{ instalacao.id }}" class="formbutton"><i class="fa-brands fa-wpforms"></i>
                     </a>
-                    <a href="/submmit?instalacao={{ instalacao.id }}" class="submitbutton"><img
-                            srcset="https://img.icons8.com/?size=256&amp;id=9887&amp;format=png 1x" width="27"
-                            height="28">
+                    <a href="/submmit?instalacao={{ instalacao.id }}" class="submitbutton"><i class="material-icons">send</i>
                     </a>
-                    <a href="/dashboard?instalacao={{ instalacao.id }}" class="dashboardbutton"><img
-                            srcset="https://img.icons8.com/?size=256&amp;id=9887&amp;format=png 1x" width="27"
-                            height="28">
+                    <a href="/dashboard?instalacao={{ instalacao.id }}" class="dashboardbutton"><i class="material-icons">dashboard</i>
                     </a>
                 </div>
             </div>

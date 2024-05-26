@@ -146,10 +146,8 @@ def criar_perguntas_form(perguntas_form_object):
         perguntas_form_object[tema] = subtemas
 
 
-def update_respostas_view(request, perguntas_form_object, entidade, ano_questionario):
-    instalacao = Instalacao.objects.get(entidade=entidade)
-
-    avaliacoes = Avaliacao.objects.filter(instalacao__nome=instalacao.nome)
+def update_respostas_view(request, perguntas_form_object, instalacao, ano_questionario):
+    avaliacoes = Avaliacao.objects.filter(instalacao__id=instalacao)
 
     avaliacao = avaliacoes.get(ano=ano_questionario)
 
@@ -227,7 +225,7 @@ def update_respostas_view(request, perguntas_form_object, entidade, ano_question
 
                 if pergunta.tipo == 'NUMERO_INTEIRO':
                     respostas_perguntas = RespostaNumerica.objects.filter(pergunta_id=pergunta.id)
-                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao.id)
+                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao)
                     formulario[pergunta] = []
 
                     pergunta_tem_resposta = RespostaNumerica.objects.filter(pergunta_id=pergunta).filter(
@@ -245,7 +243,7 @@ def update_respostas_view(request, perguntas_form_object, entidade, ano_question
                 elif pergunta.tipo == 'TEXTO_LIVRE':
 
                     respostas_perguntas = RespostaTextual.objects.filter(pergunta_id=pergunta.id)
-                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao.id)
+                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao)
                     formulario[pergunta] = []
 
                     pergunta_tem_resposta = RespostaTextual.objects.filter(pergunta_id=pergunta).filter(
@@ -262,7 +260,7 @@ def update_respostas_view(request, perguntas_form_object, entidade, ano_question
                 elif pergunta.tipo == 'ESCOLHA_MULTIPLA_UNICA':  # AQUI NÃO TENHO A CERTEZA PQ NÃO TENHO PERGUNTAS DE DESOLHA MULTIPLA UNICA
 
                     respostas_perguntas = RespostaTextual.objects.filter(pergunta_id=pergunta.id)
-                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao.id)
+                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao)
                     formulario[pergunta] = []
 
                     pergunta_tem_resposta = RespostaTextual.objects.filter(pergunta_id=pergunta).filter(
@@ -282,7 +280,7 @@ def update_respostas_view(request, perguntas_form_object, entidade, ano_question
                 elif pergunta.tipo == 'ESCOLHA_MULTIPLA_VARIAS':
 
                     respostas_perguntas = RespostaTextual.objects.filter(pergunta_id=pergunta.id)
-                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao.id)
+                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao)
 
                     formulario[pergunta] = []
 
@@ -356,7 +354,7 @@ def update_respostas_view(request, perguntas_form_object, entidade, ano_question
                 elif pergunta.tipo == 'MES':
 
                     respostas_perguntas = RespostaTextual.objects.filter(pergunta_id=pergunta.id)
-                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao.id)
+                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao)
                     formulario[pergunta] = []
 
                     pergunta_tem_resposta = RespostaTextual.objects.filter(pergunta_id=pergunta).filter(
@@ -381,12 +379,8 @@ def update_respostas_view(request, perguntas_form_object, entidade, ano_question
         perguntas_form_object[tema] = subtemas
 
 
-def post(request, ano_questionario, update):
-    entidade = getEntidade(request)
-
-    instalacao = Instalacao.objects.get(entidade=entidade)
-
-    avaliacoes = Avaliacao.objects.filter(instalacao__nome=instalacao.nome)
+def post(request, instalacao, ano_questionario, update):
+    avaliacoes = Avaliacao.objects.filter(instalacao__id=instalacao)
 
     avaliacao = avaliacoes.get(ano=ano_questionario)
 
@@ -847,10 +841,15 @@ def post(request, ano_questionario, update):
 def formulario_view(request):
     criar_perguntas_form(perguntas_form)
 
-    post(request, 2024, update=False)
+    instalacao = request.GET.get('instalacao')
+
+    post(request, instalacao, 2024, update=False)
 
     if request.method == "POST" or request.method == "FILES":
-        return HttpResponseRedirect(request.path_info)
+        base_url = request.path_info
+        nova_url = f"{base_url}?instalacao={instalacao}"
+
+        return HttpResponseRedirect(nova_url)
 
     context = {
         'perguntas_form': perguntas_form,
@@ -861,15 +860,20 @@ def formulario_view(request):
 
 @login_required
 def update_form_view(request, tema_id):
-    entidade = getEntidade(request)
+    instalacao = request.GET.get('instalacao')
+
     ano_questionario = 2024
 
-    update_respostas_view(request, perguntas_update_form, entidade, ano_questionario)
+    update_respostas_view(request, perguntas_update_form, instalacao, ano_questionario)
 
-    post(request, 2024, update=True)
+    post(request, instalacao, 2024, update=True)
 
     if request.method == "POST" or request.method == "FILES":
-        return HttpResponseRedirect(request.path_info)
+        base_url = request.path_info
+        nova_url = f"{base_url}?instalacao={instalacao}"
+
+        return HttpResponseRedirect(nova_url)
+
 
     context = {
         'perguntas_form': perguntas_update_form,
@@ -881,10 +885,8 @@ def update_form_view(request, tema_id):
 perguntas_respostas_submmit = {}
 
 
-def guarda_respostas_submmit(entidade, ano_questionario, perguntas_submmit_object):
-    instalacao = Instalacao.objects.get(entidade=entidade)
-
-    avaliacoes = Avaliacao.objects.filter(instalacao__nome=instalacao.nome)
+def guarda_respostas_submmit(instalacao, ano_questionario, perguntas_submmit_object):
+    avaliacoes = Avaliacao.objects.filter(instalacao_id=instalacao)
 
     avaliacao = avaliacoes.get(ano=ano_questionario)
 
@@ -959,7 +961,7 @@ def guarda_respostas_submmit(entidade, ano_questionario, perguntas_submmit_objec
                 if pergunta.tipo == 'NUMERO_INTEIRO':
 
                     respostas_perguntas = RespostaNumerica.objects.filter(pergunta_id=pergunta.id)
-                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao.id)
+                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao)
 
                     respostas[pergunta] = []
                     for resposta_dada in respostas_dadas:
@@ -968,7 +970,7 @@ def guarda_respostas_submmit(entidade, ano_questionario, perguntas_submmit_objec
                 elif pergunta.tipo == 'TEXTO_LIVRE' or pergunta.tipo == 'ESCOLHA_MULTIPLA_UNICA' or pergunta.tipo == 'ESCOLHA_MULTIPLA_VARIAS' or pergunta.tipo == 'MES':
 
                     respostas_perguntas = RespostaTextual.objects.filter(pergunta_id=pergunta.id)
-                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao.id).order_by(
+                    respostas_dadas = respostas_perguntas.filter(avaliacao__instalacao_id=instalacao).order_by(
                         'texto')
 
                     respostas[pergunta] = []
@@ -987,11 +989,11 @@ def guarda_respostas_submmit(entidade, ano_questionario, perguntas_submmit_objec
 
 @login_required
 def respostas_view(request):
-    entidade = getEntidade(request)
+    instalacao = request.GET.get('instalacao')
 
     ano_questionario = 2024
 
-    guarda_respostas_submmit(entidade, ano_questionario, perguntas_respostas_submmit)
+    guarda_respostas_submmit(instalacao, ano_questionario, perguntas_respostas_submmit)
 
     context = {
         'perguntas_respostas_submmit': perguntas_respostas_submmit,
@@ -1292,8 +1294,6 @@ def passwordreset_view(request):
             message = ("Password reset link: " + "http://127.0.0.1:8000/password_reset?user=" +
                        str(User.objects.filter(email=request.POST["email"]).first().id) + "&token=" + str(1))
 
-
-
             send_mail(
                 "Subject here",
                 message,
@@ -1306,10 +1306,8 @@ def passwordreset_view(request):
             print(User.objects.filter(id=request.GET["user"]).first())
             form = PasswordChangeForm(user=User.objects.filter(id=request.GET["user"]).first(), data=request.POST)
             if form.is_valid():
-
                 form.save()
                 return redirect('/login')
             pass
-
 
     return render(request, 'passwordreset.html', {"form": form})

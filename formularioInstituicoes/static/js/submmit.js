@@ -203,7 +203,10 @@ function editar(csrftoken, tema_id) {
     formdata.append('tipo_query', 'editar')
     requestObj.send(formdata)
 
-    window.location.href = `/update_form/${tema_id}`;
+    const params = new URLSearchParams(window.location.search);
+    const instalacao = params.get('instalacao');
+
+    window.location.href = `/update_form/${tema_id}?instalacao=${instalacao}`;
 
 }
 
