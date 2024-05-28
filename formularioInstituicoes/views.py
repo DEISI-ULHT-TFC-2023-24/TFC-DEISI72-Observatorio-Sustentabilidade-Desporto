@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm, PasswordChangeForm
 from django.core.mail import send_mail
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.template.defaulttags import register
 from django.urls import reverse
@@ -841,18 +841,19 @@ def post(request, instalacao, ano_questionario, update):
 def formulario_view(request):
     criar_perguntas_form(perguntas_form)
 
-    instalacao = request.GET.get('instalacao')
+    instalacao_id = request.GET.get('instalacao')
 
-    post(request, instalacao, 2024, update=False)
+    post(request, instalacao_id, 2024, update=False)
 
     if request.method == "POST" or request.method == "FILES":
         base_url = request.path_info
-        nova_url = f"{base_url}?instalacao={instalacao}"
+        nova_url = f"{base_url}?instalacao={instalacao_id}"
 
         return HttpResponseRedirect(nova_url)
 
     context = {
         'perguntas_form': perguntas_form,
+        'instalacao_submmit': Instalacao.objects.get(id=instalacao_id).submetido
     }
 
     return render(request, 'formulario.html', context)
@@ -860,23 +861,24 @@ def formulario_view(request):
 
 @login_required
 def update_form_view(request, tema_id):
-    instalacao = request.GET.get('instalacao')
+    instalacao_id = request.GET.get('instalacao')
 
     ano_questionario = 2024
 
-    update_respostas_view(request, perguntas_update_form, instalacao, ano_questionario)
+    update_respostas_view(request, perguntas_update_form, instalacao_id, ano_questionario)
 
-    post(request, instalacao, 2024, update=True)
+    post(request, instalacao_id, 2024, update=True)
 
     if request.method == "POST" or request.method == "FILES":
         base_url = request.path_info
-        nova_url = f"{base_url}?instalacao={instalacao}"
+        nova_url = f"{base_url}?instalacao={instalacao_id}"
 
         return HttpResponseRedirect(nova_url)
 
 
     context = {
         'perguntas_form': perguntas_update_form,
+        'instalacao_submmit': Instalacao.objects.get(id=instalacao_id).submetido
     }
 
     return render(request, 'update_formulario.html', context)
@@ -989,14 +991,16 @@ def guarda_respostas_submmit(instalacao, ano_questionario, perguntas_submmit_obj
 
 @login_required
 def respostas_view(request):
-    instalacao = request.GET.get('instalacao')
+    instalacao_id = request.GET.get('instalacao')
 
     ano_questionario = 2024
 
-    guarda_respostas_submmit(instalacao, ano_questionario, perguntas_respostas_submmit)
+    guarda_respostas_submmit(instalacao_id, ano_questionario, perguntas_respostas_submmit)
 
     context = {
         'perguntas_respostas_submmit': perguntas_respostas_submmit,
+        'instalacao_submmit': Instalacao.objects.get(id=instalacao_id).submetido
+
     }
 
     return render(request, 'submmit.html', context)
@@ -1025,6 +1029,11 @@ def post_request_submmit(request):
 
             elif lista_items[2][0] == 'tipo_resposta' and lista_items[2][1][0] == 'ESCOLHA_MULTIPLA_VARIAS':
                 eliminar_valores_escolha_multipla(lista_items)
+    elif lista_items[0][0] == 'instalacao':
+        obsjetoSave = Instalacao.objects.get(id=int(lista_items[0][1][0]))
+        obsjetoSave.submetido = True
+        obsjetoSave.save()
+
 
     return HttpResponse("POST request")
 

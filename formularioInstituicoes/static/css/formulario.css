@@ -140,6 +140,23 @@ h3 button {
     margin-left: 5px;
 }
 
-div#resposta_dada{
+div#resposta_dada {
     display: ruby-text;
+}
+
+.titulo_submetido{
+    margin-top: 40%;
+    border: 1px solid lightgrey;
+    background: whitesmoke;
+    padding: 25px 15px;
+    border-radius: 10px;
+}
+
+.titulo_submetido span {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    font-weight: bold;
 }

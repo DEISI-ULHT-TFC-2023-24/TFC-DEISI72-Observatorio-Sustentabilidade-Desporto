@@ -156,3 +156,20 @@ h3 button {
     cursor: pointer;
     outline: none; /* Remove o contorno padrão do botão */
 }
+
+.titulo_submetido{
+    margin-top: 40%;
+    border: 1px solid lightgrey;
+    background: whitesmoke;
+    padding: 25px 15px;
+    border-radius: 10px;
+}
+
+.titulo_submetido span {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+    font-weight: bold;
+}

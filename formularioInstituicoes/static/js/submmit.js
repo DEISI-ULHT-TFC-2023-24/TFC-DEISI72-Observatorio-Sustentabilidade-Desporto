@@ -299,3 +299,21 @@ function remover(csrftoken, resposta_id, tipo_resposta) {
         }
     }
 }
+
+
+function submmit(csrftoken) {
+    var confirmation = window.confirm("Têm a certeza que deseja submeter para avaliação?");
+
+    const instalacao = new URLSearchParams(window.location.search).get('instalacao');
+
+    if (confirmation) {
+        const requestObj = new XMLHttpRequest()
+
+        requestObj.open("POST", '/post/')
+        requestObj.setRequestHeader("X-CSRFToken", csrftoken)
+
+        const formdata = new FormData()
+        formdata.append('instalacao', instalacao)
+        requestObj.send(formdata)
+    }
+}

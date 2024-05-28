@@ -11,7 +11,14 @@
     <link rel="stylesheet" href="{% static 'css/submmit.css' %}">
     <script src="{% static 'js/submmit.js' %}"></script>
 
-    <div class="container">
+    {% if instalacao_submmit %}
+
+        <div class="container">
+            <div class="titulo_submetido"><span>Já submeteu para avaliação</span></div>
+        </div>
+
+    {% else %}
+        <div class="container">
         {% for tema, subtemas in perguntas_respostas_submmit.items %}
 
             {% with forloop.counter as tema_counter %}
@@ -91,7 +98,10 @@
             {% endwith %}
 
         {% endfor %}
-        <button name="submitButton" id="ButaoSubmeter">Subtemer</button>
+        <button name="submitButton" onclick="submmit('{{ csrf_token }}')">Submeter</button>
     </div>
+    {% endif %}
+
+
 
 {% endblock %}

@@ -8,6 +8,7 @@ from django.db import models
 class Tema(models.Model):
     nome = models.CharField(max_length=100)
     ordem_perguntas_formulario = models.IntegerField(null=True, blank=True)
+
     def __str__(self):
         return self.nome
 
@@ -76,6 +77,7 @@ class Instalacao(models.Model):
     freguesia = models.CharField(max_length=100, blank=True, null=True)
     telefone = models.IntegerField(blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
+    submetido = models.BooleanField(blank=True, default=False)
 
     def __str__(self):
         return self.nome
