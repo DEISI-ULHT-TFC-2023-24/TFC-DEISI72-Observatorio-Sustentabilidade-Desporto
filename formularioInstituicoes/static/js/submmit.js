@@ -153,6 +153,15 @@ window.onload = function () {
             })
         }
     }
+
+    const as = document.querySelectorAll('a');
+    as.forEach(function (a){
+        const innertxt = a.innerText.split('\\')
+        const tamanho = innertxt.length
+        if(tamanho > 1){
+            a.innerText = 'Ficheiro'
+        }
+    });
 };
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -299,7 +308,6 @@ function remover(csrftoken, resposta_id, tipo_resposta) {
         }
     }
 }
-
 
 function submmit(csrftoken) {
     var confirmation = window.confirm("Têm a certeza que deseja submeter para avaliação?");

@@ -79,6 +79,17 @@ window.onload = function () {
             }
         });
     });
+
+    const labels = document.querySelectorAll('label');
+    const labelsWithClearText = Array.from(labels).filter(label => label.textContent === 'Clear');
+    labelsWithClearText.forEach(function (label){
+        const div = label.closest('div');
+        console.log(div.querySelector('a').innerText.split('media')[1])
+        div.querySelector('a').innerText = 'Ficheiro'
+        label.remove()
+        div.querySelector('input[type="checkbox"]').remove()
+
+    })
 };
 
 function limpar_valores_form() {
@@ -115,14 +126,16 @@ function limpar_valores_form() {
                 var allrespostas = tr.querySelectorAll('div#resposta_dada')
 
                 allrespostas.forEach(function (resposta) {
-
                     var allinputs = resposta.querySelectorAll('input')
                     allinputs.forEach(function (input) {
 
                         if (input.type === 'number' || input.type === 'text') {
                             input.value = '';
                         } else if (input.type === 'checkbox') {
-                            input.checked = false;
+                            if(input.value !== '100'){
+                                input.checked = false;
+                            }
+
                         }
                     })
                     var allselects = resposta.querySelectorAll('select')

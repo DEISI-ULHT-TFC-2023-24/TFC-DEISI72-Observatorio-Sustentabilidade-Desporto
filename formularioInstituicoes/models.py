@@ -1,5 +1,8 @@
+import os
+
 from django.contrib.auth.models import User
-from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator, FileExtensionValidator
 from django.db import models
 
 
@@ -119,10 +122,11 @@ class RespostaNumerica(models.Model):
         return f"{self.numero}"
 
 
+
 class Ficheiro(models.Model):
     pergunta = models.ForeignKey(Pergunta, on_delete=models.CASCADE, related_name='ficheiros')
     avaliacao = models.ForeignKey(Avaliacao, on_delete=models.CASCADE, related_name='ficheiros')
-    ficheiro = models.FileField(upload_to='media/', blank=True)
+    ficheiro = models.FileField(blank=True, validators=[FileExtensionValidator(allowed_extensions=['pdf'])])
 
     def __str__(self):
         return f"{self.ficheiro.name}"

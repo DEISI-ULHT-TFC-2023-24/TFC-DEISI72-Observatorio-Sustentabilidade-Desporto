@@ -57,11 +57,14 @@
                                                                         <input type="hidden"
                                                                                value="{{ resposta.id }}"
                                                                                id="respostaId">
-                                                                        <span class="respostaValue">{{ resposta }}</span>
+                                                                        {% if resposta|length > 1 %}
+                                                                            <a href="{{ resposta.1 }}">{{ resposta.0 }}</a>
+                                                                        {% else %}
+                                                                            <span class="respostaValue">{{ resposta }}</span>
+                                                                        {% endif %}
                                                                         {% if respostas %}
                                                                             {% if pergunta.unidade %}
                                                                                 {{ pergunta.unidade }}
-
                                                                             {% endif %}
                                                                         {% endif %}
                                                                     </div>

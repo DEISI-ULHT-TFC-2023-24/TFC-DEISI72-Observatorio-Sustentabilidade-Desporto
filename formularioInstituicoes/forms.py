@@ -56,6 +56,9 @@ class FormFicheiro(ModelForm):
         model = Ficheiro
         fields = ['ficheiro']
         labels = {'ficheiro': ''}
+        widgets = {
+            'ficheiro': forms.ClearableFileInput(attrs={'accept': 'application/pdf'}),
+        }
 
         ficheiro = forms.Textarea(attrs={'required': False})
 
@@ -98,6 +101,7 @@ class FormInstalacoes(ModelForm):
         model = Instalacao
         fields = ['nome', 'morada', 'distrito', 'concelho', 'freguesia', 'telefone', 'email']
         labels = {'nome': "Nome da Instalacao"}
+
 
 class SignupForm(UserCreationForm):
     class Meta:
