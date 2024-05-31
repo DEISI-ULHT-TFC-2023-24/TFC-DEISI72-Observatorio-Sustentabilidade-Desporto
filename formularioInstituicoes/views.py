@@ -358,12 +358,10 @@ def update_respostas_view(request, perguntas_form_object, instalacao, ano_questi
 
                     if pergunta_tem_resposta == 0:
                         formficheiro = FormFicheiro(prefix=pergunta.id)
-                        formficheiro.fields['ficheiro'].upload_to = f'media/{avaliacao.id}'
                         formulario[pergunta] = formficheiro
                     else:
                         for resposta_dada in respostas_dadas:
                             formficheiro = FormFicheiro(prefix=pergunta.id, instance=resposta_dada)
-                            formficheiro.fields['ficheiro'].upload_to = f'media/{avaliacao.id}'
                             formulario[pergunta].append(formficheiro)
 
                 elif pergunta.tipo == 'MES':
@@ -1069,7 +1067,7 @@ def guarda_respostas_submmit(instalacao, ano_questionario, perguntas_submmit_obj
                     respostas[pergunta] = []
                     for resposta_dada in respostas_dadas:
                         respostas[pergunta].append((resposta_dada.ficheiro.name.split('media/')[0],
-                                                    f'media/{avaliacao.id}/{resposta_dada.ficheiro.url}'))
+                                                    f'{resposta_dada.ficheiro.url}'))
 
             subtemas[subtema] = respostas
 
