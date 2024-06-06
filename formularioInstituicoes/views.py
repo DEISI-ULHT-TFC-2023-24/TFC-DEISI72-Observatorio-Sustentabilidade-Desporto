@@ -124,6 +124,8 @@ def criar_perguntas_form(perguntas_form_object):
                         opcao_outro = pergunta.opcoes.get(nome='Outro')
                         opcoes = list(opcoes) + [opcao_outro]
 
+                    escolhas.append(('100', 'hidden'))
+
                     for count, opcao in enumerate(opcoes, start=0):
                         escolha = (str(count), opcao.nome)
                         escolhas.append(escolha)
@@ -392,7 +394,223 @@ def update_respostas_view(request, perguntas_form_object, instalacao, ano_questi
         perguntas_form_object[tema] = subtemas
 
 
-def post(request, instalacao, ano_questionario, update):
+def post_form(request, instalacao, ano_questionario, update):
+    avaliacoes = Avaliacao.objects.filter(instalacao__id=instalacao)
+
+    avaliacao = avaliacoes.get(ano=ano_questionario)
+
+    if request.method == "POST":
+
+        files = request.FILES
+
+        for chave, respostas_recebida in files.items():
+            pergunta_tiporesposta = chave.split('-')
+            id_pergunta_retirado = pergunta_tiporesposta[0]
+            if id_pergunta_retirado.isdigit():
+                tipofile = pergunta_tiporesposta[1]
+
+                if tipofile == "ficheiro":
+
+                    ficheiros = Ficheiro.objects.filter(avaliacao=avaliacao).filter(
+                        pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)))
+
+                    if len(ficheiros) > 0:
+                        for ficheiro in ficheiros:
+                            ficheiro.delete()
+
+                    folder_path = os.path.join(settings.MEDIA_ROOT, f'{avaliacao.id}')
+
+                    if not os.path.exists(folder_path):
+                        os.makedirs(folder_path)
+
+                    filename = os.path.basename(respostas_recebida.name)
+
+                    file_path = os.path.join(folder_path, filename)
+                    with open(file_path, 'wb') as f:
+                        f.write(respostas_recebida.read())
+
+                    file = Ficheiro(
+                        avaliacao=avaliacao,
+                        pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
+                        ficheiro=os.path.join(folder_path, filename)
+                    )
+                    file.save()
+
+        print(request.POST)
+
+        post = request.POST
+        post_dicionario = dict(post)
+
+        for chave, respostas_recebida in post_dicionario.items():
+            for valor in respostas_recebida:
+                if chave == 'tema_subtema':
+                    tema_id, subtema_id = valor.split('-')
+
+                    subtema_adicionar = SubTema.objects.get(id=subtema_id)
+
+                    perguntas = {}
+
+                    for pergunta in Pergunta.objects.filter(subtema_id=subtema_id):
+                        if pergunta.tipo == 'NUMERO_INTEIRO':
+                            formint = FormNumerosInteiros(prefix=pergunta.id)
+                            perguntas[pergunta] = formint
+
+                        elif pergunta.tipo == 'TEXTO_LIVRE':
+                            formtext = FormTextoLivre(prefix=pergunta.id)
+                            perguntas[pergunta] = formtext
+
+                        elif pergunta.tipo == 'ESCOLHA_MULTIPLA_UNICA':
+                            formescolha = FormEscolhaMultiplaUnica(prefix=pergunta.id)
+                            formescolha.fields['opcao'].queryset = Opcao.objects.filter(pergunta_id=pergunta.id)
+                            perguntas[pergunta] = formescolha
+
+                        elif pergunta.tipo == 'FICHEIRO':
+                            formficheiro = FormFicheiro(prefix=pergunta.id)
+                            perguntas[pergunta] = formficheiro
+
+                        elif pergunta.tipo == 'MES':
+                            formdata = FormMes(prefix=pergunta.id)
+                            perguntas[pergunta] = formdata
+
+                    perguntas_form.get(Tema.objects.get(id=tema_id))[subtema_adicionar] = perguntas
+
+                else:
+
+                    pergunta_tiporesposta = chave.split('-')
+                    id_pergunta_retirado = pergunta_tiporesposta[0]
+                    if id_pergunta_retirado.isdigit():
+                        tiporesposta = pergunta_tiporesposta[1]
+
+                        if int(valor) == 100:
+                            if tiporesposta == "numero":
+
+                                subtema_repetido = Pergunta.objects.get(
+                                    id=id_pergunta_retirado).subtema.resposta_duplicavel
+                                pergunta_repetida = Pergunta.objects.get(
+                                    id=id_pergunta_retirado).resposta_permite_repetidos
+
+                                if not (subtema_repetido is True and pergunta_repetida is False):
+                                    if not (subtema_repetido is False and pergunta_repetida is True):
+                                        verificaResposta1 = RespostaNumerica.objects.filter(
+                                            avaliacao=avaliacao).filter(
+                                            pergunta_id=id_pergunta_retirado)
+                                        verificaResposta1.delete()
+
+                                if (subtema_repetido is True and pergunta_repetida is False) or (
+                                        subtema_repetido is False and pergunta_repetida is True):
+                                    verificaResposta1 = RespostaNumerica.objects.filter(
+                                        avaliacao=avaliacao).filter(
+                                        pergunta_id=id_pergunta_retirado)
+
+                                    for item in verificaResposta1:
+                                        numero_repetido = item.numero
+                                        respostas_repetidas = RespostaNumerica.objects.filter(
+                                            avaliacao=avaliacao,
+                                            pergunta_id=id_pergunta_retirado,
+                                            numero=numero_repetido
+                                        ).order_by('id')[1:]
+
+                                        for resposta in respostas_repetidas:
+                                            resposta.delete()
+
+                                resposta_num = RespostaNumerica(
+                                    avaliacao=avaliacao,
+                                    pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
+                                    numero=int(valor),
+                                )
+
+                                respostas_dadas = RespostaNumerica.objects.filter(avaliacao=avaliacao).filter(
+                                    pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado))).values_list('numero',
+                                                                                                             flat=True)
+                                if valor not in respostas_dadas:
+                                    resposta_num.save()
+
+                            elif tiporesposta == "texto" or tiporesposta == "month":
+
+                                subtema_repetido = Pergunta.objects.get(
+                                    id=id_pergunta_retirado).subtema.resposta_duplicavel
+                                pergunta_repetida = Pergunta.objects.get(
+                                    id=id_pergunta_retirado).resposta_permite_repetidos
+
+                                if not (subtema_repetido is True and pergunta_repetida is False):
+                                    if not (subtema_repetido is False and pergunta_repetida is True):
+                                        verificaResposta1 = RespostaTextual.objects.filter(
+                                            avaliacao=avaliacao).filter(
+                                            pergunta_id=id_pergunta_retirado)
+                                        verificaResposta1.delete()
+
+                                if (subtema_repetido is True and pergunta_repetida is False) or (
+                                        subtema_repetido is False and pergunta_repetida is True):
+                                    verificaResposta1 = RespostaTextual.objects.filter(
+                                        avaliacao=avaliacao).filter(
+                                        pergunta_id=id_pergunta_retirado)
+                                    for item in verificaResposta1:
+                                        texto_repetido = item.texto
+
+                                        respostas_repetidas = RespostaTextual.objects.filter(
+                                            avaliacao=avaliacao,
+                                            pergunta_id=id_pergunta_retirado,
+                                            texto=texto_repetido
+                                        ).order_by('id')[1:]
+
+                                        for resposta in respostas_repetidas:
+                                            resposta.delete()
+
+                                resposta_txt = RespostaTextual(
+                                    avaliacao=avaliacao,  # só com o login feito é que fica bom
+                                    pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
+                                    texto=valor,
+                                )
+
+                                respostas_dadas = RespostaTextual.objects.filter(avaliacao=avaliacao).filter(
+                                    pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado))).values_list('texto',
+                                                                                                             flat=True)
+                                if valor not in respostas_dadas:
+                                    resposta_txt.save()
+
+                            elif tiporesposta == "opcao":
+
+                                verificaResposta1 = RespostaTextual.objects.filter(
+                                    avaliacao=avaliacao).filter(
+                                    pergunta_id=id_pergunta_retirado)  # só com o login feito é que fica bom
+                                verificaResposta1.delete()  # ver se ele remove apenas o valor da conta associada, e não de todas as contas
+
+                                resposta_txt = RespostaTextual(
+                                    avaliacao=avaliacao,  # só com o login feito é que fica bom
+                                    pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
+                                    texto=Opcao.objects.get(id=int(valor)),
+                                )
+                                resposta_txt.save()
+
+
+                            elif tiporesposta == "opcoes":
+
+                                respostas_existentes = RespostaTextual.objects.filter(avaliacao=avaliacao).filter(pergunta_id=int(id_pergunta_retirado))
+
+                                resposta_dada = Pergunta.objects.get(id=int(id_pergunta_retirado)).opcoes.order_by('nome')[
+                                          int(valor)]
+
+                                resposta_txt = RespostaTextual(
+                                    avaliacao=avaliacao,  # só com o login feito é que fica bom
+                                    pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)),
+                                    texto=Pergunta.objects.get(id=int(id_pergunta_retirado)).opcoes.order_by('nome')[
+                                        int(valor)],
+                                )
+
+                                lista_existentes = list()
+
+                                for resposta_existente in respostas_existentes:
+                                    lista_existentes.append(resposta_existente.texto)
+
+                                existe = False
+                                for resposta_existente in respostas_existentes:
+                                    if resposta_existente.texto == resposta_dada.nome:
+                                        existe = True
+
+                                if not existe:
+                                    resposta_txt.save()
+
+def post_update(request, instalacao, ano_questionario, update):
     avaliacoes = Avaliacao.objects.filter(instalacao__id=instalacao)
 
     avaliacao = avaliacoes.get(ano=ano_questionario)
@@ -554,6 +772,8 @@ def post(request, instalacao, ano_questionario, update):
                                     #         respostas_duplicadas.append(opcao.texto)
                                 elif tiporesposta == "opcoes":
 
+
+
                                     if int(valor) != 100:
                                         pergunta = Pergunta.objects.get(id=int(id_pergunta_retirado))
                                         tema_pergunta = pergunta.subtema.tema.id
@@ -610,9 +830,6 @@ def post(request, instalacao, ano_questionario, update):
                                                             avaliacao=avaliacao).filter(
                                                             pergunta_id=pergunta.id)
 
-                                                        print(resposta_ficheiro)
-                                                        print('3')
-
                                                         for resposta_t in resposta_textual:
                                                             resposta_t.delete()
 
@@ -623,7 +840,73 @@ def post(request, instalacao, ano_questionario, update):
                                                             resposta_f.delete()
                                         return redirect('/')
                                     else:
-                                        print('a')
+                                        if int(valor) == 100 and len(respostas_recebida) == 1:
+                                            pergunta = Pergunta.objects.get(id=int(id_pergunta_retirado))
+                                            tema_pergunta = pergunta.subtema.tema.id
+                                            subtemas = SubTema.objects.filter(tema_id=tema_pergunta)
+
+                                            opcoes_DB = list(
+                                                RespostaTextual.objects.filter(avaliacao=avaliacao).filter(
+                                                    pergunta_id=pergunta.id).values_list(
+                                                    'texto',
+                                                    flat=True))
+
+                                            for opcao_DB in opcoes_DB:
+                                                slugify(opcao_DB)
+
+                                            valores_nao_remover = list()
+
+                                            for resposta_id in respostas_recebida:
+                                                if int(resposta_id) != 100:
+                                                    opcao = \
+                                                        Pergunta.objects.get(
+                                                            id=int(id_pergunta_retirado)).opcoes.order_by(
+                                                            'nome')[int(resposta_id) - 1]
+                                                    if slugify(opcao.nome) not in opcoes_DB:
+                                                        valores_nao_remover.append(opcao.nome)
+
+                                            set_opcoes_DB = set(opcoes_DB)
+                                            set_valores_nao_remover = set(valores_nao_remover)
+
+                                            diferenca_simetrica = set_opcoes_DB.symmetric_difference(
+                                                set_valores_nao_remover)
+
+                                            diferenca_simetrica = list(diferenca_simetrica)
+
+                                            print(diferenca_simetrica)
+
+                                            for valor_delete in diferenca_simetrica:
+                                                RespostaTextual.objects.filter(avaliacao=avaliacao).filter(
+                                                    pergunta_id=pergunta.id).get(
+                                                    texto=valor_delete).delete()
+
+                                            for valores_remove in diferenca_simetrica:
+                                                for subtema in subtemas:
+                                                    if slugify(subtema.nome) == slugify(valores_remove):
+                                                        subtema_perguntas = Pergunta.objects.filter(
+                                                            subtema_id=subtema.id)
+                                                        for pergunta in subtema_perguntas:
+                                                            resposta_textual = RespostaTextual.objects.filter(
+                                                                avaliacao=avaliacao).filter(
+                                                                pergunta_id=pergunta.id)
+                                                            resposta_inteiro = RespostaNumerica.objects.filter(
+                                                                avaliacao=avaliacao).filter(
+                                                                pergunta_id=pergunta.id)
+                                                            resposta_ficheiro = Ficheiro.objects.filter(
+                                                                avaliacao=avaliacao).filter(
+                                                                pergunta_id=pergunta.id)
+
+
+                                                            for resposta_t in resposta_textual:
+                                                                resposta_t.delete()
+
+                                                            for resposta_i in resposta_inteiro:
+                                                                resposta_i.delete()
+
+                                                            for resposta_f in resposta_ficheiro:
+                                                                resposta_f.delete()
+                                            return redirect('/')
+
                         elif valor != '':
 
                             if tiporesposta == "numero":
@@ -924,7 +1207,7 @@ def formulario_view(request):
 
     instalacao_id = request.GET.get('instalacao')
 
-    post(request, instalacao_id, 2024, update=False)
+    post_form(request, instalacao_id, 2024, update=False)
 
     if request.method == "POST" or request.method == "FILES":
         base_url = request.path_info
@@ -948,7 +1231,7 @@ def update_form_view(request, tema_id):
 
     update_respostas_view(request, perguntas_update_form, instalacao_id, ano_questionario)
 
-    post(request, instalacao_id, 2024, update=True)
+    post_update(request, instalacao_id, 2024, update=True)
 
     if request.method == "POST" or request.method == "FILES":
         base_url = request.path_info
