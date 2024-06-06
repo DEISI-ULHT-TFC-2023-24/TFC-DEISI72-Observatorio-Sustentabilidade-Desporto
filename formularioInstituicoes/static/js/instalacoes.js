@@ -14,3 +14,11 @@ window.addEventListener('load', function () {
         }
     });
 })
+
+function deleteButton(instalacaoID) {
+    let confirmation = confirm("Você tem certeza que deseja eliminar esta instalção?");
+    if (confirmation) {
+        window.location.href = '/deleteinstalacao?instalacao=' + instalacaoID;
+    }
+
+}

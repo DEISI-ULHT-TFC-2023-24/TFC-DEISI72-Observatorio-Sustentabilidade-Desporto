@@ -21,7 +21,7 @@
                             srcset="https://img.icons8.com/?size=256&amp;id=49&amp;format=png 1x" width="27"
                             height="28">
                     </a>
-                    <a href="/deleteinstalacao?instalacao={{ instalacao.id }}" class="deletebutton"><img
+                    <a class="deletebutton" onclick="deleteButton({{ instalacao.id }})"><img
                             srcset="https://img.icons8.com/?size=256&amp;id=1942&amp;format=png 1x" width="27"
                             height="28">
                     </a>
@@ -33,7 +33,7 @@
                     <p>{{ instalacao.distrito }}</p>
                 </a>
                 <div class="buttonbox-right">
-                    <a href="/form?instalacao={{ instalacao.id }}" class="formbutton"><i class="fa-brands fa-wpforms"></i>
+                    <a href="/form?instalacao={{ instalacao.id }}" class="formbutton"><i class="fa-brands fa-wpforms form"></i>
                     </a>
                     <a href="/submmit?instalacao={{ instalacao.id }}" class="submitbutton"><i class="material-icons">send</i>
                     </a>

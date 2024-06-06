@@ -15,12 +15,6 @@
 </head>
 <body>
 <nav>
-{#    <div class="elem1">#}
-{#        <h2><a href="/"><img srcset="https://img.icons8.com/?size=256&amp;id=9887&amp;format=png 1x, https://img.icons8.com/?size=512&amp;id=9887&amp;format=png 2x" width="27" height="28"><span>Instalações</span></a></h2>#}
-{#        <h2><a onclick="form_link()"><i class="fa-brands fa-wpforms"></i><span>Formulário</span></a></h2>#}
-{#        <h2><a onclick="submmit_link()"><i class="material-icons">send</i><span>Submissão</span></a></h2>#}
-{#        <h2><a onclick="dash_link()"><i class="material-icons">dashboard</i><span>Dashboard</span></a></h2>#}
-{#    </div>#}
     <div class="elem2">
         {% block titulo %}
         {% endblock %}
@@ -58,9 +52,10 @@
 </body>
 <script>
 
-    let subMenu = document.getElementById("profile-nav");
+
 
     function toggleMenu() {
+        let subMenu = document.getElementById("profile-nav");
         subMenu.classList.toggle("open-menu");
     }
 

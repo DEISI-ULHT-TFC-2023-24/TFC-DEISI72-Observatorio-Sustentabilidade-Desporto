@@ -23,7 +23,7 @@ a {
     color: inherit;
     text-decoration: none;
     border: 1px solid lightgrey;
-    background: whitesmoke;
+    background: white;
     padding: 5px;
     border-radius: 10px;
     width: 500px;
@@ -38,11 +38,39 @@ a {
     border-left: solid 1px;
 }
 
+.buttonbox-right a {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    background-color: rgba(211, 211, 211, 0.5);
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+    border-radius: 10px;
+}
+
+.buttonbox-right a i.form {
+    font-weight: bolder;
+    font-size: 1.5em;
+}
+
 .buttonbox-left {
     display: flex;
     flex-direction: column;
     width: 15%;
     border-right: solid 1px;
+}
+
+.buttonbox-left a {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    background-color: rgba(211, 211, 211, 0.5);
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+    border-radius: 10px;
+    position: relative;
 }
 
 .formbutton {
@@ -94,10 +122,10 @@ input {
     margin: auto;
 }
 
-input[type=submit]{
+input[type=submit] {
     background: orange;
 }
 
-label{
+label {
     font-size: 18px;
 }
