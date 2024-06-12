@@ -31,6 +31,16 @@ a {
     min-height: 240px;
 }
 
+.instalcao_entry div.nova_instalacao {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    margin: auto;
+}
+
+
 .buttonbox-right {
     display: flex;
     flex-direction: column;
@@ -94,7 +104,7 @@ a {
 }
 
 .instalacaoformpopup {
-    position: absolute;
+    position: fixed;
     left: 0;
     right: 0;
     top: 0;
@@ -104,9 +114,45 @@ a {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-.instalacaoform {
+.eliminarinstalacaopopup {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    visibility: hidden;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.texto_eliminar {
     margin: auto;
     border: 2px solid lightgrey;
+    background: whitesmoke;
+    padding: 30px;
+    border-radius: 10px;
+    min-width: 20vw;
+    min-height: 25vh;
+}
+
+.texto_eliminar h1, .texto_eliminar p, .texto_eliminar input {
+    display: flex;
+    justify-content: center;
+}
+
+.butoes_popup{
+    display: flex;
+}
+
+
+
+.texto_eliminar input[type="text"] {
+    border: 2px solid rgba(0, 0, 0, 0.32);
+    cursor: text;
+}
+
+.instalacaoform {
+    margin: auto;
     background: whitesmoke;
     padding: 50px;
     border-radius: 10px;
@@ -114,18 +160,92 @@ a {
     min-height: 40vh;
 }
 
-input {
+input{
     padding: 12px 30px;
     border-radius: 5px;
     border: 0;
     transition: background-color 0.3s ease;
     margin: auto;
+    cursor: pointer;
 }
 
-input[type=submit] {
+button{
+    padding: 12px 30px;
+    border-radius: 5px;
+    border: 0;
+    transition: background-color 0.3s ease;
+    margin: auto;
+    cursor: pointer;
+}
+
+input[type=submit], button {
     background: orange;
+    cursor: pointer;
 }
 
 label {
     font-size: 18px;
+}
+
+.buttonbox-left span {
+    font-weight: bold;
+    font-size: 14px;
+    visibility: hidden;
+    width: 75px;
+    background: #ccc;
+    color: black;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    top: 110%;
+    left: 50%;
+    margin-left: -40px;
+}
+
+.buttonbox-left a:hover span {
+    visibility: visible;
+}
+
+.buttonbox-left a:hover::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #ccc transparent transparent transparent;
+}
+
+.buttonbox-right a span {
+    font-weight: bold;
+    font-size: 14px;
+    visibility: hidden;
+    width: 75px;
+    background: #ccc;
+    color: black;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    margin-left: -24px;
+    margin-top: 80px;
+}
+
+.buttonbox-right a:hover span {
+    visibility: visible;
+}
+
+.buttonbox-right a:hover::after {
+    content: "";
+    position: absolute;
+
+    margin-left: 6px;
+    margin-top: 54px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #ccc transparent transparent transparent;
 }
