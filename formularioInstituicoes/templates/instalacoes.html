@@ -19,11 +19,11 @@
                 <div class="buttonbox-left">
                     <a href="/editinstalacao?instalacao={{ instalacao.id }}" class="editbutton"><img
                             srcset="https://img.icons8.com/?size=256&amp;id=49&amp;format=png 1x" width="27"
-                            height="28">
+                            height="28"><span>Editar</span>
                     </a>
-                    <a class="deletebutton" onclick="deleteButton({{ instalacao.id }})"><img
+                    <a class="deletebutton" onclick="deleteButton({{ instalacao.id }}, '{{ instalacao.nome }}')"><img
                             srcset="https://img.icons8.com/?size=256&amp;id=1942&amp;format=png 1x" width="27"
-                            height="28">
+                            height="28"><span>Eliminar</span>
                     </a>
                 </div>
                 <a href="/form?instalacao={{ instalacao.id }}" class="box">
@@ -33,39 +33,69 @@
                     <p>{{ instalacao.distrito }}</p>
                 </a>
                 <div class="buttonbox-right">
-                    <a href="/form?instalacao={{ instalacao.id }}" class="formbutton"><i class="fa-brands fa-wpforms form"></i>
+                    <a href="/form?instalacao={{ instalacao.id }}" class="formbutton"><i
+                            class="fa-brands fa-wpforms form"></i><span>Formulário</span>
                     </a>
-                    <a href="/submmit?instalacao={{ instalacao.id }}" class="submitbutton"><i class="material-icons">send</i>
+                    <a href="/submmit?instalacao={{ instalacao.id }}" class="submitbutton"><i class="material-icons">send</i><span>Submissão</span>
                     </a>
-                    <a href="/dashboard?instalacao={{ instalacao.id }}" class="dashboardbutton"><i class="material-icons">dashboard</i>
+                    <a href="/dashboard?instalacao={{ instalacao.id }}" class="dashboardbutton"><i
+                            class="material-icons">dashboard</i><span>Dashboard</span>
                     </a>
                 </div>
             </div>
+
+
+
         {% endfor %}
-        <div class="instalcao_entry">
-            <a onclick="registarPopup();" style="cursor: pointer;" class="box">
-                <h1>Nova Instalacao</h1>
-                <img
-                        srcset="https://img.icons8.com/?size=256&amp;id=7914&amp;format=png 1x" width="27"
-                        height="28">
-            </a>
-        </div>
+        <a onclick="registarPopup();" style="cursor: pointer;" class="box">
+            <div class="instalcao_entry">
+                <div class="nova_instalacao">
+                    <h1>Nova Instalação</h1>
+                    <img
+                            srcset="https://img.icons8.com/?size=256&amp;id=7914&amp;format=png 1x" width="27"
+                            height="28">
+                </div>
+            </div>
+        </a>
     </div>
 
+    <div id="popup" class="eliminarinstalacaopopup">
+        <div class="texto_eliminar">
+            <h1>Eliminar</h1>
+            <p>Têm a certeza que deseja eliminar esta instalação?</p>
+            <p class="txt">Se sim, por favor, insira o nome da instalação </p>
+
+            <input type="text" lang="Insira o nome da instalação"><br>
+
+            <div class="butoes_popup">
+
+                <button onclick="esconder()"><span>Cancelar</span></button>
+                <button><span>Eliminar</span></button>
+
+            </div>
+
+        </div>
 
 
+    </div>
 
     <div id="popup" class="instalacaoformpopup">
+        <div class="instalacaoform">
+            <form method="post">
+                <h2>Nova Instalação</h2>
+                {% csrf_token %}
 
-        <form class="instalacaoform" method="post">
-            <h2>Nova Instalacao</h2>
-            {% csrf_token %}
+                {{ instalacaoForm.as_p }}
 
-            {{ instalacaoForm.as_p }}
+                <div class="butoes_popup">
+                    <button type="button" onclick="esconder()"><span>Cancelar</span></button>
+                    <input type="submit" value="Registar">
 
-            <input type="submit" value="Registar">
+                </div>
+            </form>
 
-        </form>
+        </div>
+
     </div>
 
 
