@@ -114,6 +114,17 @@ a {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
+.instalacaoformpopup h2{
+    display: flex;
+    justify-content: center;
+}
+
+.instalacaoformpopup p{
+    display: grid;
+    justify-content: center;
+}
+
+
 .eliminarinstalacaopopup {
     position: fixed;
     left: 0;
@@ -146,7 +157,7 @@ a {
 
 
 
-.texto_eliminar input[type="text"] {
+input[type="text"], input[type="number"], input[type="email"] {
     border: 2px solid rgba(0, 0, 0, 0.32);
     cursor: text;
 }
@@ -154,9 +165,9 @@ a {
 .instalacaoform {
     margin: auto;
     background: whitesmoke;
-    padding: 50px;
+    padding: 30px;
     border-radius: 10px;
-    min-width: 23vw;
+    min-width: 18vw;
     min-height: 40vh;
 }
 
@@ -242,10 +253,13 @@ label {
 .buttonbox-right a:hover::after {
     content: "";
     position: absolute;
-
     margin-left: 6px;
     margin-top: 54px;
     border-width: 5px;
     border-style: solid;
     border-color: #ccc transparent transparent transparent;
+}
+
+.error{
+    margin-bottom: 0px;
 }

@@ -100,7 +100,12 @@ class FormInstalacoes(ModelForm):
     class Meta:
         model = Instalacao
         fields = ['nome', 'morada', 'distrito', 'concelho', 'freguesia', 'telefone', 'email']
-        labels = {'nome': "Nome da Instalacao"}
+        labels = {'nome': "Nome da Instalação"}
+
+    def __init__(self, *args, **kwargs):
+        super(FormInstalacoes, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.required = True
 
 
 class SignupForm(UserCreationForm):
