@@ -1542,7 +1542,7 @@ def getRespostaNumericaOr0(pergunta_id, instalacao, ano):
 
     if RespostaNumerica.objects.filter(pergunta_id=pergunta_id, avaliacao=aval).first():
 
-        return RespostaNumerica.objects.filter(pergunta_id=Pergunta.objects.get(id=pergunta_id)).first().numero
+        return RespostaNumerica.objects.filter(pergunta_id=pergunta_id, avaliacao=aval).first().numero
     else:
         return 0
 
