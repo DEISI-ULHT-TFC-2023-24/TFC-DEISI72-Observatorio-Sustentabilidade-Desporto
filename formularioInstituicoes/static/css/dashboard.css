@@ -1,116 +1,75 @@
-html {
-    margin: auto;
-    height: 100%;
-}
-
-body {
-    margin-left: 40vh;
-    margin-right: 40vh;
-    height: 100%;
+.display {
     display: flex;
+    height: auto;
+    padding-top: 12vh;
     flex-direction: column;
-    background-color: orange;
+    padding-left: 10vw;
+    padding-right: 10vw;
 }
 
-#graphbar {
-    height: 10vh;
+.long-entry {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
-    align-items: stretch;
-    margin-bottom: 15vh;
+    height: 40vh;
 }
 
-.entry {
+.two-entries {
+    display: flex;
+    flex-direction: row;
+    flex-basis: 0;
+    gap: 10px;
+    min-height: 40vh;
+    margin-bottom: 2vh;
+}
+
+.single-entry {
+    height: 100%;
+    width: 50%;
     margin: auto;
-    text-align: center;
-    flex: 1;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: 50% 50%;
-    grid-template-rows: 50vh;
-    flex: 1;
-}
-
-.display {
-    box-shadow: 2px 4px 4px 2px #888888;
-    border-radius: 10px;
-    margin-bottom: 5vh;
-}
-
-.display-view {
-    padding: 5%;
-    position: relative;
     background-color: white;
+}
+
+#graf-renconsumo, #graf-rencusto, #graf-renconscusto {
+
 }
 
 .graph-view {
     margin: auto;
-    position: absolute;
-    top: 0%;
-    bottom: 0%;
-    width: 100%;
 }
 
-#barchart {
+.graf-slot3 {
+    width: 33%;
+    height: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+tr {
     margin: auto;
-    width: 100%;
 }
 
-.consumo-ultimo-mes-text {
+table {
     width: 100%;
-    padding-left: 3%;
-    position: absolute;
-}
-
-#ultimo-mes {
     height: 100%;
-    position: relative;
-    box-shadow: 2px 4px 4px 2px #888888;
-    margin-bottom: 15vh;
-    border-radius: 10px;
-    padding: 2%;
 }
 
-.consumo-ultimo-mes-text p, h1 {
-    display: inline;
+td{
+  padding: 15px;
+  text-align: left;
+  vertical-align:middle;
+  font-weight: 300;
+  font-size: 12px;
+  border-bottom: solid 1px rgba(255,255,255,0.1);
 }
 
-.data-list p {
-    display: inline;
+h2 {
+    margin: 10px;
+    margin-right: auto
 }
 
-.data-list {
-    padding-left: 10%;
-    padding-right: 10%;
-    list-style: auto;
-}
-
-.data-list li {
-    width: 100%;
-    font-size: 150%;
-    margin-bottom: 10%;
-}
-
-.list-percentage {
-    float: right;
-}
-
-.display h2 {
-    padding: 3%;
-    padding-bottom: 0;
-    margin: 0;
-}
-
-table, th, td {
-    border: 1px solid black;
-}
-
-#consumodeenergia {
-
-    width: 17vw !important;
-    height: 34vh !important;
-
+.entry-header {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    margin-bottom: 2vh;
 }

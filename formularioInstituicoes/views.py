@@ -443,6 +443,8 @@ def post_form(request, instalacao, ano_questionario, update):
 
         for chave, respostas_recebida in post_dicionario.items():
             for valor in respostas_recebida:
+                if valor.isnumeric() and int(valor) == 100:
+                    continue
                 if chave == 'tema_subtema':
                     tema_id, subtema_id = valor.split('-')
 
@@ -481,7 +483,7 @@ def post_form(request, instalacao, ano_questionario, update):
                     if id_pergunta_retirado.isdigit():
                         tiporesposta = pergunta_tiporesposta[1]
 
-                        if int(valor) == 100:
+                        if valor != "":
                             if tiporesposta == "numero":
 
                                 subtema_repetido = Pergunta.objects.get(
@@ -585,10 +587,14 @@ def post_form(request, instalacao, ano_questionario, update):
 
                             elif tiporesposta == "opcoes":
 
-                                respostas_existentes = RespostaTextual.objects.filter(avaliacao=avaliacao).filter(pergunta_id=int(id_pergunta_retirado))
-
-                                resposta_dada = Pergunta.objects.get(id=int(id_pergunta_retirado)).opcoes.order_by('nome')[
-                                          int(valor)]
+                                respostas_existentes = RespostaTextual.objects.filter(avaliacao=avaliacao).filter(
+                                    pergunta_id=int(id_pergunta_retirado))
+                                opcs = Opcao.objects.filter(pergunta=Pergunta.objects.get(id=int(id_pergunta_retirado)))
+                                print(opcs)
+                                print(valor)
+                                resposta_dada = \
+                                    opcs.order_by('nome')[
+                                        int(valor)]
 
                                 resposta_txt = RespostaTextual(
                                     avaliacao=avaliacao,  # só com o login feito é que fica bom
@@ -609,6 +615,7 @@ def post_form(request, instalacao, ano_questionario, update):
 
                                 if not existe:
                                     resposta_txt.save()
+
 
 def post_update(request, instalacao, ano_questionario, update):
     avaliacoes = Avaliacao.objects.filter(instalacao__id=instalacao)
@@ -772,8 +779,6 @@ def post_update(request, instalacao, ano_questionario, update):
                                     #         respostas_duplicadas.append(opcao.texto)
                                 elif tiporesposta == "opcoes":
 
-
-
                                     if int(valor) != 100:
                                         pergunta = Pergunta.objects.get(id=int(id_pergunta_retirado))
                                         tema_pergunta = pergunta.subtema.tema.id
@@ -895,7 +900,6 @@ def post_update(request, instalacao, ano_questionario, update):
                                                             resposta_ficheiro = Ficheiro.objects.filter(
                                                                 avaliacao=avaliacao).filter(
                                                                 pergunta_id=pergunta.id)
-
 
                                                             for resposta_t in resposta_textual:
                                                                 resposta_t.delete()
@@ -1459,113 +1463,85 @@ def split(value, key):
 
 @login_required
 def dashboard_view(request):
-    consumosAnuaisElectricidade = getRespostaNumericaOr0(11)
-    consumosAnuaisGasNatural = getRespostaNumericaOr0(21)
-    consumosAnuaisPropano = getRespostaNumericaOr0(31)
-    consumosAnuaisGasoleo = getRespostaNumericaOr0(41)
-    consumosAnuaisGasolina = getRespostaNumericaOr0(51)
-    consumosAnuaisFotovoltaica = getRespostaNumericaOr0(61)
-    consumosAnuaisBiomassa = getRespostaNumericaOr0(208)
-    consumosAnuaisEolica = getRespostaNumericaOr0(81)
-    consumosAnuaisTermica = getRespostaNumericaOr0(91)
-    consumosAnuaisOutros = getRespostaNumericaOr0(101)
+    instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
+    ano = 2024
 
-    consumos = [consumosAnuaisElectricidade, consumosAnuaisGasNatural, consumosAnuaisPropano,
-                consumosAnuaisGasoleo, consumosAnuaisGasolina, consumosAnuaisFotovoltaica,
-                consumosAnuaisBiomassa, consumosAnuaisEolica, consumosAnuaisTermica, consumosAnuaisOutros]
+    energiasRenovaveis = [
+        "Fotovoltaica",
+        "Biomass",
+        "Eolica",
+        "Termica",
 
-    consumos_labels = ["Electricidade", "Gas Natural", "Propano", "Gasoleo", "Gasolina", "Fotovoltaica", "Biomassa",
-                       "Eolica", "Térmica", "Outros"]
-
-    custosAnuaisElectricidade = getRespostaNumericaOr0(12)
-    custosAnuaisGasNatural = getRespostaNumericaOr0(22)
-    custosAnuaisPropano = getRespostaNumericaOr0(32)
-    custosAnuaisGasoleo = getRespostaNumericaOr0(42)
-    custosAnuaisGasolina = getRespostaNumericaOr0(52)
-    custosAnuaisFotovoltaica = getRespostaNumericaOr0(62)
-    custosAnuaisBiomassa = getRespostaNumericaOr0(209)
-    custosAnuaisEolica = getRespostaNumericaOr0(82)
-    custosAnuaisTermica = getRespostaNumericaOr0(92)
-    custosAnuaisOutros = getRespostaNumericaOr0(103)
-
-    custos = [custosAnuaisElectricidade, custosAnuaisGasNatural, custosAnuaisPropano,
-              custosAnuaisGasoleo, custosAnuaisGasolina, custosAnuaisFotovoltaica,
-              custosAnuaisBiomassa, custosAnuaisEolica, custosAnuaisTermica, custosAnuaisOutros]
-
-    custosconsumo = [
-        divByZero(custosAnuaisElectricidade, consumosAnuaisElectricidade),
-        divByZero(custosAnuaisGasNatural, consumosAnuaisGasNatural),
-        divByZero(custosAnuaisPropano, consumosAnuaisPropano),
-        divByZero(custosAnuaisGasoleo, consumosAnuaisGasoleo),
-        divByZero(custosAnuaisGasolina, consumosAnuaisGasolina),
-        divByZero(custosAnuaisFotovoltaica, consumosAnuaisFotovoltaica),
-        divByZero(custosAnuaisBiomassa, consumosAnuaisBiomassa),
-        divByZero(custosAnuaisEolica, consumosAnuaisEolica),
-        divByZero(custosAnuaisTermica, consumosAnuaisTermica),
-        divByZero(custosAnuaisOutros, consumosAnuaisOutros)
+    ]
+    energiasNaoRenovaveis = [
+        "Electricidade",
+        "Gas Natural",
+        "Propano",
+        "Gasoleo",
+        "Gasolina",
 
     ]
 
-    faturasMinimaskWh = [
-        getRespostaNumericaOr0(15),
-        getRespostaNumericaOr0(25),
-        getRespostaNumericaOr0(35),
-        getRespostaNumericaOr0(45),
-        getRespostaNumericaOr0(55),
-        getRespostaNumericaOr0(65),
-        getRespostaNumericaOr0(211),
-        getRespostaNumericaOr0(85),
-        getRespostaNumericaOr0(95),
-        getRespostaNumericaOr0(106)
+    energias = energiasNaoRenovaveis + energiasRenovaveis
+
+    consumoEnergiasRenovaveis = list(getConsumoEnergiasRenovaveis(instalacao, ano).values())
+    consumoEnergiasNaoRenovaveis = list(getConsumoEnergiasNaoRenovaveis(instalacao, ano).values())
+    energiasConsumos = consumoEnergiasNaoRenovaveis + consumoEnergiasRenovaveis
+
+    custoEnergiasRenovaveis = list(getCustoEnergiasRenovaveis(instalacao, ano).values())
+    custoEnergiasNaoRenovaveis = list(getCustoEnergiasNaoRenovaveis(instalacao, ano).values())
+
+    custoConsumoEnergiasRenovaveis = list(getCustoConsumoEnergiasRenovaveis(instalacao, ano).values())
+    custoConsumoEnergiasNaoRenovaveis = list(getCustoConsumoEnergiasNaoRenovaveis(instalacao, ano).values())
+
+    faturasRenovaveis = zip(energiasRenovaveis, list(getFaturasMinimaskWhRenovaveis(instalacao, ano).values()),
+                            list(getFaturasMinimasEurRenovaveis(instalacao, ano).values()), list(getFaturasMaximaskWhRenovaveis(instalacao, ano).values()),
+                            list(getFaturasMaximasEurRenovaveis(instalacao, ano).values()))
+    faturasNaoRenovaveis = zip(energiasNaoRenovaveis, list(getFaturasMinimaskWhNaoRenovaveis(instalacao, ano).values()),
+                            list(getFaturasMinimasEurNaoRenovaveis(instalacao, ano).values()), list(getFaturasMaximaskWhNaoRenovaveis(instalacao, ano).values()),
+                            list(getFaturasMaximasEurNaoRenovaveis(instalacao, ano).values()))
+
+    climatizacaoSistemas = [
+        "Ar-Condicionado",
+        "Bombas de Calor",
+        "Caldeira",
+        "Chiller",
+        "Climatizador Evaporativo",
     ]
+    climatizacaoPotencias = list(getClimatizacaoPotencias(instalacao, ano).values())
 
-    faturasMaximaskWh = [
-        getRespostaNumericaOr0(18),
-        getRespostaNumericaOr0(28),
-        getRespostaNumericaOr0(38),
-        getRespostaNumericaOr0(48),
-        getRespostaNumericaOr0(58),
-        getRespostaNumericaOr0(68),
-        getRespostaNumericaOr0(214),
-        getRespostaNumericaOr0(88),
-        getRespostaNumericaOr0(98),
-        getRespostaNumericaOr0(103)
+    aquecimetoAguasSistemas = [
+        "Bombas de Calor",
+        "Caldeiras",
+        "Esquentadores",
+        "Painel Solar Termico",
+        "Termoacumulador"
     ]
+    aquecimetoAguasPotencias = list(getAquecimentoAguasPotencias(instalacao, ano).values())
 
-    faturasMinimasEur = [
-        getRespostaNumericaOr0(17),
-        getRespostaNumericaOr0(27),
-        getRespostaNumericaOr0(37),
-        getRespostaNumericaOr0(47),
-        getRespostaNumericaOr0(57),
-        getRespostaNumericaOr0(67),
-        getRespostaNumericaOr0(213),
-        getRespostaNumericaOr0(87),
-        getRespostaNumericaOr0(97),
-        getRespostaNumericaOr0(108)
-    ]
-
-    faturasMaximasEur = [
-        getRespostaNumericaOr0(20),
-        getRespostaNumericaOr0(30),
-        getRespostaNumericaOr0(40),
-        getRespostaNumericaOr0(50),
-        getRespostaNumericaOr0(60),
-        getRespostaNumericaOr0(70),
-        getRespostaNumericaOr0(216),
-        getRespostaNumericaOr0(90),
-        getRespostaNumericaOr0(100),
-        getRespostaNumericaOr0(105)
-    ]
-
-    faturas = zip(consumos_labels, faturasMinimaskWh, faturasMinimasEur, faturasMaximaskWh, faturasMaximasEur)
-
-    return render(request, 'dashboard.html', {"consumos": consumos, "consumos_labels": consumos_labels,
-                                              "custos": custos, "custosconsumo": custosconsumo, "faturas": faturas})
+    return render(request, 'dashboard.html',
+                  {"energiasRenovaveis": energiasRenovaveis, "energiasNaoRenovaveis": energiasNaoRenovaveis,
+                   "energias" : energias, "energiasConsumos" : energiasConsumos,
+                   "consumoEnergiasRenovaveis": consumoEnergiasRenovaveis,
+                   "consumoEnergiasNaoRenovaveis": consumoEnergiasNaoRenovaveis,
+                   "custoEnergiasRenovaveis": custoEnergiasRenovaveis,
+                   "custoEnergiasNaoRenovaveis": custoEnergiasNaoRenovaveis,
+                   "custoConsumoEnergiasRenovaveis": custoConsumoEnergiasRenovaveis,
+                   "custoConsumoEnergiasNaoRenovaveis": custoConsumoEnergiasNaoRenovaveis,
+                   "faturasRenovaveis": faturasRenovaveis,
+                   "faturasNaoRenovaveis": faturasNaoRenovaveis,
+                   "climatizacaoSistemas" : climatizacaoSistemas,
+                   "climatizacaoPotencias" : climatizacaoPotencias,
+                   "aquecimetoAguasSistemas" : aquecimetoAguasSistemas,
+                   "aquecimetoAguasPotencias" : aquecimetoAguasPotencias
+                   })
 
 
-def getRespostaNumericaOr0(pergunta_id):
-    if RespostaNumerica.objects.filter(pergunta_id=Pergunta.objects.get(id=pergunta_id)).first():
+def getRespostaNumericaOr0(pergunta_id, instalacao, ano):
+    aval = Avaliacao.objects.filter(instalacao=instalacao, ano=ano).first()
+
+    if RespostaNumerica.objects.filter(pergunta_id=pergunta_id, avaliacao=aval).first():
+
         return RespostaNumerica.objects.filter(pergunta_id=Pergunta.objects.get(id=pergunta_id)).first().numero
     else:
         return 0
@@ -1693,3 +1669,154 @@ def passwordreset_view(request):
             pass
 
     return render(request, 'passwordreset.html', {"form": form})
+
+
+def getConsumoEnergiasRenovaveis(instalacao, ano):
+    return {
+        "fotovoltaica": getRespostaNumericaOr0(61, instalacao, ano),
+        "biomassa": getRespostaNumericaOr0(208, instalacao, ano),
+        "eolica": getRespostaNumericaOr0(81, instalacao, ano),
+        "termica": getRespostaNumericaOr0(91, instalacao, ano)
+    }
+
+
+def getConsumoEnergiasNaoRenovaveis(instalacao, ano):
+    return {
+        "electricidade": getRespostaNumericaOr0(11, instalacao, ano),
+        "gasNatural": getRespostaNumericaOr0(21, instalacao, ano),
+        "propano": getRespostaNumericaOr0(31, instalacao, ano),
+        "gasoleo": getRespostaNumericaOr0(41, instalacao, ano),
+        "gasolina": getRespostaNumericaOr0(51, instalacao, ano),
+    }
+
+
+def getCustoEnergiasRenovaveis(instalacao, ano):
+    return {
+        "fotovoltaica": getRespostaNumericaOr0(62, instalacao, ano),
+        "biomassa": getRespostaNumericaOr0(209, instalacao, ano),
+        "eolica": getRespostaNumericaOr0(82, instalacao, ano),
+        "termica": getRespostaNumericaOr0(92, instalacao, ano),
+    }
+
+
+def getCustoEnergiasNaoRenovaveis(instalacao, ano):
+    return {
+        "electricidade": getRespostaNumericaOr0(12, instalacao, ano),
+        "gasNatural": getRespostaNumericaOr0(22, instalacao, ano),
+        "propano": getRespostaNumericaOr0(32, instalacao, ano),
+        "gasoleo": getRespostaNumericaOr0(42, instalacao, ano),
+        "gasolina": getRespostaNumericaOr0(52, instalacao, ano),
+    }
+
+
+def getCustoConsumoEnergiasRenovaveis(instalacao, ano):
+    consumoEnergiasRenovaveis = getConsumoEnergiasRenovaveis(instalacao, ano)
+    custoEnergiasRenovaveis = getCustoEnergiasRenovaveis(instalacao, ano)
+
+    return {
+        "fotovoltaica": divByZero(custoEnergiasRenovaveis["fotovoltaica"], consumoEnergiasRenovaveis["fotovoltaica"]),
+        "biomassa": divByZero(custoEnergiasRenovaveis["biomassa"], consumoEnergiasRenovaveis["biomassa"]),
+        "eolica": divByZero(custoEnergiasRenovaveis["eolica"], consumoEnergiasRenovaveis["eolica"]),
+        "termica": divByZero(custoEnergiasRenovaveis["termica"], consumoEnergiasRenovaveis["termica"]),
+    }
+
+
+def getCustoConsumoEnergiasNaoRenovaveis(instalacao, ano):
+    consumoEnergiasNaoRenovaveis = getConsumoEnergiasNaoRenovaveis(instalacao, ano)
+    custoEnergiasNaoRenovaveis = getCustoEnergiasNaoRenovaveis(instalacao, ano)
+
+    return {
+        "electricidade": divByZero(custoEnergiasNaoRenovaveis["electricidade"], consumoEnergiasNaoRenovaveis["electricidade"]),
+        "gasNatural": divByZero(custoEnergiasNaoRenovaveis["gasNatural"], consumoEnergiasNaoRenovaveis["gasNatural"]),
+        "propano": divByZero(custoEnergiasNaoRenovaveis["propano"], consumoEnergiasNaoRenovaveis["propano"]),
+        "gasoleo": divByZero(custoEnergiasNaoRenovaveis["gasoleo"], consumoEnergiasNaoRenovaveis["gasoleo"]),
+        "gasolina": divByZero(custoEnergiasNaoRenovaveis["gasolina"], consumoEnergiasNaoRenovaveis["gasolina"]),
+    }
+
+
+def getFaturasMinimaskWhRenovaveis(instalacao, ano):
+    return {
+        "fotovoltaica": getRespostaNumericaOr0(65, instalacao, ano),
+        "biomassa": getRespostaNumericaOr0(211, instalacao, ano),
+        "eolica": getRespostaNumericaOr0(85, instalacao, ano),
+        "termica": getRespostaNumericaOr0(95, instalacao, ano),
+    }
+
+def getFaturasMinimaskWhNaoRenovaveis(instalacao, ano):
+    return {
+        "electricidade": getRespostaNumericaOr0(15, instalacao, ano),
+        "gasNatural": getRespostaNumericaOr0(25, instalacao, ano),
+        "propano": getRespostaNumericaOr0(35, instalacao, ano),
+        "gasoleo": getRespostaNumericaOr0(45, instalacao, ano),
+        "gasolina": getRespostaNumericaOr0(55, instalacao, ano),
+    }
+
+def getFaturasMaximaskWhRenovaveis(instalacao, ano):
+    return {
+        "fotovoltaica": getRespostaNumericaOr0(68, instalacao, ano),
+        "biomassa": getRespostaNumericaOr0(214, instalacao, ano),
+        "eolica": getRespostaNumericaOr0(88, instalacao, ano),
+        "termica": getRespostaNumericaOr0(103, instalacao, ano),
+    }
+
+def getFaturasMaximaskWhNaoRenovaveis(instalacao, ano):
+    print(getRespostaNumericaOr0(18, instalacao, ano))
+    return {
+        "electricidade": getRespostaNumericaOr0(18, instalacao, ano),
+        "gasNatural": getRespostaNumericaOr0(28, instalacao, ano),
+        "propano": getRespostaNumericaOr0(38, instalacao, ano),
+        "gasoleo": getRespostaNumericaOr0(48, instalacao, ano),
+        "gasolina": getRespostaNumericaOr0(58, instalacao, ano),
+    }
+
+def getFaturasMinimasEurRenovaveis(instalacao, ano):
+    return {
+        "fotovoltaica": getRespostaNumericaOr0(67, instalacao, ano),
+        "biomassa": getRespostaNumericaOr0(213, instalacao, ano),
+        "eolica": getRespostaNumericaOr0(87, instalacao, ano),
+        "termica": getRespostaNumericaOr0(97, instalacao, ano),
+    }
+
+def getFaturasMinimasEurNaoRenovaveis(instalacao, ano):
+    return {
+        "electricidade": getRespostaNumericaOr0(17, instalacao, ano),
+        "gasNatural": getRespostaNumericaOr0(27, instalacao, ano),
+        "propano": getRespostaNumericaOr0(37, instalacao, ano),
+        "gasoleo": getRespostaNumericaOr0(47, instalacao, ano),
+        "gasolina": getRespostaNumericaOr0(57, instalacao, ano),
+    }
+
+def getFaturasMaximasEurRenovaveis(instalacao, ano):
+    return {
+        "fotovoltaica": getRespostaNumericaOr0(70, instalacao, ano),
+        "biomassa": getRespostaNumericaOr0(216, instalacao, ano),
+        "eolica": getRespostaNumericaOr0(90, instalacao, ano),
+        "termica": getRespostaNumericaOr0(100, instalacao, ano),
+    }
+
+def getFaturasMaximasEurNaoRenovaveis(instalacao, ano):
+    return {
+        "electricidade": getRespostaNumericaOr0(20, instalacao, ano),
+        "gasNatural": getRespostaNumericaOr0(30, instalacao, ano),
+        "propano": getRespostaNumericaOr0(40, instalacao, ano),
+        "gasoleo": getRespostaNumericaOr0(50, instalacao, ano),
+        "gasolina": getRespostaNumericaOr0(60, instalacao, ano),
+    }
+
+def getClimatizacaoPotencias(instalacao, ano):
+    return {
+        "arCondicionado" : getRespostaNumericaOr0(207, instalacao, ano),
+        "bombaDeCalor" : getRespostaNumericaOr0(133, instalacao, ano),
+        "caldeira" : getRespostaNumericaOr0(135, instalacao, ano),
+        "chiller" : getRespostaNumericaOr0(134, instalacao, ano),
+        "climatizadorEvaporativo" : getRespostaNumericaOr0(137, instalacao, ano),
+    }
+
+def getAquecimentoAguasPotencias(instalacao, ano):
+    return {
+        "bombaDeCalor" : getRespostaNumericaOr0(129, instalacao, ano),
+        "caldeira" : getRespostaNumericaOr0(127, instalacao, ano),
+        "esquentador" : getRespostaNumericaOr0(128, instalacao, ano),
+        "painelSolarTermico" : getRespostaNumericaOr0(131, instalacao, ano),
+        "termoAcumulador" : getRespostaNumericaOr0(130, instalacao, ano),
+    }

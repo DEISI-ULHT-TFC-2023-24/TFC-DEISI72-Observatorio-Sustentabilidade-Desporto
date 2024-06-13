@@ -1,176 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
+{% extends 'navigator.html' %}
+
 {% load static %}
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+{% block titulo %}
+    <h1>Dashboard</h1>
+{% endblock %}
+
+{% block content %}
     <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-autocolors"></script>
+
+    <script src="{% static 'js/graficos.js' %}"></script>
+
+    <div class="display">
+        <div class="entry-header">
+            <h2>Bem Vindo Instalacao</h2>
+            <div class="long-entry">
+
+            </div>
+        </div>
+        <div class="entry-header">
+            <h2>Consumo de Energia</h2>
+            <div class="long-entry">
+                <div class="graf-slot3">
+                    <canvas id="graf-energias" class="graph-view"></canvas>
+                </div>
+                <div class="graf-slot3">
+                    <canvas id="graf-energiasren" class="graph-view"></canvas>
+                </div>
+                <div class="graf-slot3">
+                    <canvas id="graf-energiasnren" class="graph-view"></canvas>
+                </div>
+
+            </div>
+        </div>
+        <div class="entry-header">
+            <h2>Consumo de Energias Renovaveis</h2>
+            <div class="long-entry">
+                <div class="graf-slot3">
+                    <canvas id="graf-renconsumo" class="graph-view"></canvas>
+                </div>
+                <div class="graf-slot3">
+                    <canvas id="graf-rencusto" class="graph-view"></canvas>
+                </div>
+                <div class="graf-slot3">
+                    <canvas id="graf-renconscusto" class="graph-view"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="entry-header">
+            <h2>Consumo de Energias Nao Renovaveis</h2>
+            <div class="long-entry">
+                <div class="graf-slot3">
+                    <canvas id="graf-nrenconsumo" class="graph-view"></canvas>
+                </div>
+                <div class="graf-slot3">
+                    <canvas id="graf-nrencusto" class="graph-view"></canvas>
+                </div>
+                <div class="graf-slot3">
+                    <canvas id="graf-nrenconscusto" class="graph-view"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="two-entries">
+            <div class="single-entry">
+                <table>
+                    <tr>
+                        <td>Energia</td>
+                        <td>Fatura Minima kWh</td>
+                        <td>Fatura Minima €</td>
+                        <td>Fatura Maxima kWh</td>
+                        <td>Fatura Maxima €</td>
+                    </tr>
+                    {% for a,b,c,d,e in faturasRenovaveis %}
+                        <tr>
+                            <td>{{ a }}</td>
+                            <td>{{ b }}</td>
+                            <td>{{ c }}</td>
+                            <td>{{ d }}</td>
+                            <td>{{ e }}</td>
+                        </tr>
+                    {% endfor %}
+
+                </table>
+            </div>
+            <div class="single-entry">
+                <table>
+                    <tr>
+                        <td>Energia</td>
+                        <td>Fatura Minima kWh</td>
+                        <td>Fatura Minima €</td>
+                        <td>Fatura Maxima kWh</td>
+                        <td>Fatura Maxima €</td>
+                    </tr>
+                    {% for a,b,c,d,e in faturasNaoRenovaveis %}
+                        <tr>
+                            <td>{{ a }}</td>
+                            <td>{{ b }}</td>
+                            <td>{{ c }}</td>
+                            <td>{{ d }}</td>
+                            <td>{{ e }}</td>
+                        </tr>
+                    {% endfor %}
+
+                </table>
+            </div>
+        </div>
+        <div class="entry-header">
+            <h2>Usos de Energia</h2>
+            <div class="long-entry">
+                <div class="graf-slot3">
+                    <canvas id="graf-climatizacao" class="graph-view"></canvas>
+                </div>
+                <div class="graf-slot3">
+                    <canvas id="graf-aguas" class="graph-view"></canvas>
+                </div>
+                <div class="graf-slot3">
+                    <canvas id="" class="graph-view"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
-        function makeLineChart(context, labels, data, lineColor, fillColor) {
-            let chart = new Chart(context, {
-                type: "line",
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: "Consumo total (L)",
-                            pointRadius: 0,
-                            pointHitRadius: 50,
-                            data: data,
-                            borderColor: lineColor,
-                            tension: .3,
-                            fill: {
-                                target: 'origin',
-                                above: fillColor,   // Area will be red above the origin
-                                below: fillColor    // And blue below the origin
-                            },
-                            responsive: true,
-                            maintainAspectRatio: false
-                        }
-                    ]
-                },
-                options: {
-                    title: {
-                        text: "Consumo total mensal",
-                        display: true
-                    },
-                    scales: {
-                        y: {
-                            suggestedMin: 50,
-                            suggestedMax: 40000,
-                            display: false,
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    }
-                }
-            });
-        }
+        //energias
+        let grafenergias = document.getElementById("graf-energias").getContext("2d");
 
-        function makePieChart(context, labels, data, colors) {
-            let chart = new Chart(context, {
-                type: "doughnut",
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: "kWh",
-                            backgroundColor: colors,
-                            data: data
-                        }
-                    ]
-                },
-            });
-        }
+        makePieChart(grafenergias, {{ energias|safe }}, {{ energiasConsumos }})
 
-        function makeBarChart(context, labels, data, colors) {
-            let chart = new Chart(context, {
-                type: "bar",
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: "€",
-                            backgroundColor: colors,
-                            data: data
-                        }
-                    ]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        },
-                    }, plugins: {
-                        legend: {
-                            display: false
-                        }
-                    }
-                }
-            });
-        }
+        let grafenergiasren = document.getElementById("graf-energiasren").getContext("2d");
+
+        makePieChart(grafenergiasren, {{ energiasRenovaveis|safe }}, {{ consumoEnergiasRenovaveis }})
+
+        let grafenergiasnren = document.getElementById("graf-energiasnren").getContext("2d");
+
+        makePieChart(grafenergiasnren, {{ energiasNaoRenovaveis|safe }}, {{ consumoEnergiasNaoRenovaveis }})
+
+        //energias renovaveis
+        let grafrenconsumos = document.getElementById("graf-renconsumo").getContext("2d");
+
+        makeBarChart(grafrenconsumos, {{ energiasRenovaveis|safe }}, {{ consumoEnergiasRenovaveis }})
+
+        let grafrencustos = document.getElementById("graf-rencusto").getContext("2d");
+
+        makeBarChart(grafrencustos, {{ energiasRenovaveis|safe }}, {{ custoEnergiasRenovaveis }})
+
+        let grafrencustosconsumos = document.getElementById("graf-renconscusto").getContext("2d");
+
+        makeBarChart(grafrencustosconsumos, {{ energiasRenovaveis|safe }}, {{ custoConsumoEnergiasRenovaveis }})
+
+        //energias nao renovaveis
+        let grafnrenconsumos = document.getElementById("graf-nrenconsumo").getContext("2d");
+
+        makeBarChart(grafnrenconsumos, {{ energiasNaoRenovaveis|safe }}, {{ consumoEnergiasNaoRenovaveis }})
+
+        let grafnrencustos = document.getElementById("graf-nrencusto").getContext("2d");
+
+        makeBarChart(grafnrencustos, {{ energiasNaoRenovaveis|safe }}, {{ custoEnergiasNaoRenovaveis }})
+
+        let grafnrencustosconsumos = document.getElementById("graf-nrenconscusto").getContext("2d");
+
+        makeBarChart(grafnrencustosconsumos, {{ energiasNaoRenovaveis|safe }}, {{ custoConsumoEnergiasNaoRenovaveis }})
+
+        //climatizacao e aguas
+        let grafclimatizacao = document.getElementById("graf-climatizacao").getContext("2d");
+
+        makePieChart(grafclimatizacao, {{ climatizacaoSistemas|safe }}, {{ climatizacaoPotencias }})
+
+        let grafaguas = document.getElementById("graf-aguas").getContext("2d");
+
+        makePieChart(grafaguas, {{ aquecimetoAguasSistemas|safe }}, {{ aquecimetoAguasPotencias }})
+
     </script>
 
-</head>
-<body>
-
-<div class="display">
-
-    <div class="grid">
-        <div class="display-view">
-            <h1>Distribuição de Consumo Anual</h1>
-            <canvas id="consumodeenergia" class="graph-view"></canvas>
-        </div>
-        <div class="display-view">
-            <h1>Custo Energético</h1>
-            <canvas id="custodeenergia" class="graph-view"></canvas>
-        </div>
-    </div>
-</div>
-
-<div class="display">
-    <div class="grid">
-        <div class="display-view">
-            <h1>Custo por kWh</h1>
-            <canvas id="custoconsumodeenergia" class="graph-view"></canvas>
-        </div>
-        <div class="display-view">
-            <h1>Fáturas Energéticas</h1>
-            <table>
-                <tr>
-                    <td>Energia</td>
-                    <td>Fatura Minima kWh</td>
-                    <td>Fatura Minima €</td>
-                    <td>Fatura Maxima kWh</td>
-                    <td>Fatura Maxima €</td>
-                </tr>
-                {% for a,b,c,d,e in faturas %}
-                    <tr>
-                        <td>{{ a }}</td>
-                        <td>{{ b }}</td>
-                        <td>{{ c }}</td>
-                        <td>{{ d }}</td>
-                        <td>{{ e }}</td>
-                    </tr>
-                {% endfor %}
-
-            </table>
-        </div>
-    </div>
-</div>
-
-
-<!--<div id="ultimo-mes">
-    <div class="consumo-ultimo-mes-text">
-        <h2>Consumo mensal (L)</h2>
-        <h1>24 200 L</h1> <p>(Ultimo Mês) </p>
-        <h2> - 11,35 %</h2>
-    </div>
-
-</div>-->
-
-<script>
-
-
-    let energiaconsumo = document.getElementById("consumodeenergia").getContext("2d");
-
-    makePieChart(energiaconsumo, {{ consumos_labels|safe }}, {{ consumos }},
-        ["red", "orange", "green", "blue"])
-
-    let energiacusto = document.getElementById("custodeenergia").getContext("2d");
-
-    makeBarChart(energiacusto, {{ consumos_labels|safe }}, {{ custos }},
-        ["yellow", "blue", "orange", "red", "green"])
-
-    let energiacustoconsumo = document.getElementById("custoconsumodeenergia").getContext("2d");
-
-    makeBarChart(energiacustoconsumo, {{ consumos_labels|safe }}, {{ custosconsumo }},
-        ["yellow", "blue", "orange", "red", "green"])
-</script>
-</body>
+{% endblock %}
 </html>

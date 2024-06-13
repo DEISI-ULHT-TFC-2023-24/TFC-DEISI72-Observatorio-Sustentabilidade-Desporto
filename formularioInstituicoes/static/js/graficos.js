@@ -1,4 +1,9 @@
-function makeLineChart(context, labels, data, lineColor, fillColor) {
+const autocolors = window['chartjs-plugin-autocolors'];
+Chart.register(autocolors);
+
+const lighten = (color, value) => Chart.helpers.color(color).lighten(value).rgbString();
+
+function makeLineChart(context, labels, data) {
     let chart = new Chart(context, {
         type: "line",
         data: {
@@ -9,13 +14,7 @@ function makeLineChart(context, labels, data, lineColor, fillColor) {
                     pointRadius: 0,
                     pointHitRadius: 50,
                     data: data,
-                    borderColor: lineColor,
                     tension: .3,
-                    fill: {
-                        target: 'origin',
-                        above: fillColor,   // Area will be red above the origin
-                        below: fillColor    // And blue below the origin
-                    },
                     responsive: true,
                     maintainAspectRatio: false
                 }
@@ -36,13 +35,14 @@ function makeLineChart(context, labels, data, lineColor, fillColor) {
             plugins: {
                 legend: {
                     display: false
-                }
+                },
             }
         }
+
     });
 }
 
-function makePieChart(context, labels, data, colors) {
+function makePieChart(context, labels, data) {
     let chart = new Chart(context, {
         type: "doughnut",
         data: {
@@ -50,15 +50,23 @@ function makePieChart(context, labels, data, colors) {
             datasets: [
                 {
                     label: "kWh",
-                    backgroundColor: colors,
                     data: data
                 }
             ]
         },
+        options: {
+            plugins: {
+                autocolors: {
+                    mode: 'data',
+                    offset: 30,
+
+                }
+            }
+        }
     });
 }
 
-function makeBarChart(context, labels, data, colors) {
+function makeBarChart(context, labels, data) {
     let chart = new Chart(context, {
         type: "bar",
         data: {
@@ -66,12 +74,13 @@ function makeBarChart(context, labels, data, colors) {
             datasets: [
                 {
                     label: "€",
-                    backgroundColor: colors,
                     data: data
                 }
             ]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
                 y: {
                     beginAtZero: true
