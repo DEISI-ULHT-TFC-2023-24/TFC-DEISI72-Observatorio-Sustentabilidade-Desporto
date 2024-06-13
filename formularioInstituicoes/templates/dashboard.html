@@ -140,7 +140,6 @@
 
         makePieChart(grafenergiasnren, {{ energiasNaoRenovaveis|safe }}, {{ consumoEnergiasNaoRenovaveis }})
 
-        //energias renovaveis
         let grafrenconsumos = document.getElementById("graf-renconsumo").getContext("2d");
 
         makeBarChart(grafrenconsumos, {{ energiasRenovaveis|safe }}, {{ consumoEnergiasRenovaveis }})

@@ -106,9 +106,6 @@ button{
     margin-right: 1.5%;
 }
 
-button:hover {
-    background-color: whitesmoke;
-}
 
 h3 button {
     background-color: orange;
@@ -172,4 +169,43 @@ h3 button {
     align-items: center;
     font-size: 25px;
     font-weight: bold;
+}
+
+.submeterpopup {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    visibility: hidden;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.texto_submeter {
+    margin: auto;
+    border: 2px solid lightgrey;
+    background: whitesmoke;
+    padding: 30px;
+    border-radius: 10px;
+    min-width: 16vw;
+    min-height: 22vh;
+}
+
+.texto_submeter h1, .texto_submeter p {
+    display: flex;
+    justify-content: center;
+}
+
+.butoes_popup{
+    display: flex;
+}
+
+.butoes_popup button{
+    padding: 12px 30px;
+    border-radius: 5px;
+    border: 0;
+    margin: auto;
+    cursor: pointer;
+    background: orange;
 }
