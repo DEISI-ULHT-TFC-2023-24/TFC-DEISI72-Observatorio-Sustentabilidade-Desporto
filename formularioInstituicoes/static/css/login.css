@@ -1,4 +1,9 @@
 
+:root{
+    --light-blue: #d8ebf0;
+    --marine-blue: #79e2e2;
+}
+
 .loginform {
     display: grid;
     place-items: center;
@@ -10,18 +15,25 @@
     padding: 5px 15px;
     border-radius: 10px;
     width: 500px;
-    height: 250px;
+    height: 435px;
     margin: 30px auto;
+}
 
+input[type="text"], input[type="password"] {
+    border: 2px solid rgba(0, 0, 0, 0.32);
+    padding: 12px 30px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
 }
 
 body {
-    background-color: orange;
+    background-color: var(--light-blue);
 }
 
 .botao {
     display: grid;
-     place-items: center;
+    place-items: center;
 }
 
 input {
@@ -33,16 +45,17 @@ input {
     margin: auto;
 }
 
-input[type=submit]{
-    background: orange;
+input[type=submit] {
+    background: var(--marine-blue);
+    cursor: pointer;
 }
 
-input[type=button]{
+input[type=button] {
     margin-top: 5px;
-    background: orange;
+    background: var(--marine-blue);
 }
 
-label{
+label {
     font-size: 18px;
 }
 
@@ -63,4 +76,25 @@ label{
     margin-right: auto;
     width: 400px;
     top: 10%;
+}
+
+form p input {
+    display: grid;
+    justify-items: center;
+}
+
+p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.info {
+    display: flex;
+    justify-content: center;
+    white-space: break-spaces;
+}
+
+form {
+    display: grid;
+    justify-content: center;
 }
