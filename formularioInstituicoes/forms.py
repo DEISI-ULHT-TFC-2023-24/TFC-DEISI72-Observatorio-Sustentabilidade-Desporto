@@ -96,6 +96,7 @@ class FormEntidade(ModelForm):
         labels = {}
 
 
+
 class FormInstalacoes(ModelForm):
     class Meta:
         model = Instalacao
@@ -109,6 +110,15 @@ class FormInstalacoes(ModelForm):
 
 
 class SignupForm(UserCreationForm):
+
+
     class Meta:
         model = User
         fields = ("username", "email",)
+        labels = {
+            'username': 'Nome entidade',
+            'email': 'Email',
+        }
+        help_texts = {
+            'username': '',
+        }
