@@ -1,3 +1,11 @@
+:root{
+    --light-blue: #d8ebf0;
+    --marine-blue: #79e2e2;
+    /*var(--light-blue)*/
+    /*var(--marine-blue)*/
+}
+
+
 .box {
     display: grid;
     place-items: center;
@@ -155,9 +163,8 @@ a {
     display: flex;
 }
 
-
-
 input[type="text"], input[type="number"], input[type="email"] {
+    margin-top: 10px;
     border: 2px solid rgba(0, 0, 0, 0.32);
     cursor: text;
 }
@@ -190,7 +197,7 @@ button{
 }
 
 input[type=submit], button {
-    background: orange;
+    background: var(--marine-blue);
     cursor: pointer;
 }
 

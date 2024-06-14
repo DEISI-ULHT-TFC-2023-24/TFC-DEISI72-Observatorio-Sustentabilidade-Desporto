@@ -94,11 +94,17 @@ window.onload = function () {
 
 function limpar_valores_form() {
 
-    var confirmation = window.confirm("Têm a certeza que deseja limpar o formulário?");
+    let popup = document.getElementsByClassName('limparpopup')[0];
+    popup.style.visibility = "visible"
 
-    // If OK is clicked, perform the action
-    if (confirmation) {
-        var div_tema = event.target.closest('div').closest('form');
+    const submmitButton = popup.querySelectorAll('button')[1]
+
+    var div_tema = event.target.closest('div').closest('form');
+
+    function handleClick() {
+
+        let popup = document.getElementsByClassName('limparpopup')[0];
+        popup.style.visibility = "hidden"
 
         var allSubtemas = div_tema.querySelectorAll('div.bloco_subtema')
 
@@ -115,9 +121,9 @@ function limpar_valores_form() {
                 var respostas_multiplas = Array.from(tr.getElementsByClassName(string))
 
 
-                respostas_multiplas.forEach(function (respostas){
-                    respostas.querySelectorAll('div#resposta_dada').forEach(function (resposta, index){
-                        if(index !== 0){
+                respostas_multiplas.forEach(function (respostas) {
+                    respostas.querySelectorAll('div#resposta_dada').forEach(function (resposta, index) {
+                        if (index !== 0) {
                             resposta.remove()
                         }
                     })
@@ -132,7 +138,7 @@ function limpar_valores_form() {
                         if (input.type === 'number' || input.type === 'text') {
                             input.value = '';
                         } else if (input.type === 'checkbox') {
-                            if(input.value !== '100'){
+                            if (input.value !== '100') {
                                 input.checked = false;
                             }
 
@@ -147,5 +153,70 @@ function limpar_valores_form() {
             });
         });
     }
+
+    submmitButton.addEventListener('click', handleClick);
+}
+
+// function limpar_valores_form() {
+//
+//     var confirmation = window.confirm("Têm a certeza que deseja limpar o formulário?");
+//
+//     // If OK is clicked, perform the action
+//     if (confirmation) {
+//         var div_tema = event.target.closest('div').closest('form');
+//
+//         var allSubtemas = div_tema.querySelectorAll('div.bloco_subtema')
+//
+//         var elementosVisiveis = Array.from(allSubtemas).filter(function (elemento) {
+//             var display = window.getComputedStyle(elemento).getPropertyValue('display');
+//             return display !== 'none';
+//         });
+//
+//         elementosVisiveis.forEach(function (elemento) {
+//
+//             var alltr = elemento.querySelectorAll('tr')
+//             alltr.forEach(function (tr) {
+//                 var string = 'multipla-resposta:True'
+//                 var respostas_multiplas = Array.from(tr.getElementsByClassName(string))
+//
+//
+//                 respostas_multiplas.forEach(function (respostas){
+//                     respostas.querySelectorAll('div#resposta_dada').forEach(function (resposta, index){
+//                         if(index !== 0){
+//                             resposta.remove()
+//                         }
+//                     })
+//                 })
+//
+//                 var allrespostas = tr.querySelectorAll('div#resposta_dada')
+//
+//                 allrespostas.forEach(function (resposta) {
+//                     var allinputs = resposta.querySelectorAll('input')
+//                     allinputs.forEach(function (input) {
+//
+//                         if (input.type === 'number' || input.type === 'text') {
+//                             input.value = '';
+//                         } else if (input.type === 'checkbox') {
+//                             if(input.value !== '100'){
+//                                 input.checked = false;
+//                             }
+//
+//                         }
+//                     })
+//                     var allselects = resposta.querySelectorAll('select')
+//                     allselects.forEach(function (select) {
+//                         select.value = '';
+//                     })
+//
+//                 });
+//             });
+//         });
+//     }
+// }
+
+function esconder() {
+    let popup = document.getElementsByClassName('limparpopup')[0];
+    popup.style.visibility = "hidden"
+
 }
 

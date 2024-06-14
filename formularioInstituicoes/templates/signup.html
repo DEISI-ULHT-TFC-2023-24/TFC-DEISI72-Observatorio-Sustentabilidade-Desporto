@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Sign Up</title>
     <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+    <script src="{% static 'js/signup.js' %}"></script>
 </head>
 <body>
 <div class="imagem-logotipo">
@@ -13,10 +14,11 @@
 <div class="loginform">
     <form method="post">
         {% csrf_token %}
+        <h1>Registe-se</h1>
         {{ formUser.as_p }}
         {{ formUtilizador.as_p }}
-        <input type="submit" value="Submit">
-        <p>Já têm conta? <a href="/login"><span>Login</span></a></p>
+        <input type="submit" value="Registar">
+        <p class="info">Já têm conta? <a href="/login"><span>Faça login</span></a></p>
     </form>
 </div>
 </body>

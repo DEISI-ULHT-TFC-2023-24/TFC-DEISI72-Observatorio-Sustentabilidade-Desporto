@@ -155,10 +155,10 @@ window.onload = function () {
     }
 
     const as = document.querySelectorAll('a');
-    as.forEach(function (a){
+    as.forEach(function (a) {
         const innertxt = a.innerText.split('\\')
         const tamanho = innertxt.length
-        if(tamanho > 1){
+        if (tamanho > 1) {
             a.innerText = 'Ficheiro'
         }
     });
@@ -310,11 +310,16 @@ function remover(csrftoken, resposta_id, tipo_resposta) {
 }
 
 function submmit(csrftoken) {
-    var confirmation = window.confirm("Têm a certeza que deseja submeter para avaliação?");
 
-    const instalacao = new URLSearchParams(window.location.search).get('instalacao');
+    let popup = document.getElementsByClassName('submeterpopup')[0];
+    popup.style.visibility = "visible"
 
-    if (confirmation) {
+    const submmitButton = popup.querySelectorAll('button')[1]
+
+    function handleClick() {
+
+        const instalacao = new URLSearchParams(window.location.search).get('instalacao');
+
         const requestObj = new XMLHttpRequest()
 
         requestObj.open("POST", '/post/')
@@ -323,5 +328,15 @@ function submmit(csrftoken) {
         const formdata = new FormData()
         formdata.append('instalacao', instalacao)
         requestObj.send(formdata)
+        window.location.reload();
     }
+
+    submmitButton.addEventListener('click', handleClick);
+
+}
+
+function esconder() {
+    let popup = document.getElementsByClassName('submeterpopup')[0];
+    popup.style.visibility = "hidden"
+
 }

@@ -1,5 +1,12 @@
+:root{
+    --light-blue: #d8ebf0;
+    --marine-blue: #79e2e2;
+    /*var(--light-blue)*/
+    /*var(--marine-blue)*/
+}
+
 body {
-    background: orange;
+    background: var(--light-blue);
 }
 
 main {

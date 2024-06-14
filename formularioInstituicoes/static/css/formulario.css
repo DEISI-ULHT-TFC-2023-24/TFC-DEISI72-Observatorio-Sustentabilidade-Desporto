@@ -1,3 +1,10 @@
+:root{
+    --light-blue: #d8ebf0;
+    --marine-blue: #79e2e2;
+    /*var(--light-blue)*/
+    /*var(--marine-blue)*/
+}
+
 .container {
     max-width: 700px;
     margin: 100px auto auto;
@@ -71,7 +78,7 @@ input, select {
 .butao_adiciona, .butao_remove {
     padding: 5px 10px;
     margin-left: 5px;
-    background: orange;
+    background: var(--marine-blue);
     border-radius: 5px;
     border: 0;
     transition: background-color 0.3s ease;
@@ -82,7 +89,7 @@ input[type="submit"], input[type="button"] {
 
     display: block;
     margin-left: auto;
-    background: orange;
+    background: var(--marine-blue);
     padding: 10px 20px;
     border-radius: 10px;
     margin-bottom: 10px;
@@ -96,7 +103,7 @@ input[type="submit"]:hover {
 
 
 h3 button {
-    background-color: orange;
+    background-color: var(--marine-blue);
     color: black;
     font-weight: bold;
 }
@@ -159,4 +166,43 @@ div#resposta_dada {
     align-items: center;
     font-size: 25px;
     font-weight: bold;
+}
+
+.limparpopup {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    visibility: hidden;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.texto_submeter {
+    margin: auto;
+    border: 2px solid lightgrey;
+    background: whitesmoke;
+    padding: 30px;
+    border-radius: 10px;
+    min-width: 16vw;
+    min-height: 22vh;
+}
+
+.texto_submeter h1, .texto_submeter p {
+    display: flex;
+    justify-content: center;
+}
+
+.butoes_popup{
+    display: flex;
+}
+
+.butoes_popup button{
+    padding: 12px 30px;
+    border-radius: 5px;
+    border: 0;
+    margin: auto;
+    cursor: pointer;
+    background: var(--marine-blue);
 }
