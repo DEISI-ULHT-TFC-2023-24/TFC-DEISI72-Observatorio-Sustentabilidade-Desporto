@@ -73,3 +73,14 @@ h2 {
     background-color: white;
     margin-bottom: 2vh;
 }
+
+.info-column {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.long-entry-top {
+    display: flex;
+    flex-direction: row;
+    height: 20vh;
+}
