@@ -5,12 +5,29 @@
     <meta charset="UTF-8">
     <title>Login</title>
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <script src="{% static 'js/login.js' %}"></script>
 </head>
+
 <body>
 <div class="imagem-logotipo">
     <img src="{% static 'img/ipdj_image.png' %}" alt="logotipo" class="logoIPDJ">
 </div>
+
+<div class="popupError">
+    {% if messages %}
+
+        <div class="error-popup">
+            Credenciais inválidas
+            <button type="button" class="close-button" onclick="remover()">x</button>
+        </div>
+
+    {% endif %}
+</div>
+
+
 <div class="loginform">
+
+
     <form method="post">
         {% csrf_token %}
         <h1>Login</h1>

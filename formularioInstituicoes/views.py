@@ -3,6 +3,7 @@ import os
 import sys
 from pathlib import Path
 
+from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm, PasswordChangeForm
@@ -1554,7 +1555,6 @@ def divByZero(n, d):
 
 
 def login_view(request):
-    print(getEntidade(request))
     if request.method == 'POST':
         username = request.POST["username"]
         password = request.POST["password"]
@@ -1562,8 +1562,18 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
-
+            system_messages = messages.get_messages(request)
+            for message in system_messages:
+                pass
             return redirect("/")
+        else:
+            messages.error(request, 'Credenciais inválidas. Por favor, tente novamente.')
+
+        system_messages = messages.get_messages(request)
+        for message in system_messages:
+            pass
+
+
 
     return render(request, 'login.html', {"authForm": AuthenticationForm()})
 
@@ -1579,15 +1589,17 @@ def sign_up_view(request):
     formUser = SignupForm(request.POST or None)
 
     if request.method == "POST":
-        if formEntidade.is_valid():
-            user = formUser.save(commit=True)
+        if formEntidade.is_valid() and formUser.is_valid():
+
+            user = formUser.save(commit=False)
+            user.save()
 
             utilizador = formEntidade.save(commit=False)
-
             utilizador.user = user
             utilizador.save()
 
             return redirect("/login")
+
 
     return render(request, 'signup.html', {"formUser": formUser, "formUtilizador": formEntidade})
 
@@ -1664,12 +1676,17 @@ def passwordreset_view(request):
             )
 
         else:
-            print(User.objects.filter(id=request.GET["user"]).first())
-            form = PasswordChangeForm(user=User.objects.filter(id=request.GET["user"]).first(), data=request.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('/login')
-            pass
+            if not User.objects.filter(email=request.POST["email"]).exists():
+                messages.error(request, 'Erro ao redefinir a senha. Por favor, tente novamente.')
+            else:
+                user = User.objects.filter(id=request.GET["user"]).first()
+                if user:
+                    form = PasswordChangeForm(user=user, data=request.POST)
+                    if form.is_valid():
+                        form.save()
+                        return redirect('/login')
+                    else:
+                        messages.error(request, 'Erro ao redefinir a senha. Por favor, tente novamente.')
 
     return render(request, 'passwordreset.html', {"form": form})
 

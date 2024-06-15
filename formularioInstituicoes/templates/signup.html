@@ -5,12 +5,22 @@
     <meta charset="UTF-8">
     <title>Sign Up</title>
     <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+
     <script src="{% static 'js/signup.js' %}"></script>
 </head>
 <body>
-<div class="imagem-logotipo">
-    <img src="{% static 'img/ipdj_image.png' %}" alt="logotipo" class="logoIPDJ">
+
+<div class="elementsNextEachOther">
+
+    <div class="imagem-logotipo">
+        <img src="{% static 'img/ipdj_image.png' %}" alt="logotipo" class="logoIPDJ">
+    </div>
+    <div id="error-container">
+
+    </div>
 </div>
+
+
 <div class="loginform">
     <form method="post">
         {% csrf_token %}

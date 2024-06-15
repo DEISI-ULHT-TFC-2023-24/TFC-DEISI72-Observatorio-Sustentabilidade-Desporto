@@ -64,10 +64,12 @@ class Questionario(models.Model):
 
 
 class Entidade(models.Model):
+    nome = models.CharField(max_length=100)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
+
     def __str__(self):
-        return self.user.username
+        return self.nome
 
 
 class Instalacao(models.Model):

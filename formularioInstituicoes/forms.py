@@ -2,9 +2,12 @@ import calendar
 import datetime
 import locale
 
+from django.contrib import messages
+from django.contrib.auth import password_validation
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm, Form
 from django import forms
+from django.http import request
 from django_recaptcha.fields import ReCaptchaField
 from django_recaptcha.widgets import ReCaptchaV2Invisible, ReCaptchaV3
 
@@ -88,14 +91,15 @@ class FormMes(ModelForm):
 
 
 class FormEntidade(ModelForm):
-    captcha = ReCaptchaField(label='')
+    captcha = ReCaptchaField(label='', required=True)
+
+    captcha.error_messages["captcha_invalid"] = "Erro a verificar o reCAPTCHA, por favor tente novamente"
+    captcha.error_messages["captcha_error"] = "Erro a verificar o reCAPTCHA, por favor tente novamente"
 
     class Meta:
         model = Entidade
         fields = []
         labels = {}
-
-
 
 class FormInstalacoes(ModelForm):
     class Meta:
@@ -110,11 +114,15 @@ class FormInstalacoes(ModelForm):
 
 
 class SignupForm(UserCreationForm):
-
+    error_messages = {
+        "password_mismatch": "As passwords não correspondem.",
+        "duplicate_email": "Este email já está em uso.",
+        "duplicate_username": "Já existe uma instalação com este nome."
+    }
 
     class Meta:
         model = User
-        fields = ("username", "email",)
+        fields = ("username", "email")
         labels = {
             'username': 'Nome entidade',
             'email': 'Email',
@@ -122,3 +130,41 @@ class SignupForm(UserCreationForm):
         help_texts = {
             'username': '',
         }
+
+    def __init__(self, *args, **kwargs):
+        super(SignupForm, self).__init__(*args, **kwargs)
+        self.fields['email'].required = True
+        for field in self.fields.values():
+            field.help_text = ''
+            field.error_messages = {
+                'required': '',
+                'invalid': '',
+            }
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if User.objects.filter(email=email).exists():
+            raise ValidationError(
+                self.error_messages["duplicate_email"],
+                code="duplicate_email",
+            )
+        return email
+
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        if User.objects.filter(username=username).exists():
+            raise ValidationError(
+                self.error_messages["duplicate_username"],
+                code="duplicate_username",
+            )
+        return username
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
+        if password1 and password2 and password1 != password2:
+            raise ValidationError(
+                self.error_messages["password_mismatch"],
+                code="password_mismatch",
+            )
+        return password2

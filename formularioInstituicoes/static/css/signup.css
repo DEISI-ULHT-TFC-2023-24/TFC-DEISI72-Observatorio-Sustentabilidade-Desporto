@@ -1,8 +1,14 @@
 :root{
     --light-blue: #d8ebf0;
     --marine-blue: #79e2e2;
+     --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     /*var(--light-blue)*/
     /*var(--marine-blue)*/
+}
+
+a{
+    color: blue;
+    text-decoration: underline;
 }
 
 .loginform {
@@ -35,6 +41,7 @@ form{
 }
 
 body {
+    font-family: var(--bs-font-sans-serif);
     background-color: var(--light-blue);
 }
 
@@ -65,7 +72,11 @@ label {
     width: 100%;
     text-align: center;
     margin-top: 50px;
-
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
 }
 
 .imagem-logotipo img {
@@ -89,4 +100,41 @@ input[type="text"], input[type="email"], input[type="password"] {
     margin-top: 10px;
 }
 
+div.g-recaptcha {
+    display: flex;
+    justify-content: center;
+}
 
+.elementsNextEachOther {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    align-content: space-around;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.error-popup {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 500px;
+}
+
+/* Close button styles */
+.close-button {
+    background: none;
+    border: none;
+    color: #721c24;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+}
