@@ -18,8 +18,17 @@
     <div class="display">
         <div class="entry-header">
             <h2>Bem Vindo Instalacao</h2>
-            <div class="long-entry">
-
+            <div class="long-entry-top">
+                <div class="info-column">
+                    <h2>Consumo Total de Energia: {{ consumoTotalEnergia }} kWh</h2>
+                    <h2>Consumo Total Renovavel: {{ consumoTotalRenovavel }} kWh</h2>
+                    <h2>Consumo Total Nao Renovavel: {{ consumoTotalNaoRenovavel }} kWh</h2>
+                </div>
+                <div class="info-column">
+                    <h2>Numero de Praticantes: {{ numeroPraticantes }}</h2>
+                    <h2>Numero de Funcionarios: {{ numeroFuncionarios }}</h2>
+                    <h2>Area Total: {{ areaTotal }}</h2>
+                </div>
             </div>
         </div>
         <div class="entry-header">
@@ -119,7 +128,12 @@
                     <canvas id="graf-aguas" class="graph-view"></canvas>
                 </div>
                 <div class="graf-slot3">
-                    <canvas id="" class="graph-view"></canvas>
+                    <h2>Iluminacao Interior</h2>
+                    <h4>&emsp;Numero de Luminarias: {{ numeroLuminariasInterior }}</h4>
+                    <h4>&emsp;Potencia Media: {{ potenciaLuminariasInterior }} kWh</h4>
+                    <h2>Iluminacao Exterior</h2>
+                    <h4>&emsp;Numero de Luminarias: {{ numeroLuminariasExterior }}</h4>
+                    <h4>&emsp;Potencia Media: {{ potenciaLuminariasExterior }} kWh</h4>
                 </div>
             </div>
         </div>

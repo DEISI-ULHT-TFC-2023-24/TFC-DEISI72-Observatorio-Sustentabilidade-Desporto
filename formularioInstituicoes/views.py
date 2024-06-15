@@ -1522,6 +1522,20 @@ def dashboard_view(request):
     ]
     aquecimetoAguasPotencias = list(getAquecimentoAguasPotencias(instalacao, ano).values())
 
+    consumoTotalRenovavel = getConsumoTotalRenovavel(instalacao, ano)
+    consumoTotalNaoRenovavel = getConsumoTotalNaoRenovavel(instalacao, ano)
+
+    numeroPraticantes = getNumeroPraticantes(instalacao, ano)
+    numeroFuncionarios = getNumeroFuncionarios(instalacao, ano)
+
+    areaTotal = getAreaTotal(instalacao, ano)
+
+    numeroLuminariasInterior = getNumeroLuminariasInterior(instalacao, ano)
+    numeroLuminariasExterior = getNumeroLuminariasExterior(instalacao, ano)
+
+    potenciaLuminariasInterior = getPotenciaLuminariasInterior(instalacao, ano)
+    potenciaLuminariasExterior = getPotenciaLuminariasExterior(instalacao, ano)
+
     return render(request, 'dashboard.html',
                   {"energiasRenovaveis": energiasRenovaveis, "energiasNaoRenovaveis": energiasNaoRenovaveis,
                    "energias": energias, "energiasConsumos": energiasConsumos,
@@ -1536,15 +1550,24 @@ def dashboard_view(request):
                    "climatizacaoSistemas": climatizacaoSistemas,
                    "climatizacaoPotencias": climatizacaoPotencias,
                    "aquecimetoAguasSistemas": aquecimetoAguasSistemas,
-                   "aquecimetoAguasPotencias": aquecimetoAguasPotencias
+                   "aquecimetoAguasPotencias": aquecimetoAguasPotencias,
+                   "consumoTotalRenovavel": consumoTotalRenovavel,
+                   "consumoTotalNaoRenovavel": consumoTotalNaoRenovavel,
+                   "consumoTotalEnergia": consumoTotalRenovavel + consumoTotalNaoRenovavel,
+                   "numeroPraticantes": numeroPraticantes,
+                   "numeroFuncionarios": numeroFuncionarios,
+                   "areaTotal": areaTotal,
+                   "numeroLuminariasInterior": numeroLuminariasInterior,
+                   "numeroLuminariasExterior": numeroLuminariasExterior,
+                   "potenciaLuminariasInterior": potenciaLuminariasInterior,
+                   "potenciaLuminariasExterior": potenciaLuminariasExterior,
                    })
 
 
-def getRespostaNumericaOr0(pergunta_id, instalacao, ano):
+def getRespostaNumericaOr0(pergunta_id, instalacao, ano) -> int:
     aval = Avaliacao.objects.filter(instalacao=instalacao, ano=ano).first()
 
-    if RespostaNumerica.objects.filter(pergunta_id=pergunta_id, avaliacao=aval).first():
-
+    if RespostaNumerica.objects.filter(pergunta_id=pergunta_id, avaliacao=aval).exists():
         return RespostaNumerica.objects.filter(pergunta_id=pergunta_id, avaliacao=aval).first().numero
     else:
         return 0
@@ -1784,7 +1807,6 @@ def getFaturasMaximaskWhRenovaveis(instalacao, ano):
 
 
 def getFaturasMaximaskWhNaoRenovaveis(instalacao, ano):
-    print(getRespostaNumericaOr0(18, instalacao, ano))
     return {
         "electricidade": getRespostaNumericaOr0(18, instalacao, ano),
         "gasNatural": getRespostaNumericaOr0(28, instalacao, ano),
@@ -1850,3 +1872,48 @@ def getAquecimentoAguasPotencias(instalacao, ano):
         "painelSolarTermico": getRespostaNumericaOr0(131, instalacao, ano),
         "termoAcumulador": getRespostaNumericaOr0(130, instalacao, ano),
     }
+
+
+def getConsumoTotalRenovavel(instalacao, ano):
+    consumos = list(getConsumoEnergiasRenovaveis(instalacao, ano).values())
+    total = 0
+
+    for x in consumos:
+        total += x
+
+    return total
+
+
+def getConsumoTotalNaoRenovavel(instalacao, ano):
+    consumos = list(getConsumoEnergiasNaoRenovaveis(instalacao, ano).values())
+    total = 0
+
+    for x in consumos:
+        total += x
+
+    return total
+
+
+def getNumeroPraticantes(instalacao, ano):
+    return getRespostaNumericaOr0(6, instalacao, ano)
+
+
+def getNumeroFuncionarios(instalacao, ano):
+    return getRespostaNumericaOr0(9, instalacao, ano)
+
+
+def getAreaTotal(instalacao, ano):
+    return getRespostaNumericaOr0(2, instalacao, ano)
+
+
+def getNumeroLuminariasInterior(instalacao, ano):
+    return getRespostaNumericaOr0(112, instalacao, ano)
+
+def getNumeroLuminariasExterior(instalacao, ano):
+    return getRespostaNumericaOr0(114, instalacao, ano)
+
+def getPotenciaLuminariasInterior(instalacao, ano):
+    return getRespostaNumericaOr0(113, instalacao, ano)
+
+def getPotenciaLuminariasExterior(instalacao, ano):
+    return getRespostaNumericaOr0(115, instalacao, ano)
