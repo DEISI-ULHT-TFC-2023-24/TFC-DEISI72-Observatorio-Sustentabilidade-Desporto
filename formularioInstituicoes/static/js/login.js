@@ -7,5 +7,10 @@ function remover_success(){
 }
 
 window.onload = function (){
-    document.querySelector('ul.errorlist').remove()
+    const erro = document.querySelector('ul.errorlist')
+    if(erro){
+        erro.remove()
+    }
+    const username_label = document.querySelectorAll('label')[0].textContent = "Nome da Entidade:"
+    console.log(username_label)
 }

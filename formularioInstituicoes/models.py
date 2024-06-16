@@ -69,7 +69,7 @@ class Entidade(models.Model):
 
 
     def __str__(self):
-        return self.nome
+        return self.user.username
 
 
 class Instalacao(models.Model):
@@ -85,7 +85,7 @@ class Instalacao(models.Model):
     submetido = models.BooleanField(blank=True, default=False)
 
     def __str__(self):
-        return self.nome or ""
+        return self.nome
 
 
 class Avaliacao(models.Model):

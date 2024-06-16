@@ -104,7 +104,7 @@ class FormEntidade(ModelForm):
 class FormInstalacoes(ModelForm):
     class Meta:
         model = Instalacao
-        fields = ['nome', 'morada', 'distrito', 'concelho', 'freguesia', 'telefone', 'email']
+        fields = ['nome', 'morada', 'distrito', 'concelho', 'freguesia', 'telefone']
         labels = {'nome': "Nome da Instalação"}
 
     def __init__(self, *args, **kwargs):
