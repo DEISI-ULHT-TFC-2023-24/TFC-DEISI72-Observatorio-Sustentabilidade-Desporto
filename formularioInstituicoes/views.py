@@ -7,11 +7,15 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm, PasswordChangeForm
+from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.template.defaulttags import register
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from slugify import slugify
+from django.contrib.auth.forms import SetPasswordForm
 
 from project import settings
 from .models import *
@@ -1675,44 +1679,73 @@ def deleteinstalacao_view(request):
     return redirect('/')
 
 
-def passwordreset_view(request):
-    form = PasswordResetForm()
 
+def passwordreset_view (request):
     if request.method == 'GET':
-        if "user" in request.GET and "token" in request.GET:
-            form = PasswordChangeForm(User.objects.filter(id=request.GET["user"]).first())
-            print("stuff")
-
-    if request.method == 'POST':
-        form = PasswordResetForm(request.POST)
-        if "email" in request.POST and form.is_valid() and User.objects.filter(email=request.POST["email"]).exists():
-
-            message = ("Password reset link: " + "http://127.0.0.1:8000/password_reset?user=" +
-                       str(User.objects.filter(email=request.POST["email"]).first().id) + "&token=" + str(1))
-
-            send_mail(
-                "Subject here",
-                message,
-                "from@example.com",
-                ["to@example.com"],
-                fail_silently=False,
-            )
-
+        user_id = request.GET.get("user")
+        token = request.GET.get("token")
+        if user_id and token:
+            try:
+                uid = urlsafe_base64_decode(user_id).decode()
+                user = User.objects.get(pk=uid)
+                if default_token_generator.check_token(user, token):
+                    form = SetPasswordForm(user)
+                else:
+                    messages.error(request, 'Token inválido.')
+                    form = PasswordResetForm()
+            except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+                messages.error(request, 'Token inválido.')
+                form = PasswordResetForm()
         else:
-            if not User.objects.filter(email=request.POST["email"]).exists():
-                messages.error(request, 'Erro ao redefinir a senha. Por favor, tente novamente.')
-            else:
-                user = User.objects.filter(id=request.GET["user"]).first()
+            form = PasswordResetForm()
+    elif request.method == 'POST':
+        if "email" in request.POST:
+            form = PasswordResetForm(request.POST)
+            if form.is_valid():
+                email = form.cleaned_data['email']
+                user = User.objects.filter(email=email).first()
                 if user:
-                    form = PasswordChangeForm(user=user, data=request.POST)
+                    token = default_token_generator.make_token(user)
+                    uid = urlsafe_base64_encode(force_bytes(user.pk))
+                    reset_url = f"http://127.0.0.1:8000/password_reset?user={uid}&token={token}"
+                    message = f"Password reset link: {reset_url}"
+                    send_mail(
+                        "Redefinição de senha",
+                        message,
+                        settings.EMAIL_HOST_USER,  # Use EMAIL_HOST_USER configurado
+                        [email],
+                        fail_silently=False,
+                    )
+                    messages.success(request, 'Por favor, verifique o seu email.')
+                    return redirect('/login')
+                else:
+                    messages.error(request, 'Email não está registrado neste website')
+        else:
+            user_id = request.GET.get("user")
+            token = request.GET.get("token")
+            try:
+                uid = urlsafe_base64_decode(user_id).decode()
+                user = User.objects.get(pk=uid)
+                if default_token_generator.check_token(user, token):
+                    form = SetPasswordForm(user, request.POST)
                     if form.is_valid():
                         form.save()
+                        messages.success(request, 'Sua senha foi alterada com sucesso.')
                         return redirect('/login')
                     else:
                         messages.error(request, 'Erro ao redefinir a senha. Por favor, tente novamente.')
+                else:
+                    messages.error(request, 'Token inválido.')
+                    form = PasswordResetForm()
+            except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+                messages.error(request, 'Token inválido.')
+                form = PasswordResetForm()
+
+    system_messages = messages.get_messages(request)
+    for message in system_messages:
+        pass
 
     return render(request, 'passwordreset.html', {"form": form})
-
 
 def getConsumoEnergiasRenovaveis(instalacao, ano):
     return {

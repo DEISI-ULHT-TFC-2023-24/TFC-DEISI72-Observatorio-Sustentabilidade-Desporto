@@ -145,5 +145,10 @@ LOGIN_REDIRECT_URL = '/login'
 RECAPTCHA_PUBLIC_KEY = '6LdWXucpAAAAAAaBp0pCxfy--0bjLRclLRjcUfED'
 RECAPTCHA_PRIVATE_KEY = '6LdWXucpAAAAAAIzov9lTI3SnLzB499Lsn6XezsF'
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_POST = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'filipe.martim.oliveira@gmail.com'
+EMAIL_HOST_PASSWORD = 'avmn orcd mjjo aotj'
+# EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
