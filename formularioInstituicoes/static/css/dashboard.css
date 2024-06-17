@@ -62,7 +62,7 @@ td{
   border-bottom: solid 1px rgba(255,255,255,0.1);
 }
 
-h2 {
+.entry-header h2 {
     margin: 10px;
     margin-right: auto
 }
