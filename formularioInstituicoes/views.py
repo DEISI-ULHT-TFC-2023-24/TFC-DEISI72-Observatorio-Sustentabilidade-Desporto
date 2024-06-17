@@ -1700,8 +1700,8 @@ def passwordreset_view(request):
                 if user:
                     token = default_token_generator.make_token(user)
                     uid = urlsafe_base64_encode(force_bytes(user.pk))
-                    reset_url = f"http://127.0.0.1:8000/password_reset?user={uid}&token={token}"
-                    # reset_url = f"http://ipdjtfc.pythonanywhere.com/password_reset?user={uid}&token={token}"
+                    # reset_url = f"http://127.0.0.1:8000/password_reset?user={uid}&token={token}"
+                    reset_url = f"http://ipdjtfc.pythonanywhere.com/password_reset?user={uid}&token={token}"
                     message = f"Password reset link: {reset_url}"
                     send_mail(
                         "Redefinição de senha",
