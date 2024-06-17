@@ -31,7 +31,7 @@ function submmit_link(){
 
 function dash_link(){
     var instalacao = getValorInstalacaoFromURL();
-    window.location.href = `/dashboard?instalacao=${instalacao}`;
+    window.location.href = `/dashboard_energia?instalacao=${instalacao}`;
 }
 
 
