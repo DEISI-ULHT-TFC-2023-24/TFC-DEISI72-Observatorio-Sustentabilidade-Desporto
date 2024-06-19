@@ -33,6 +33,11 @@ nav {
 
 }
 
+.container{
+    display: grid;
+
+}
+
 .elem1 {
     display: flex;
 
@@ -92,8 +97,6 @@ nav {
 
 .elem2 {
     position: relative;
-    left: 220%;
-    transform: translateX(-50%);
     font-size: 20px;
     white-space: nowrap;
 }

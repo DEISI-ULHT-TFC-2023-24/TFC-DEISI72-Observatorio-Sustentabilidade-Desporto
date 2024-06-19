@@ -1,0 +1,97 @@
+:root {
+    --light-blue: #d8ebf0;
+    --marine-blue: #79e2e2;
+    --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    /*var(--light-blue)*/
+    /*var(--marine-blue)*/
+}
+
+body {
+    font-family: var(--bs-font-sans-serif);
+}
+
+.titulo {
+    margin-top: 120px;
+    display: flex;
+    justify-content: center;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.buttons input[type="button"] {
+    background-color: white;
+    min-width: 1000px;
+    min-height: 80px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.buttons input[type="button"]:hover {
+    background-color: #f0f0f0;
+}
+
+.adicionaravaliacaopopup,.confirmapopup {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    visibility: hidden;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.texto_adicionar {
+    margin: auto;
+    border: 2px solid lightgrey;
+    background: whitesmoke;
+    padding: 30px;
+    border-radius: 10px;
+    min-width: 20vw;
+    min-height: 25vh;
+}
+
+.texto_adicionar h1, .texto_adicionar p, .texto_adicionar input {
+    display: flex;
+    justify-content: center;
+}
+
+.butoes_popup {
+    display: flex;
+}
+
+input[type="text"], input[type="number"], input[type="email"] {
+    margin-top: 10px;
+    border: 2px solid rgba(0, 0, 0, 0.32);
+    cursor: text;
+}
+
+input[type=submit], button {
+    background: var(--marine-blue);
+    cursor: pointer;
+}
+
+input, button {
+    padding: 12px 30px;
+    border-radius: 5px;
+    border: 0;
+    transition: background-color 0.3s ease;
+    margin: auto;
+    cursor: pointer;
+}
+
+#currentYear {
+    font-weight: bold;
+    color: red;
+}

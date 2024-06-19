@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 
-{% extends 'navigator.html' %}
+{% extends 'navigatorSemOpcoes.html' %}
 
 {% load static %}
 
 {% block titulo %}
     <h1>Dashboard</h1>
+{% endblock %}
+
+{% block button %}
+    <h2><a onclick="window.location.href = '/staff'"><i class="fas fa-home"></i><span>Home</span></a></h2>
 {% endblock %}
 
 {% block content %}

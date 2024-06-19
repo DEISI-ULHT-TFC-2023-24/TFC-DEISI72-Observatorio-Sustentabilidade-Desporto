@@ -182,16 +182,7 @@ input[type="text"], input[type="number"], input[type="email"] {
     min-height: 40vh;
 }
 
-input{
-    padding: 12px 30px;
-    border-radius: 5px;
-    border: 0;
-    transition: background-color 0.3s ease;
-    margin: auto;
-    cursor: pointer;
-}
-
-button{
+input, button{
     padding: 12px 30px;
     border-radius: 5px;
     border: 0;

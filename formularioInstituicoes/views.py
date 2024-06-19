@@ -1568,6 +1568,109 @@ def dashboard_energia_view(request):
                    })
 
 
+@login_required
+def dashboard_energia_staff_view(request):
+    instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
+    ano = 2024
+
+    energiasRenovaveis = [
+        "Fotovoltaica",
+        "Biomassa",
+        "Eolica",
+        "Termica",
+
+    ]
+    energiasNaoRenovaveis = [
+        "Electricidade",
+        "Gas Natural",
+        "Propano",
+        "Gasoleo",
+        "Gasolina",
+
+    ]
+
+    energias = energiasNaoRenovaveis + energiasRenovaveis
+
+    consumoEnergiasRenovaveis = list(getConsumoEnergiasRenovaveis(instalacao, ano).values())
+    consumoEnergiasNaoRenovaveis = list(getConsumoEnergiasNaoRenovaveis(instalacao, ano).values())
+    energiasConsumos = consumoEnergiasNaoRenovaveis + consumoEnergiasRenovaveis
+
+    custoEnergiasRenovaveis = list(getCustoEnergiasRenovaveis(instalacao, ano).values())
+    custoEnergiasNaoRenovaveis = list(getCustoEnergiasNaoRenovaveis(instalacao, ano).values())
+
+    custoConsumoEnergiasRenovaveis = list(getCustoConsumoEnergiasRenovaveis(instalacao, ano).values())
+    custoConsumoEnergiasNaoRenovaveis = list(getCustoConsumoEnergiasNaoRenovaveis(instalacao, ano).values())
+
+    faturasRenovaveis = zip(energiasRenovaveis, list(getFaturasMinimaskWhRenovaveis(instalacao, ano).values()),
+                            list(getFaturasMinimasEurRenovaveis(instalacao, ano).values()),
+                            list(getFaturasMaximaskWhRenovaveis(instalacao, ano).values()),
+                            list(getFaturasMaximasEurRenovaveis(instalacao, ano).values()))
+    faturasNaoRenovaveis = zip(energiasNaoRenovaveis, list(getFaturasMinimaskWhNaoRenovaveis(instalacao, ano).values()),
+                               list(getFaturasMinimasEurNaoRenovaveis(instalacao, ano).values()),
+                               list(getFaturasMaximaskWhNaoRenovaveis(instalacao, ano).values()),
+                               list(getFaturasMaximasEurNaoRenovaveis(instalacao, ano).values()))
+
+    climatizacaoSistemas = [
+        "Ar-Condicionado",
+        "Bombas de Calor",
+        "Caldeira",
+        "Chiller",
+        "Climatizador Evaporativo",
+    ]
+    climatizacaoPotencias = list(getClimatizacaoPotencias(instalacao, ano).values())
+
+    aquecimetoAguasSistemas = [
+        "Bombas de Calor",
+        "Caldeiras",
+        "Esquentadores",
+        "Painel Solar Termico",
+        "Termoacumulador"
+    ]
+    aquecimetoAguasPotencias = list(getAquecimentoAguasPotencias(instalacao, ano).values())
+
+    consumoTotalRenovavel = getConsumoTotalRenovavel(instalacao, ano)
+    consumoTotalNaoRenovavel = getConsumoTotalNaoRenovavel(instalacao, ano)
+
+    numeroPraticantes = getNumeroPraticantes(instalacao, ano)
+    numeroFuncionarios = getNumeroFuncionarios(instalacao, ano)
+
+    areaTotal = getAreaTotal(instalacao, ano)
+
+    numeroLuminariasInterior = getNumeroLuminariasInterior(instalacao, ano)
+    numeroLuminariasExterior = getNumeroLuminariasExterior(instalacao, ano)
+
+    potenciaLuminariasInterior = getPotenciaLuminariasInterior(instalacao, ano)
+    potenciaLuminariasExterior = getPotenciaLuminariasExterior(instalacao, ano)
+
+    return render(request, 'dashboard_energia_staff.html',
+                  {"energiasRenovaveis": energiasRenovaveis, "energiasNaoRenovaveis": energiasNaoRenovaveis,
+                   "energias": energias, "energiasConsumos": energiasConsumos,
+                   "consumoEnergiasRenovaveis": consumoEnergiasRenovaveis,
+                   "consumoEnergiasNaoRenovaveis": consumoEnergiasNaoRenovaveis,
+                   "custoEnergiasRenovaveis": custoEnergiasRenovaveis,
+                   "custoEnergiasNaoRenovaveis": custoEnergiasNaoRenovaveis,
+                   "custoConsumoEnergiasRenovaveis": custoConsumoEnergiasRenovaveis,
+                   "custoConsumoEnergiasNaoRenovaveis": custoConsumoEnergiasNaoRenovaveis,
+                   "faturasRenovaveis": faturasRenovaveis,
+                   "faturasNaoRenovaveis": faturasNaoRenovaveis,
+                   "climatizacaoSistemas": climatizacaoSistemas,
+                   "climatizacaoPotencias": climatizacaoPotencias,
+                   "aquecimetoAguasSistemas": aquecimetoAguasSistemas,
+                   "aquecimetoAguasPotencias": aquecimetoAguasPotencias,
+                   "consumoTotalRenovavel": consumoTotalRenovavel,
+                   "consumoTotalNaoRenovavel": consumoTotalNaoRenovavel,
+                   "consumoTotalEnergia": consumoTotalRenovavel + consumoTotalNaoRenovavel,
+                   "numeroPraticantes": numeroPraticantes,
+                   "numeroFuncionarios": numeroFuncionarios,
+                   "areaTotal": areaTotal,
+                   "numeroLuminariasInterior": numeroLuminariasInterior,
+                   "numeroLuminariasExterior": numeroLuminariasExterior,
+                   "potenciaLuminariasInterior": potenciaLuminariasInterior,
+                   "potenciaLuminariasExterior": potenciaLuminariasExterior,
+                   })
+
+
+
 def getRespostaNumericaOr0(pergunta_id, instalacao, ano) -> int:
     aval = Avaliacao.objects.filter(instalacao=instalacao, ano=ano).first()
 
@@ -1592,7 +1695,10 @@ def login_view(request):
             system_messages = messages.get_messages(request)
             for message in system_messages:
                 pass
-            return redirect("/")
+            if user.is_staff:
+                return redirect("/staff")
+            else:
+                return redirect("/")
         else:
             messages.error(request, 'Credenciais inválidas. Por favor, tente novamente.')
 
@@ -1601,6 +1707,24 @@ def login_view(request):
             pass
 
     return render(request, 'login.html', {"authForm": AuthenticationForm()})
+
+@login_required
+def admin_page_view(request):
+
+    entidades = Entidade.objects.all()
+
+    instalacoes_submeteu = []
+
+    for entidade in entidades:
+        instalacoes = entidade.instalacoes.all()
+
+        for instalacao in instalacoes:
+
+            if instalacao.submetido:
+                instalacoes_submeteu.append((entidade, instalacao))
+
+
+    return render(request, 'admin_page.html', {"instalacoes": instalacoes_submeteu})
 
 
 @login_required
@@ -1980,10 +2104,9 @@ def dashboard_hidrica_view(request):
     numeroSistemasRega = getNumeroSistemasRega(instalacao, ano)
 
     aguaFaturas = zip(aguaFontes, list(getFaturasMinimasLAgua(instalacao, ano).values()),
-                            list(getFaturasMinimasEurAgua(instalacao, ano).values()),
-                            list(getFaturasMaximasLAgua(instalacao, ano).values()),
-                            list(getFaturasMaximasEurAgua(instalacao, ano).values()))
-
+                      list(getFaturasMinimasEurAgua(instalacao, ano).values()),
+                      list(getFaturasMaximasLAgua(instalacao, ano).values()),
+                      list(getFaturasMaximasEurAgua(instalacao, ano).values()))
 
     return render(request, 'dashboard_hidrica.html',
                   {
@@ -2002,6 +2125,55 @@ def dashboard_hidrica_view(request):
                       "areaTotal": areaTotal,
                   })
 
+def dashboard_hidrica_staff_view(request):
+    instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
+    ano = 2024
+
+    numeroPraticantes = getNumeroPraticantes(instalacao, ano)
+    numeroFuncionarios = getNumeroFuncionarios(instalacao, ano)
+
+    areaTotal = getAreaTotal(instalacao, ano)
+
+    aguaFontes = [
+        "Abastecimento Publico",
+        "Fontes Naturais",
+        "Galerias Filtrantes",
+        "Lago",
+        "Pocos",
+        "Rio",
+    ]
+
+    aguaConsumos = list(getAguaConsumos(instalacao, ano).values())
+    aguaCustos = list(getAguaCustos(instalacao, ano).values())
+    aguaCustosConsumo = list(getAguaCustosConsumo(instalacao, ano).values())
+    aguaConsumoTotal = getAguaConsumoTotal(instalacao, ano)
+
+    mediaAnualBanhos = getMediaAnualBanhos(instalacao, ano)
+    piscinasMediaDiariaRenovacao = getPiscinasMediaDiariaRenovacao(instalacao, ano)
+    piscinasAguaTotalSuportada = getPiscinasAguaTotalSuportada(instalacao, ano)
+    numeroSistemasRega = getNumeroSistemasRega(instalacao, ano)
+
+    aguaFaturas = zip(aguaFontes, list(getFaturasMinimasLAgua(instalacao, ano).values()),
+                      list(getFaturasMinimasEurAgua(instalacao, ano).values()),
+                      list(getFaturasMaximasLAgua(instalacao, ano).values()),
+                      list(getFaturasMaximasEurAgua(instalacao, ano).values()))
+
+    return render(request, 'dashboard_hidrica_staff.html',
+                  {
+                      "aguaFontes": aguaFontes,
+                      "aguaConsumos": aguaConsumos,
+                      "aguaCustos": aguaCustos,
+                      "aguaCustosConsumo": aguaCustosConsumo,
+                      "aguaConsumoTotal": aguaConsumoTotal,
+                      "mediaAnualBanhos": mediaAnualBanhos,
+                      "piscinasMediaDiariaRenovacao": piscinasMediaDiariaRenovacao,
+                      "piscinasAguaTotalSuportada": piscinasAguaTotalSuportada,
+                      "numeroSistemasRega": numeroSistemasRega,
+                      "aguaFaturas": aguaFaturas,
+                      "numeroPraticantes": numeroPraticantes,
+                      "numeroFuncionarios": numeroFuncionarios,
+                      "areaTotal": areaTotal,
+                  })
 
 def getAguaConsumos(instalacao, ano):
     return {
@@ -2013,6 +2185,7 @@ def getAguaConsumos(instalacao, ano):
         "rio": getRespostaNumericaOr0(149, instalacao, ano),
     }
 
+
 def getAguaCustos(instalacao, ano):
     return {
         "abastecimentoPublico": getRespostaNumericaOr0(141, instalacao, ano),
@@ -2022,6 +2195,8 @@ def getAguaCustos(instalacao, ano):
         "pocos": getRespostaNumericaOr0(186, instalacao, ano),
         "rio": getRespostaNumericaOr0(150, instalacao, ano),
     }
+
+
 def getAguaCustosConsumo(instalacao, ano):
     aguaConsumos = getAguaConsumos(instalacao, ano)
     aguaCustos = getAguaCustos(instalacao, ano)
@@ -2034,6 +2209,7 @@ def getAguaCustosConsumo(instalacao, ano):
         "pocos": divByZero(aguaCustos["pocos"], aguaConsumos["pocos"]),
         "rio": divByZero(aguaCustos["rio"], aguaConsumos["rio"]),
     }
+
 
 def getAguaConsumoTotal(instalacao, ano):
     consumos = list(getAguaConsumos(instalacao, ano).values())
@@ -2048,14 +2224,18 @@ def getAguaConsumoTotal(instalacao, ano):
 def getMediaAnualBanhos(instalacao, ano):
     return getRespostaNumericaOr0(203, instalacao, ano)
 
+
 def getPiscinasMediaDiariaRenovacao(instalacao, ano):
     return getRespostaNumericaOr0(232, instalacao, ano)
+
 
 def getPiscinasAguaTotalSuportada(instalacao, ano):
     return getRespostaNumericaOr0(231, instalacao, ano)
 
+
 def getNumeroSistemasRega(instalacao, ano):
     return getRespostaNumericaOr0(233, instalacao, ano)
+
 
 def getFaturasMinimasLAgua(instalacao, ano):
     return {
@@ -2067,6 +2247,7 @@ def getFaturasMinimasLAgua(instalacao, ano):
         "rio": getRespostaNumericaOr0(152, instalacao, ano),
     }
 
+
 def getFaturasMinimasEurAgua(instalacao, ano):
     return {
         "abastecimentoPublico": getRespostaNumericaOr0(145, instalacao, ano),
@@ -2077,6 +2258,7 @@ def getFaturasMinimasEurAgua(instalacao, ano):
         "rio": getRespostaNumericaOr0(154, instalacao, ano),
     }
 
+
 def getFaturasMaximasLAgua(instalacao, ano):
     return {
         "abastecimentoPublico": getRespostaNumericaOr0(146, instalacao, ano),
@@ -2086,6 +2268,7 @@ def getFaturasMaximasLAgua(instalacao, ano):
         "pocos": getRespostaNumericaOr0(191, instalacao, ano),
         "rio": getRespostaNumericaOr0(155, instalacao, ano),
     }
+
 
 def getFaturasMaximasEurAgua(instalacao, ano):
     return {

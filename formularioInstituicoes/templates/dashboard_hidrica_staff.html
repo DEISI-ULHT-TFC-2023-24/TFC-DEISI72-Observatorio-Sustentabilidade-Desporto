@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends 'navigatorSemOpcoes.html' %}
+
+{% load static %}
+
+{% block titulo %}
+    <h1>Dashboard</h1>
+{% endblock %}
+
+{% block button %}
+    <h2><a onclick="window.location.href = '/staff'"><i class="fas fa-home"></i><span>Home</span></a></h2>
+{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-autocolors"></script>
+
+    <script src="{% static 'js/graficos.js' %}"></script>
+
+    <div class="display">
+        <div class="entry-header">
+            <h2>Bem Vindo Instalação</h2>
+            <div class="long-entry-top">
+                <div class="info-column">
+                    <h2>Consumo Total de Água: {{ aguaConsumoTotal }} L</h2>
+                </div>
+                <div class="info-column">
+                    <h2>Número de Praticantes: {{ numeroPraticantes }}</h2>
+                    <h2>Número de Funcionarios: {{ numeroFuncionarios }}</h2>
+                    <h2>Área Total: {{ areaTotal }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="two-entries">
+            <div class="single-entry">
+                <div class="graf-slot3">
+                    <canvas id="graf-aguaconsumo" class="graph-view"></canvas>
+                </div>
+            </div>
+            <div class="single-entry">
+                <table>
+                    <tr>
+                        <td>Fonte de Água</td>
+                        <td>Fatura Mínima L</td>
+                        <td>Fatura Mínima €</td>
+                        <td>Fatura Máxima L</td>
+                        <td>Fatura Máxima €</td>
+                    </tr>
+                    {% for a,b,c,d,e in aguaFaturas %}
+                        <tr>
+                            <td>{{ a }}</td>
+                            <td>{{ b }}</td>
+                            <td>{{ c }}</td>
+                            <td>{{ d }}</td>
+                            <td>{{ e }}</td>
+                        </tr>
+                    {% endfor %}
+
+                </table>
+            </div>
+        </div>
+        <div class="entry-header">
+            <h2>Hídrica</h2>
+            <div class="long-entry">
+                <div class="graf-slot3">
+                    <canvas id="graf-aguaconsumos" class="graph-view"></canvas>
+                </div>
+                <div class="graf-slot3">
+                    <canvas id="graf-aguacusto" class="graph-view"></canvas>
+                </div>
+                <div class="graf-slot3">
+                    <canvas id="graf-aguaconscusto" class="graph-view"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="entry-header">
+            <h2>Usos de Água</h2>
+            <div class="long-entry">
+                <div class="graf-slot3">
+                    <h2>Banhos</h2>
+                    <h4>&emsp;Media Água de Banhos: {{ mediaAnualBanhos }}</h4>
+                </div>
+                <div class="graf-slot3">
+                    <h2>Piscinas</h2>
+                    <h4>&emsp;Quantidade Média Diaria para Renovação: {{ piscinasMediaDiariaRenovacao }} L</h4>
+                    <h4>&emsp;Quantidade Total de Água Suportada: {{ piscinasAguaTotalSuportada }} L</h4>
+                </div>
+                <div class="graf-slot3">
+                    <h2>Sistemas de Rega</h2>
+                    <h4>&emsp;Número de sistemas de rega: {{ numeroSistemasRega }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        //
+        let grafconsumos = document.getElementById("graf-aguaconsumo").getContext("2d");
+
+        makePieChart(grafconsumos, {{ aguaFontes|safe }}, {{ aguaConsumos }})
+
+        //hidrica
+
+        let grafaguaconsumos = document.getElementById("graf-aguaconsumos").getContext("2d");
+
+        makeBarChart(grafaguaconsumos, {{ aguaFontes|safe }}, {{ aguaConsumos }})
+
+        let grafaguacustos = document.getElementById("graf-aguacusto").getContext("2d");
+
+        makeBarChart(grafaguacustos, {{ aguaFontes|safe }}, {{ aguaCustos }})
+
+        let grafaguacustosconsumos = document.getElementById("graf-aguaconscusto").getContext("2d");
+
+        makeBarChart(grafaguacustosconsumos, {{ aguaFontes|safe }}, {{ aguaCustosConsumo }})
+
+
+    </script>
+
+{% endblock %}
+</html>

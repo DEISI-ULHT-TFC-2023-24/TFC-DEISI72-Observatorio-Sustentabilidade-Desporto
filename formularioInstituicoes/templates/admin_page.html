@@ -1,0 +1,63 @@
+{% extends 'navigatorSemOpcoes.html' %}
+
+{% load static %}
+
+{% block titulo %}
+    <h1>Staff</h1>
+{% endblock %}
+
+{% block button %}
+    <h2><a onclick="mostrarPopup()"><i class="fas fa-plus"></i><span>Adicionar Avaliação</span></a></h2>
+{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/admin_page.css' %}">
+    <script src="{% static 'js/admin_page.js' %}"></script>
+
+
+
+    <h1 class="titulo">Instalações que submeteram o formulário:</h1>
+
+    <div class="buttons">
+        {% for entidade, instalacao in instalacoes %}
+            <input type="button" value="{{ entidade.user.username }} - {{ instalacao.nome }}" onclick="send_dashboard({{ instalacao.id }})">
+        {% endfor %}
+    </div>
+
+    <div id="popup" class="adicionaravaliacaopopup">
+        <div class="texto_adicionar">
+            <h1>Adicionar Avaliação</h1>
+            <p>Com esta ação, irá adicionar uma avaliação nova a todas as instalações.</p>
+            <p>Apenas poderá adicionar uma avaliação por ano</p>
+            <p id="currentYear"></p>
+            <p>Caso este ano já esteja registado, esta ação não irá funcionar</p>
+            <div class="butoes_popup">
+
+                <button onclick="esconder_inicial()"><span>Cancelar</span></button>
+                <button onclick="esconder_inicial_mostra_confirmacao()"><span>Adicionar</span></button>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <div id="popup" class="confirmapopup">
+        <div class="texto_adicionar">
+            <h1>Confirmar ação</h1>
+            <p>Têm a certeza que deseja realizar esta ação?</p>
+            <p>Esta ação é permanente e irreversível</p>
+            <div class="butoes_popup">
+
+                <button onclick="esconder_confirmacao()"><span>Cancelar</span></button>
+                <button onclick=""><span>Adicionar</span></button>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+{% endblock %}
