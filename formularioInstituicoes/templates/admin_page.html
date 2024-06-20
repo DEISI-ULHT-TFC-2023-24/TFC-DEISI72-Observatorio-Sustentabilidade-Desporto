@@ -8,13 +8,18 @@
 
 {% block button %}
     <h2><a onclick="mostrarPopup()"><i class="fas fa-plus"></i><span>Adicionar Avaliação</span></a></h2>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
     <link rel="stylesheet" href="{% static 'css/admin_page.css' %}">
     <script src="{% static 'js/admin_page.js' %}"></script>
-
-
 
     <h1 class="titulo">Instalações que submeteram o formulário:</h1>
 
@@ -28,6 +33,7 @@
         <div class="texto_adicionar">
             <h1>Adicionar Avaliação</h1>
             <p>Com esta ação, irá adicionar uma avaliação nova a todas as instalações.</p>
+            <p>As instalações vão poder submeter o formulário, mas será referente ao ano adicionado</p>
             <p>Apenas poderá adicionar uma avaliação por ano</p>
             <p id="currentYear"></p>
             <p>Caso este ano já esteja registado, esta ação não irá funcionar</p>
@@ -51,7 +57,7 @@
             <div class="butoes_popup">
 
                 <button onclick="esconder_confirmacao()"><span>Cancelar</span></button>
-                <button onclick=""><span>Adicionar</span></button>
+                <button onclick="adiciona_avaliacao('{{ csrf_token }}')"><span>Adicionar</span></button>
 
             </div>
 

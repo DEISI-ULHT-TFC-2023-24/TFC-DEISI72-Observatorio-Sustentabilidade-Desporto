@@ -27,6 +27,22 @@ function esconder_inicial_mostra_confirmacao() {
     popup_confirmar.style.visibility = "visible"
 }
 
+function adiciona_avaliacao(csrftoken) {
+    const requestObj = new XMLHttpRequest()
+
+    requestObj.open("POST", '/post/')
+    requestObj.setRequestHeader("X-CSRFToken", csrftoken)
+
+    const formdata = new FormData()
+    //2025
+    formdata.append('adicionar', `${new Date().getFullYear()}`)
+    requestObj.send(formdata)
+
+    setTimeout(function () {
+        location.reload();
+    }, 200);
+}
+
 window.onload = function () {
     const date = new Date().getFullYear()
     document.getElementById('currentYear').textContent = `O ano que irá ser registado nesta avaliação é  ${date}`;

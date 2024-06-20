@@ -1216,7 +1216,7 @@ def formulario_view(request):
 
     instalacao_id = request.GET.get('instalacao')
 
-    post_form(request, instalacao_id, 2024, update=False)
+    post_form(request, instalacao_id, datetime.date.today().year, update=False)
 
     if request.method == "POST" or request.method == "FILES":
         base_url = request.path_info
@@ -1236,11 +1236,11 @@ def formulario_view(request):
 def update_form_view(request, tema_id):
     instalacao_id = request.GET.get('instalacao')
 
-    ano_questionario = 2024
+    ano_questionario = datetime.date.today().year
 
     update_respostas_view(request, perguntas_update_form, instalacao_id, ano_questionario)
 
-    post_update(request, instalacao_id, 2024, update=True)
+    post_update(request, instalacao_id, datetime.date.today().year, update=True)
 
     if request.method == "POST" or request.method == "FILES":
         base_url = request.path_info
@@ -1370,7 +1370,7 @@ def guarda_respostas_submmit(instalacao, ano_questionario, perguntas_submmit_obj
 def respostas_view(request):
     instalacao_id = request.GET.get('instalacao')
 
-    ano_questionario = 2024
+    ano_questionario = datetime.date.today().year
 
     guarda_respostas_submmit(instalacao_id, ano_questionario, perguntas_respostas_submmit)
 
@@ -1389,7 +1389,6 @@ def post_request_submmit(request):
 
     post_dicionario = dict(post)
     lista_items = list(post_dicionario.items())
-    print(lista_items)
 
     if lista_items[0][0] == 'metodo' and lista_items[0][1][0] == 'post':
         if lista_items[1][0] == 'tipo_query' and lista_items[1][1][0] == 'editar':
@@ -1413,6 +1412,31 @@ def post_request_submmit(request):
         obsjetoSave = Instalacao.objects.get(id=int(lista_items[0][1][0]))
         obsjetoSave.submetido = True
         obsjetoSave.save()
+    elif lista_items[0][0] == 'adicionar':
+
+        adiciona = True
+
+        avaliacoes = Avaliacao.objects.all()
+
+        for avaliacao in avaliacoes:
+            if avaliacao.ano == int(lista_items[0][1][0]):
+                adiciona = False
+                break
+
+        if not adiciona:
+            messages.error(request, 'A avaliação para este ano já existe')
+        else:
+
+            instalacoes = Instalacao.objects.all()
+
+            for instalacao in instalacoes:
+                avaliacao = Avaliacao(instalacao=instalacao, ano=int(lista_items[0][1][0]),
+                          questionario=Questionario.objects.filter(id=3).first())
+                avaliacao.save()
+                instalacao.submetido = False
+                instalacao.save()
+
+            messages.success(request, 'Avaliação adicionada com sucesso.')
 
     return HttpResponse("POST request")
 
@@ -1469,7 +1493,7 @@ def split(value, key):
 @login_required
 def dashboard_energia_view(request):
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
-    ano = 2024
+    ano = datetime.date.today().year
 
     energiasRenovaveis = [
         "Fotovoltaica",
@@ -1571,7 +1595,7 @@ def dashboard_energia_view(request):
 @login_required
 def dashboard_energia_staff_view(request):
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
-    ano = 2024
+    ano = datetime.date.today().year
 
     energiasRenovaveis = [
         "Fotovoltaica",
@@ -2077,7 +2101,7 @@ def getPotenciaLuminariasExterior(instalacao, ano):
 @login_required
 def dashboard_hidrica_view(request):
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
-    ano = 2024
+    ano = datetime.date.today().year
 
     numeroPraticantes = getNumeroPraticantes(instalacao, ano)
     numeroFuncionarios = getNumeroFuncionarios(instalacao, ano)
@@ -2127,7 +2151,7 @@ def dashboard_hidrica_view(request):
 
 def dashboard_hidrica_staff_view(request):
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
-    ano = 2024
+    ano = datetime.date.today().year
 
     numeroPraticantes = getNumeroPraticantes(instalacao, ano)
     numeroFuncionarios = getNumeroFuncionarios(instalacao, ano)

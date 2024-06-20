@@ -41,7 +41,7 @@ body {
     background-color: #f0f0f0;
 }
 
-.adicionaravaliacaopopup,.confirmapopup {
+.adicionaravaliacaopopup, .confirmapopup {
     position: fixed;
     left: 0;
     right: 0;
@@ -95,3 +95,37 @@ input, button {
     font-weight: bold;
     color: red;
 }
+
+.messages {
+        list-style-type: none;
+    padding: 0;
+    margin: 20px 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+}
+
+.messages li {
+    padding: 5px;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+/* Estilo para mensagens de erro */
+.messages li.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Estilo para mensagens de sucesso */
+.messages li.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+/* Ajuste para a borda do contêiner de mensagens */
