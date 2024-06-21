@@ -41,7 +41,7 @@ body {
     background-color: #f0f0f0;
 }
 
-.adicionaravaliacaopopup, .confirmapopup {
+.adicionaravaliacaopopup, .confirmapopup, .questionariopopup {
     position: fixed;
     left: 0;
     right: 0;
@@ -51,6 +51,22 @@ body {
     visibility: hidden;
     background-color: rgba(0, 0, 0, 0.5);
 }
+
+.questionario{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.questionario select {
+    padding: 12px 20px;
+    font-size: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
 
 .texto_adicionar {
     margin: auto;

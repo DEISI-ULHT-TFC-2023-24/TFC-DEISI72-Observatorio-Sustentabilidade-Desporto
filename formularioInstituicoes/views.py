@@ -1212,6 +1212,7 @@ def post_update(request, instalacao, ano_questionario, update):
 
 @login_required
 def formulario_view(request):
+    entidade = getEntidade(request)
     criar_perguntas_form(perguntas_form)
 
     instalacao_id = request.GET.get('instalacao')
@@ -1226,7 +1227,8 @@ def formulario_view(request):
 
     context = {
         'perguntas_form': perguntas_form,
-        'instalacao_submmit': Instalacao.objects.get(id=instalacao_id).submetido
+        'instalacao_submmit': Instalacao.objects.get(id=instalacao_id).submetido,
+        'entidadeLogada': entidade.nome
     }
 
     return render(request, 'formulario.html', context)
@@ -1234,6 +1236,8 @@ def formulario_view(request):
 
 @login_required
 def update_form_view(request, tema_id):
+    entidade = getEntidade(request)
+
     instalacao_id = request.GET.get('instalacao')
 
     ano_questionario = datetime.date.today().year
@@ -1250,7 +1254,8 @@ def update_form_view(request, tema_id):
 
     context = {
         'perguntas_form': perguntas_update_form,
-        'instalacao_submmit': Instalacao.objects.get(id=instalacao_id).submetido
+        'instalacao_submmit': Instalacao.objects.get(id=instalacao_id).submetido,
+        'entidadeLogada': entidade.nome
     }
 
     return render(request, 'update_formulario.html', context)
@@ -1368,6 +1373,8 @@ def guarda_respostas_submmit(instalacao, ano_questionario, perguntas_submmit_obj
 
 @login_required
 def respostas_view(request):
+    entidade = getEntidade(request)
+
     instalacao_id = request.GET.get('instalacao')
 
     ano_questionario = datetime.date.today().year
@@ -1376,8 +1383,8 @@ def respostas_view(request):
 
     context = {
         'perguntas_respostas_submmit': perguntas_respostas_submmit,
-        'instalacao_submmit': Instalacao.objects.get(id=instalacao_id).submetido
-
+        'instalacao_submmit': Instalacao.objects.get(id=instalacao_id).submetido,
+        'entidadeLogada': entidade.nome
     }
 
     return render(request, 'submmit.html', context)
@@ -1492,6 +1499,8 @@ def split(value, key):
 
 @login_required
 def dashboard_energia_view(request):
+    entidade = getEntidade(request)
+
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
     ano = datetime.date.today().year
 
@@ -1589,6 +1598,7 @@ def dashboard_energia_view(request):
                    "numeroLuminariasExterior": numeroLuminariasExterior,
                    "potenciaLuminariasInterior": potenciaLuminariasInterior,
                    "potenciaLuminariasExterior": potenciaLuminariasExterior,
+                   'entidadeLogada': entidade.nome
                    })
 
 
@@ -1797,11 +1807,13 @@ def instalacoes_view(request):
     instalacaoForm = FormInstalacoes()
 
     return render(request, 'instalacoes.html',
-                  {'instalacoes': Instalacao.objects.filter(entidade=entidade), 'instalacaoForm': instalacaoForm})
+                  {'instalacoes': Instalacao.objects.filter(entidade=entidade), 'instalacaoForm': instalacaoForm, 'entidadeLogada': entidade.nome})
 
 
 @login_required
 def editinstalacao_view(request):
+    entidade = getEntidade(request)
+
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
 
     if request.method == 'POST':
@@ -1810,7 +1822,7 @@ def editinstalacao_view(request):
         return redirect('/')
 
     editInstalacaoForm = FormInstalacoes(instance=instalacao)
-    return render(request, 'editinstalacao.html', {"instalacaoForm": editInstalacaoForm})
+    return render(request, 'editinstalacao.html', {"instalacaoForm": editInstalacaoForm, 'entidadeLogada': entidade.nome})
 
 
 @login_required
@@ -2103,6 +2115,8 @@ def dashboard_hidrica_view(request):
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
     ano = datetime.date.today().year
 
+    entidade = getEntidade(request)
+
     numeroPraticantes = getNumeroPraticantes(instalacao, ano)
     numeroFuncionarios = getNumeroFuncionarios(instalacao, ano)
 
@@ -2147,6 +2161,7 @@ def dashboard_hidrica_view(request):
                       "numeroPraticantes": numeroPraticantes,
                       "numeroFuncionarios": numeroFuncionarios,
                       "areaTotal": areaTotal,
+                      'entidadeLogada': entidade.nome
                   })
 
 def dashboard_hidrica_staff_view(request):

@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-{% extends 'navigator.html' %}
+{% extends 'navigatorSemOpcoes.html' %}
 
 {% load static %}
+
+{% block entidade %}
+    {{ entidadeLogada }}
+{% endblock %}
 
 {% block titulo %}
     <h1>Instalações</h1>
