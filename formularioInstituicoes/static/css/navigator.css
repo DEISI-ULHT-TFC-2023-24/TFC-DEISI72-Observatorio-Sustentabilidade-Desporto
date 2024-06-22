@@ -1,7 +1,7 @@
-:root{
+:root {
     --light-blue: #d8ebf0;
     --marine-blue: #79e2e2;
-     --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     /*var(--light-blue)*/
     /*var(--marine-blue)*/
 }
@@ -35,7 +35,6 @@ nav {
 
 .elem1 {
     display: flex;
-
 }
 
 .elem1 h2 {
@@ -92,10 +91,9 @@ nav {
 
 .elem2 {
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
     font-size: 20px;
     white-space: nowrap;
+    text-align: center;
 }
 
 .elem3 {
@@ -195,6 +193,105 @@ nav {
     font-weight: 600;
 }
 
+@media only screen and (max-width: 1200px) {
+    .elem2 {
+        margin-left: 100px;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .elem2 {
+        margin-left: 250px;
+    }
+}
+
+@media only screen and (max-width: 750px) {
+    nav {
+        grid-template-areas:
+            "elem2 elem2"
+            "elem1 elem3";
+        min-height: 150px;
+        grid-template-rows: 70px 80px;
+    }
+
+    .elem1 {
+        grid-area: elem1;
+        display: flex;
+        margin-left: 260px;
+        justify-content: space-around;
+    }
+
+    .elem2 {
+        grid-area: elem2;
+        text-align: center;
+        margin-right: 80px;
+    }
+
+    .elem3 {
+        grid-area: elem3;
+        text-align: center;
+        margin-left: -12em;
+    }
+}
+
+
+@media only screen and (max-width: 700px) {
+
+    .elem3 {
+        margin-left: -11em;
+    }
+}
+
+@media only screen and (max-width: 650px) {
+
+    .elem3 {
+        margin-left: -10em;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+
+    .elem1 {
+        margin-left: 190px;
+    }
+
+    .elem2 {
+        margin-right: 135px;
+    }
+
+    .elem3 {
+        margin-left: -9em;
+    }
+}
+
+@media only screen and (max-width: 550px) {
+
+    .elem3 {
+        margin-left: -8em;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+
+    .elem3 {
+        margin-left: -7em;
+    }
+}
+
+@media only screen and (max-width: 470px) {
+
+    .elem1 {
+        margin-left: 125px;
+    }
+
+    .elem2 {
+        margin-right: 180px;
+    }
+
+    .elem3 {
+        margin-left: -7em;
+    }
+}
 
 
 

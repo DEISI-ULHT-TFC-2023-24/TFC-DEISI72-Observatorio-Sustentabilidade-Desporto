@@ -96,3 +96,9 @@ td{
     flex-direction: row;
     height: 20vh;
 }
+
+@media only screen and (max-width: 750px) {
+    .display {
+        padding-top: 18vh;
+    }
+}

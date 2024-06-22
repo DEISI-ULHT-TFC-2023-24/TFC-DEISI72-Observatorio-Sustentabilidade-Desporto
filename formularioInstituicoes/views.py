@@ -31,7 +31,6 @@ def getEntidade(request) -> Entidade:
     else:
         return None
 
-
 def criar_perguntas_form(perguntas_form_object):
     questionario = Questionario.objects.get(nome="Questionário Instalações Desportivas")
 
@@ -1732,7 +1731,7 @@ def login_view(request):
             if user.is_staff:
                 return redirect("/staff")
             else:
-                return redirect("/")
+                return redirect("/instalacoes")
         else:
             messages.error(request, 'Credenciais inválidas. Por favor, tente novamente.')
 
@@ -1901,6 +1900,9 @@ def passwordreset_view(request):
 
     return render(request, 'passwordreset.html', {"form": form})
 
+
+def home_view(request):
+    return render(request, 'home.html')
 
 def getConsumoEnergiasRenovaveis(instalacao, ano):
     return {

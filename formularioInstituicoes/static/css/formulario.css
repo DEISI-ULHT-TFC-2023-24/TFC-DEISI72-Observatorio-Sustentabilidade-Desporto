@@ -1,12 +1,12 @@
-:root{
+:root {
     --light-blue: #d8ebf0;
     --marine-blue: #79e2e2;
-     --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     /*var(--light-blue)*/
     /*var(--marine-blue)*/
 }
 
-body{
+body {
     font-family: var(--bs-font-sans-serif);
 }
 
@@ -156,7 +156,7 @@ div#resposta_dada {
     display: ruby-text;
 }
 
-.titulo_submetido{
+.titulo_submetido {
     margin-top: 40%;
     border: 1px solid lightgrey;
     background: whitesmoke;
@@ -199,15 +199,21 @@ div#resposta_dada {
     justify-content: center;
 }
 
-.butoes_popup{
+.butoes_popup {
     display: flex;
 }
 
-.butoes_popup button{
+.butoes_popup button {
     padding: 12px 30px;
     border-radius: 5px;
     border: 0;
     margin: auto;
     cursor: pointer;
     background: var(--marine-blue);
+}
+
+@media only screen and (max-width: 750px) {
+    .container {
+        margin: 165px auto auto;
+    }
 }

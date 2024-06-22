@@ -1,0 +1,119 @@
+:root {
+    --light-blue: #d8ebf0;
+    --marine-blue: #79e2e2;
+    --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    /*var(--light-blue)*/
+    /*var(--marine-blue)*/
+}
+
+body {
+    font-family: var(--bs-font-sans-serif);
+}
+
+.elements {
+    display: flex;
+    height: 98vh;
+}
+
+.imagem-logotipo, .info {
+    flex: 1;
+    padding: 45px;
+}
+
+.imagem-logotipo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--light-blue);
+}
+
+.imagem-logotipo img {
+    width: 700px;
+}
+
+.logoIPDJ {
+    max-width: 130%;
+    height: auto;
+}
+
+.info {
+    background-color: #fff;
+    overflow-y: auto;
+}
+
+.info p {
+    font-size: 1.1vw;
+}
+
+.info .login {
+    font-size: 15px;
+}
+
+.titulo {
+    font-family: 'Georgia', serif;
+    font-weight: 700;
+    color: #2E2F3E;
+    line-height: 1.2;
+    margin-top: 0;
+    font-size: 4vw;
+}
+
+button {
+    padding: 16px 40px;
+    border-radius: 5px;
+    border: 0;
+    transition: background-color 0.3s ease;
+    background: var(--marine-blue);
+    cursor: pointer;
+    font-size: 15px;
+}
+
+button a {
+    text-decoration: none;
+    color: black;
+}
+
+@media only screen and (max-width: 1000px) {
+    .elements {
+        flex-direction: column;
+    }
+
+    .imagem-logotipo {
+        flex: none;
+        height: 25vh;
+    }
+
+    .info{
+        flex: none;
+        height: 75vh;
+    }
+
+    .imagem-logotipo {
+        padding: 0;
+    }
+
+    .imagem-logotipo img {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .info {
+        padding: 20px;
+    }
+
+    .info p {
+        font-size: 4vw;
+    }
+
+    .titulo {
+        font-size: 6vw;
+    }
+
+    button {
+        font-size: 4vw;
+    }
+
+    .info .login {
+        font-size: 4vw;
+    }
+}

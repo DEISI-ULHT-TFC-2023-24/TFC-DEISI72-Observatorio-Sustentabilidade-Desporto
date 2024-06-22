@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+<div class="elements">
+    <div class="imagem-logotipo">
+        <img src="{% static 'img/ipdj_image.png' %}" alt="logotipo" class="logoIPDJ">
+    </div>
+
+    <div class="info">
+        <h1 class="titulo">Observatório de Sustentabilidade no Desporto</h1>
+        <p>Bem-vindo ao Observatório de Sustentabilidade no Desporto, uma plataforma dedicada a ajudar as entidades
+            desportivas nacionais a se tornarem mais sustentáveis.</p>
+
+        <p>Criado por um grupo de estudantes da Universidade Lusófona de Humanidades e Tecnologias de Lisboa, em
+            parceria com o Instituto Português do Desporto e Juventude (IPDJ), esta plataforma permite o registo
+            e a sua monitorização de dados das suas diversas instalações desportivas, os quais serão posteriormente
+            avaliados pela
+            equipa do IPDJ. Isso possibilita que a sua instalação receba apoio para se tornar mais sustentável.</p>
+
+        <p>O IPDJ pretende descarbonizar e reduzir a pegada de carbono nas instalações desportivas em todo o país. </p>
+
+        <p>É uma entidade desportiva e está interessado? Registe-se na nossa plataforma.</p>
+
+        <button><a href="/signup">Registe-se</a></button>
+        <p class="login">Já têm uma conta? Faça <a href="/login">login</a></p>
+    </div>
+</div>
+
+
+</body>
+</html>
