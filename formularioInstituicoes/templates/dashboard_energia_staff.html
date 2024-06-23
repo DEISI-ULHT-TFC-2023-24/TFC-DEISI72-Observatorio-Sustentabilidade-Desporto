@@ -25,8 +25,12 @@
     <script src="{% static 'js/graficos.js' %}"></script>
 
     <div class="display">
+        <div class="entry-header-nav">
+            <h2 id="right-nav"><a href="/dashboard_hidrica_staff?instalacao={{ instalacao.id }}">Consumo Hidrico 🢒</a>
+            </h2>
+        </div>
         <div class="entry-header">
-            <h2>Bem Vindo Instalação</h2>
+            <h2>Bem Vindo {{ instalacao.nome }}</h2>
             <div class="long-entry-top">
                 <div class="info-column">
                     <h2>Consumo Total de Energia: {{ consumoTotalEnergia }} kWh</h2>

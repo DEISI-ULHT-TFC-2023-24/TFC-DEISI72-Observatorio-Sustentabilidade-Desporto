@@ -102,3 +102,48 @@ td{
         padding-top: 18vh;
     }
 }
+
+.two-entries-vertical {
+    display: flex;
+    flex-direction: row;
+    flex-basis: 0;
+    gap: 10px;
+    min-height: 80vh;
+    margin-bottom: 2vh;
+}
+
+.single-entry-vertical {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 50%;
+    margin: auto;
+    background-color: white;
+}
+
+.single-entry-vertical h2 {
+    margin: 10px;
+    margin-right: auto
+}
+
+.entry-header-nav {
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    margin-bottom: 2vh;
+}
+
+.entry-header-nav h2 {
+    margin: 10px;
+    margin-right: auto
+}
+
+#right-nav {
+    margin-left: auto;
+    margin-right: 1%;
+}
+
+.entry-header-nav a {
+    color: unset;
+    text-decoration: unset;
+  }

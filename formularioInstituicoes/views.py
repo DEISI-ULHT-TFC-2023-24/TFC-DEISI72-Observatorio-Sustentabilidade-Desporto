@@ -31,6 +31,7 @@ def getEntidade(request) -> Entidade:
     else:
         return None
 
+
 def criar_perguntas_form(perguntas_form_object):
     questionario = Questionario.objects.get(nome="Questionário Instalações Desportivas")
 
@@ -1437,7 +1438,7 @@ def post_request_submmit(request):
 
             for instalacao in instalacoes:
                 avaliacao = Avaliacao(instalacao=instalacao, ano=int(lista_items[0][1][0]),
-                          questionario=Questionario.objects.filter(id=3).first())
+                                      questionario=Questionario.objects.filter(id=3).first())
                 avaliacao.save()
                 instalacao.submetido = False
                 instalacao.save()
@@ -1597,7 +1598,8 @@ def dashboard_energia_view(request):
                    "numeroLuminariasExterior": numeroLuminariasExterior,
                    "potenciaLuminariasInterior": potenciaLuminariasInterior,
                    "potenciaLuminariasExterior": potenciaLuminariasExterior,
-                   'entidadeLogada': entidade.nome
+                   'entidadeLogada': entidade.nome,
+                   'instalacao': instalacao
                    })
 
 
@@ -1700,8 +1702,8 @@ def dashboard_energia_staff_view(request):
                    "numeroLuminariasExterior": numeroLuminariasExterior,
                    "potenciaLuminariasInterior": potenciaLuminariasInterior,
                    "potenciaLuminariasExterior": potenciaLuminariasExterior,
+                   'instalacao': instalacao
                    })
-
 
 
 def getRespostaNumericaOr0(pergunta_id, instalacao, ano) -> int:
@@ -1741,9 +1743,9 @@ def login_view(request):
 
     return render(request, 'login.html', {"authForm": AuthenticationForm()})
 
+
 @login_required
 def admin_page_view(request):
-
     entidades = Entidade.objects.all()
 
     instalacoes_submeteu = []
@@ -1755,7 +1757,6 @@ def admin_page_view(request):
 
             if instalacao.submetido:
                 instalacoes_submeteu.append((entidade, instalacao))
-
 
     return render(request, 'admin_page.html', {"instalacoes": instalacoes_submeteu})
 
@@ -1806,7 +1807,8 @@ def instalacoes_view(request):
     instalacaoForm = FormInstalacoes()
 
     return render(request, 'instalacoes.html',
-                  {'instalacoes': Instalacao.objects.filter(entidade=entidade), 'instalacaoForm': instalacaoForm, 'entidadeLogada': entidade.nome})
+                  {'instalacoes': Instalacao.objects.filter(entidade=entidade), 'instalacaoForm': instalacaoForm,
+                   'entidadeLogada': entidade.nome})
 
 
 @login_required
@@ -1821,7 +1823,8 @@ def editinstalacao_view(request):
         return redirect('/')
 
     editInstalacaoForm = FormInstalacoes(instance=instalacao)
-    return render(request, 'editinstalacao.html', {"instalacaoForm": editInstalacaoForm, 'entidadeLogada': entidade.nome})
+    return render(request, 'editinstalacao.html',
+                  {"instalacaoForm": editInstalacaoForm, 'entidadeLogada': entidade.nome})
 
 
 @login_required
@@ -1903,6 +1906,7 @@ def passwordreset_view(request):
 
 def home_view(request):
     return render(request, 'home.html')
+
 
 def getConsumoEnergiasRenovaveis(instalacao, ano):
     return {
@@ -2163,8 +2167,10 @@ def dashboard_hidrica_view(request):
                       "numeroPraticantes": numeroPraticantes,
                       "numeroFuncionarios": numeroFuncionarios,
                       "areaTotal": areaTotal,
-                      'entidadeLogada': entidade.nome
+                      'entidadeLogada': entidade.nome,
+                      'instalacao': instalacao
                   })
+
 
 def dashboard_hidrica_staff_view(request):
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
@@ -2214,7 +2220,9 @@ def dashboard_hidrica_staff_view(request):
                       "numeroPraticantes": numeroPraticantes,
                       "numeroFuncionarios": numeroFuncionarios,
                       "areaTotal": areaTotal,
+                      'instalacao': instalacao
                   })
+
 
 def getAguaConsumos(instalacao, ano):
     return {
@@ -2320,3 +2328,84 @@ def getFaturasMaximasEurAgua(instalacao, ano):
         "pocos": getRespostaNumericaOr0(193, instalacao, ano),
         "rio": getRespostaNumericaOr0(157, instalacao, ano),
     }
+
+
+def dashboard_residuos_view(request):
+    instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
+    ano = 2024
+
+    numeroPraticantes = getNumeroPraticantes(instalacao, ano)
+    numeroFuncionarios = getNumeroFuncionarios(instalacao, ano)
+
+    areaTotal = getAreaTotal(instalacao, ano)
+
+    residuos = [
+        "Eletrónicos",
+        "Orgânicos",
+        "Papel",
+        "Plásticos",
+        "Vidros"
+    ]
+
+    residuosConsumos = list(getResiduosConsumos(instalacao, ano).values())
+
+    mobilidade = [
+        "Elétrico",
+        "GPL",
+        "Gasolina",
+        "Gasóleo",
+        "Hidrogênio",
+    ]
+
+    mobilidadeConsumos = list(getMobilidadeConsumos(instalacao, ano).values())
+
+    consumoTotalResiduos = getTotalResiduos(instalacao, ano)
+
+    veiculosTotal = getVeiculosTotal(instalacao, ano)
+
+    return render(request, 'dashboard_residuos.html', {
+        "numeroPraticantes": numeroPraticantes,
+        "numeroFuncionarios": numeroFuncionarios,
+        "areaTotal": areaTotal,
+        "residuos": residuos,
+        "residuosConsumos": residuosConsumos,
+        "consumoTotalResiduos": consumoTotalResiduos,
+        "veiculosTotal": veiculosTotal,
+        "mobilidade": mobilidade,
+        "mobilidadeConsumos": mobilidadeConsumos,
+        'instalacao': instalacao
+    })
+
+
+def getResiduosConsumos(instalacao, ano):
+    return {
+        "eletronicos": getRespostaNumericaOr0(234, instalacao, ano),
+        "organicos": getRespostaNumericaOr0(235, instalacao, ano),
+        "papel": getRespostaNumericaOr0(236, instalacao, ano),
+        "plasticos": getRespostaNumericaOr0(237, instalacao, ano),
+        "vidros": getRespostaNumericaOr0(238, instalacao, ano),
+    }
+
+
+def getMobilidadeConsumos(instalacao, ano):
+    return {
+        "eletrico": getRespostaNumericaOr0(247, instalacao, ano),
+        "gpl": getRespostaNumericaOr0(251, instalacao, ano),
+        "gasolina": getRespostaNumericaOr0(245, instalacao, ano),
+        "gasoleo": getRespostaNumericaOr0(246, instalacao, ano),
+        "hidrogenio": getRespostaNumericaOr0(248, instalacao, ano),
+    }
+
+
+def getTotalResiduos(instalacao, ano):
+    consumos = list(getResiduosConsumos(instalacao, ano).values())
+    total = 0
+
+    for x in consumos:
+        total += x
+
+    return total
+
+
+def getVeiculosTotal(instalacao, ano):
+    return getRespostaNumericaOr0(241, instalacao, ano)
