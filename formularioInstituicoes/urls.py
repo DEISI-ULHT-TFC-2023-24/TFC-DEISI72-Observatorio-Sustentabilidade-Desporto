@@ -29,6 +29,7 @@ urlpatterns = [
     path('dashboard_hidrica', views.dashboard_hidrica_view),
     path('dashboard_hidrica_staff', views.dashboard_hidrica_staff_view),
     path('dashboard_residuos', views.dashboard_residuos_view),
+    path('dashboard_residuos_staff', views.dashboard_residuos_view_staff),
     path('signup', views.sign_up_view),
     path('login', views.login_view),
     path('logout', views.logout_view),

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends 'navigatorSemOpcoes.html' %}
+
+{% load static %}
+
+{% block entidade %}
+    Staff
+{% endblock %}
+
+{% block titulo %}
+    <h1>Dashboard</h1>
+{% endblock %}
+
+{% block button %}
+    <h2><a href="/staff"><i class="fa-solid fa-chevron-left"></i></i><span>Back</span></a></h2>
+{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-autocolors"></script>
+
+    <script src="{% static 'js/graficos.js' %}"></script>
+
+    <div class="display">
+        <div class="entry-header-nav">
+            <h2><a href="/dashboard_hidrica_staff?instalacao={{ instalacao.id }}">🢐 Consumo Hidrico</a></h2>
+        </div>
+        <div class="entry-header">
+            <h2>Bem Vindo {{ instalacao.nome }}</h2>
+            <div class="long-entry-top">
+                <div class="info-column">
+                    <h2>Producao Total de Residuos: {{ consumoTotalResiduos }} Kg</h2>
+                    <h2>Numero de Veiculos: {{ veiculosTotal }}</h2>
+                </div>
+                <div class="info-column">
+                    <h2>Número de Praticantes: {{ numeroPraticantes }}</h2>
+                    <h2>Número de Funcionarios: {{ numeroFuncionarios }}</h2>
+                    <h2>Área Total: {{ areaTotal }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="two-entries-vertical">
+            <div class="single-entry-vertical">
+                <h2>Residuos</h2>
+                <div class="graf-slot3">
+                    <canvas id="graf-residuosconsumo" class="graph-view"></canvas>
+                </div>
+                <div class="graf-slot3">
+                    <canvas id="graf-residuosconsumo-bar" class="graph-view"></canvas>
+                </div>
+            </div>
+            <div class="single-entry-vertical">
+                <h2>Mobilidade</h2>
+                <div class="graf-slot3">
+                    <canvas id="graf-mobilidadeconsumo" class="graph-view"></canvas>
+                </div>
+                <div class="graf-slot3">
+                    <canvas id="graf-mobilidadeconsumo-bar" class="graph-view"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        //
+        let grafconsumos = document.getElementById("graf-residuosconsumo").getContext("2d");
+
+        makePieChart(grafconsumos, {{ residuos|safe }}, {{ residuosConsumos }})
+
+        let grafresiduosconsumos = document.getElementById("graf-residuosconsumo-bar").getContext("2d");
+
+        makeBarChart(grafresiduosconsumos, {{ residuos|safe }}, {{ residuosConsumos }})
+
+        //
+
+        let grafmobilidade = document.getElementById("graf-mobilidadeconsumo").getContext("2d");
+
+        makePieChart(grafmobilidade, {{ mobilidade|safe }}, {{ mobilidadeConsumos }})
+
+        let grafmobilidadeconsumos = document.getElementById("graf-mobilidadeconsumo-bar").getContext("2d");
+
+        makeBarChart(grafmobilidadeconsumos, {{ mobilidade|safe }}, {{ mobilidadeConsumos }})
+
+
+    </script>
+
+{% endblock %}
+</html>

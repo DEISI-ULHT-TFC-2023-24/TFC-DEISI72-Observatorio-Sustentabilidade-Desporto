@@ -1820,7 +1820,7 @@ def editinstalacao_view(request):
     if request.method == 'POST':
         editInstalacaoForm = FormInstalacoes(request.POST, instance=instalacao)
         editInstalacaoForm.save()
-        return redirect('/')
+        return redirect('/instalacoes')
 
     editInstalacaoForm = FormInstalacoes(instance=instalacao)
     return render(request, 'editinstalacao.html',
@@ -1832,7 +1832,7 @@ def deleteinstalacao_view(request):
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
     instalacao.delete()
 
-    return redirect('/')
+    return redirect('/instalacoes')
 
 
 def passwordreset_view(request):
@@ -2332,7 +2332,7 @@ def getFaturasMaximasEurAgua(instalacao, ano):
 
 def dashboard_residuos_view(request):
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
-    ano = 2024
+    ano = datetime.date.today().year
 
     numeroPraticantes = getNumeroPraticantes(instalacao, ano)
     numeroFuncionarios = getNumeroFuncionarios(instalacao, ano)
@@ -2376,6 +2376,51 @@ def dashboard_residuos_view(request):
         'instalacao': instalacao
     })
 
+def dashboard_residuos_view_staff(request):
+    instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
+    ano = datetime.date.today().year
+
+    numeroPraticantes = getNumeroPraticantes(instalacao, ano)
+    numeroFuncionarios = getNumeroFuncionarios(instalacao, ano)
+
+    areaTotal = getAreaTotal(instalacao, ano)
+
+    residuos = [
+        "Eletrónicos",
+        "Orgânicos",
+        "Papel",
+        "Plásticos",
+        "Vidros"
+    ]
+
+    residuosConsumos = list(getResiduosConsumos(instalacao, ano).values())
+
+    mobilidade = [
+        "Elétrico",
+        "GPL",
+        "Gasolina",
+        "Gasóleo",
+        "Hidrogênio",
+    ]
+
+    mobilidadeConsumos = list(getMobilidadeConsumos(instalacao, ano).values())
+
+    consumoTotalResiduos = getTotalResiduos(instalacao, ano)
+
+    veiculosTotal = getVeiculosTotal(instalacao, ano)
+
+    return render(request, 'dashboard_residuos_staff.html', {
+        "numeroPraticantes": numeroPraticantes,
+        "numeroFuncionarios": numeroFuncionarios,
+        "areaTotal": areaTotal,
+        "residuos": residuos,
+        "residuosConsumos": residuosConsumos,
+        "consumoTotalResiduos": consumoTotalResiduos,
+        "veiculosTotal": veiculosTotal,
+        "mobilidade": mobilidade,
+        "mobilidadeConsumos": mobilidadeConsumos,
+        'instalacao': instalacao
+    })
 
 def getResiduosConsumos(instalacao, ano):
     return {
