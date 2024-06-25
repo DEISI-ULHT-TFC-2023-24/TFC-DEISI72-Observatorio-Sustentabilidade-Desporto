@@ -102,8 +102,8 @@ function makePieChart(context, labels, data, metric) {
 
                 },
                 emptyDoughnut: {
-                    color: "rgba(0,255,244,0.5)",
-                    width: 2,
+                    color: "rgba(100,100,100,0.5)",
+                    width: 40,
                     radiusDecrease: 20
                 }
             }
