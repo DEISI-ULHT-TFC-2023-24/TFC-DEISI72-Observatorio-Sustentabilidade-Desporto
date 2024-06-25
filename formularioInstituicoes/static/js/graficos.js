@@ -3,6 +3,33 @@ Chart.register(autocolors);
 
 const lighten = (color, value) => Chart.helpers.color(color).lighten(value).rgbString();
 
+const emptyDoug = {
+  id: 'emptyDoughnut',
+  afterDraw(chart, args, options) {
+    const {datasets} = chart.data;
+    const {color, width, radiusDecrease} = options;
+    let hasData = false;
+
+    for (let i = 0; i < datasets.length; i += 1) {
+      const dataset = datasets[i];
+      hasData |= dataset.data.length > 0;
+    }
+
+    if (!hasData) {
+      const {chartArea: {left, top, right, bottom}, ctx} = chart;
+      const centerX = (left + right) / 2;
+      const centerY = (top + bottom) / 2;
+      const r = Math.min(right - left, bottom - top) / 2;
+
+      ctx.beginPath();
+      ctx.lineWidth = width || 2;
+      ctx.strokeStyle = color || 'rgba(255, 128, 0, 0.5)';
+      ctx.arc(centerX, centerY, (r - radiusDecrease || 0), 0, 2 * Math.PI);
+      ctx.stroke();
+    }
+  }
+};
+
 function makeLineChart(context, labels, data) {
     let chart = new Chart(context, {
         type: "line",
@@ -42,14 +69,27 @@ function makeLineChart(context, labels, data) {
     });
 }
 
-function makePieChart(context, labels, data) {
+function makePieChart(context, labels, data, metric) {
+    var dataIsEmpty = true;
+    for(let a of data) {
+        if(a != 0) {
+            dataIsEmpty = false;
+        }
+
+    }
+
+    if(dataIsEmpty) {
+        data = [];
+    }
+
+
     let chart = new Chart(context, {
         type: "doughnut",
         data: {
             labels: labels,
             datasets: [
                 {
-                    label: "kWh",
+                    label: metric,
                     data: data
                 }
             ]
@@ -60,20 +100,26 @@ function makePieChart(context, labels, data) {
                     mode: 'data',
                     offset: 30,
 
+                },
+                emptyDoughnut: {
+                    color: "rgba(0,255,244,0.5)",
+                    width: 2,
+                    radiusDecrease: 20
                 }
             }
-        }
+        },
+        plugins: [emptyDoug]
     });
 }
 
-function makeBarChart(context, labels, data) {
+function makeBarChart(context, labels, data, metric) {
     let chart = new Chart(context, {
         type: "bar",
         data: {
             labels: labels,
             datasets: [
                 {
-                    label: "€",
+                    label: metric,
                     data: data
                 }
             ]

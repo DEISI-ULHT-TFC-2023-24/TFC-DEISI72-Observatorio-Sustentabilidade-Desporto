@@ -41,6 +41,7 @@
             <div class="single-entry">
                 <div class="graf-slot3">
                     <canvas id="graf-aguaconsumo" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Consumo Total (L)</h3>
                 </div>
             </div>
             <div class="single-entry">
@@ -70,12 +71,15 @@
             <div class="long-entry">
                 <div class="graf-slot3">
                     <canvas id="graf-aguaconsumos" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Consumo (L)</h3>
                 </div>
                 <div class="graf-slot3">
                     <canvas id="graf-aguacusto" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Custo (€)</h3>
                 </div>
                 <div class="graf-slot3">
                     <canvas id="graf-aguaconscusto" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Custo/Consumo (€/L)</h3>
                 </div>
             </div>
         </div>
@@ -104,21 +108,21 @@
         //
         let grafconsumos = document.getElementById("graf-aguaconsumo").getContext("2d");
 
-        makePieChart(grafconsumos, {{ aguaFontes|safe }}, {{ aguaConsumos }})
+        makePieChart(grafconsumos, {{ aguaFontes|safe }}, {{ aguaConsumos }}, "L")
 
         //hidrica
 
         let grafaguaconsumos = document.getElementById("graf-aguaconsumos").getContext("2d");
 
-        makeBarChart(grafaguaconsumos, {{ aguaFontes|safe }}, {{ aguaConsumos }})
+        makeBarChart(grafaguaconsumos, {{ aguaFontes|safe }}, {{ aguaConsumos }}, "L")
 
         let grafaguacustos = document.getElementById("graf-aguacusto").getContext("2d");
 
-        makeBarChart(grafaguacustos, {{ aguaFontes|safe }}, {{ aguaCustos }})
+        makeBarChart(grafaguacustos, {{ aguaFontes|safe }}, {{ aguaCustos }}, "€")
 
         let grafaguacustosconsumos = document.getElementById("graf-aguaconscusto").getContext("2d");
 
-        makeBarChart(grafaguacustosconsumos, {{ aguaFontes|safe }}, {{ aguaCustosConsumo }})
+        makeBarChart(grafaguacustosconsumos, {{ aguaFontes|safe }}, {{ aguaCustosConsumo }}, "€/L")
 
 
     </script>
