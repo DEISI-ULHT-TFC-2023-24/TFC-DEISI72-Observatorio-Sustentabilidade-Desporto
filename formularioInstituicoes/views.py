@@ -1228,7 +1228,7 @@ def formulario_view(request):
     context = {
         'perguntas_form': perguntas_form,
         'instalacao_submmit': Instalacao.objects.get(id=instalacao_id).submetido,
-        'entidadeLogada': entidade.nome
+        'entidadeLogada': entidade.user.username
     }
 
     return render(request, 'formulario.html', context)
@@ -1255,7 +1255,7 @@ def update_form_view(request, tema_id):
     context = {
         'perguntas_form': perguntas_update_form,
         'instalacao_submmit': Instalacao.objects.get(id=instalacao_id).submetido,
-        'entidadeLogada': entidade.nome
+        'entidadeLogada': entidade.user.username
     }
 
     return render(request, 'update_formulario.html', context)
@@ -1384,7 +1384,7 @@ def respostas_view(request):
     context = {
         'perguntas_respostas_submmit': perguntas_respostas_submmit,
         'instalacao_submmit': Instalacao.objects.get(id=instalacao_id).submetido,
-        'entidadeLogada': entidade.nome
+        'entidadeLogada': entidade.user.username
     }
 
     return render(request, 'submmit.html', context)
@@ -1598,7 +1598,7 @@ def dashboard_energia_view(request):
                    "numeroLuminariasExterior": numeroLuminariasExterior,
                    "potenciaLuminariasInterior": potenciaLuminariasInterior,
                    "potenciaLuminariasExterior": potenciaLuminariasExterior,
-                   'entidadeLogada': entidade.nome,
+                   'entidadeLogada': entidade.user.username,
                    'instalacao': instalacao
                    })
 
@@ -1808,7 +1808,7 @@ def instalacoes_view(request):
 
     return render(request, 'instalacoes.html',
                   {'instalacoes': Instalacao.objects.filter(entidade=entidade), 'instalacaoForm': instalacaoForm,
-                   'entidadeLogada': entidade.nome})
+                   'entidadeLogada': entidade.user.username})
 
 
 @login_required
@@ -1824,7 +1824,7 @@ def editinstalacao_view(request):
 
     editInstalacaoForm = FormInstalacoes(instance=instalacao)
     return render(request, 'editinstalacao.html',
-                  {"instalacaoForm": editInstalacaoForm, 'entidadeLogada': entidade.nome})
+                  {"instalacaoForm": editInstalacaoForm, 'entidadeLogada': entidade.user.username})
 
 
 @login_required
@@ -2167,7 +2167,7 @@ def dashboard_hidrica_view(request):
                       "numeroPraticantes": numeroPraticantes,
                       "numeroFuncionarios": numeroFuncionarios,
                       "areaTotal": areaTotal,
-                      'entidadeLogada': entidade.nome,
+                      'entidadeLogada': entidade.user.username,
                       'instalacao': instalacao
                   })
 
@@ -2333,6 +2333,8 @@ def getFaturasMaximasEurAgua(instalacao, ano):
 def dashboard_residuos_view(request):
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
     ano = datetime.date.today().year
+    entidade = getEntidade(request)
+
 
     numeroPraticantes = getNumeroPraticantes(instalacao, ano)
     numeroFuncionarios = getNumeroFuncionarios(instalacao, ano)
@@ -2373,6 +2375,7 @@ def dashboard_residuos_view(request):
         "veiculosTotal": veiculosTotal,
         "mobilidade": mobilidade,
         "mobilidadeConsumos": mobilidadeConsumos,
+        'entidadeLogada': entidade.user.username,
         'instalacao': instalacao
     })
 
