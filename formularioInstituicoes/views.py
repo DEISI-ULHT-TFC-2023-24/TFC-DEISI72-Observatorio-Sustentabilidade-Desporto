@@ -1217,6 +1217,9 @@ def formulario_view(request):
 
     instalacao_id = request.GET.get('instalacao')
 
+    if not request.user.is_staff and not entidade.instalacoes.contains(Instalacao.objects.get(id=instalacao_id)):
+        return redirect("/")
+
     post_form(request, instalacao_id, datetime.date.today().year, update=False)
 
     if request.method == "POST" or request.method == "FILES":
@@ -1239,6 +1242,9 @@ def update_form_view(request, tema_id):
     entidade = getEntidade(request)
 
     instalacao_id = request.GET.get('instalacao')
+
+    if not request.user.is_staff and not entidade.instalacoes.contains(Instalacao.objects.get(id=instalacao_id)):
+        return redirect("/")
 
     ano_questionario = datetime.date.today().year
 
@@ -1377,6 +1383,9 @@ def respostas_view(request):
 
     instalacao_id = request.GET.get('instalacao')
 
+    if not request.user.is_staff and not entidade.instalacoes.contains(Instalacao.objects.get(id=instalacao_id)):
+        return redirect("/")
+
     ano_questionario = datetime.date.today().year
 
     guarda_respostas_submmit(instalacao_id, ano_questionario, perguntas_respostas_submmit)
@@ -1502,6 +1511,10 @@ def dashboard_energia_view(request):
     entidade = getEntidade(request)
 
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
+
+    if not request.user.is_staff and not entidade.instalacoes.contains(instalacao):
+        return redirect("/")
+
     ano = datetime.date.today().year
 
     energiasRenovaveis = [
@@ -1606,6 +1619,10 @@ def dashboard_energia_view(request):
 @login_required
 def dashboard_energia_staff_view(request):
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
+    entidade = getEntidade(request)
+    if not request.user.is_staff and not entidade.instalacoes.contains(instalacao):
+        return redirect("/")
+
     ano = datetime.date.today().year
 
     energiasRenovaveis = [
@@ -1750,6 +1767,9 @@ def admin_page_view(request):
 
     instalacoes_submeteu = []
 
+    if not request.user.is_staff:
+        return redirect('/')
+
     for entidade in entidades:
         instalacoes = entidade.instalacoes.all()
 
@@ -1789,7 +1809,9 @@ def sign_up_view(request):
 def instalacoes_view(request):
     entidade = getEntidade(request)
 
+
     instalacaoForm = FormInstalacoes(request.POST or None)
+
 
     if request.method == "POST":
         instalacao = instalacaoForm.save(commit=False)
@@ -1816,6 +1838,9 @@ def editinstalacao_view(request):
     entidade = getEntidade(request)
 
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
+
+    if not request.user.is_staff and not entidade.instalacoes.contains(instalacao):
+        return redirect("/")
 
     if request.method == 'POST':
         editInstalacaoForm = FormInstalacoes(request.POST, instance=instalacao)
@@ -2123,6 +2148,9 @@ def dashboard_hidrica_view(request):
 
     entidade = getEntidade(request)
 
+    if not request.user.is_staff and not entidade.instalacoes.contains(instalacao):
+        return redirect("/")
+
     numeroPraticantes = getNumeroPraticantes(instalacao, ano)
     numeroFuncionarios = getNumeroFuncionarios(instalacao, ano)
 
@@ -2175,6 +2203,10 @@ def dashboard_hidrica_view(request):
 def dashboard_hidrica_staff_view(request):
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
     ano = datetime.date.today().year
+
+    entidade = getEntidade(request)
+    if not request.user.is_staff and not entidade.instalacoes.contains(instalacao):
+        return redirect("/")
 
     numeroPraticantes = getNumeroPraticantes(instalacao, ano)
     numeroFuncionarios = getNumeroFuncionarios(instalacao, ano)
@@ -2333,8 +2365,10 @@ def getFaturasMaximasEurAgua(instalacao, ano):
 def dashboard_residuos_view(request):
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
     ano = datetime.date.today().year
-    entidade = getEntidade(request)
 
+    entidade = getEntidade(request)
+    if not request.user.is_staff and not entidade.instalacoes.contains(instalacao):
+        return redirect("/")
 
     numeroPraticantes = getNumeroPraticantes(instalacao, ano)
     numeroFuncionarios = getNumeroFuncionarios(instalacao, ano)
@@ -2382,6 +2416,10 @@ def dashboard_residuos_view(request):
 def dashboard_residuos_view_staff(request):
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
     ano = datetime.date.today().year
+
+    entidade = getEntidade(request)
+    if not request.user.is_staff and not entidade.instalacoes.contains(instalacao):
+        return redirect("/")
 
     numeroPraticantes = getNumeroPraticantes(instalacao, ano)
     numeroFuncionarios = getNumeroFuncionarios(instalacao, ano)
