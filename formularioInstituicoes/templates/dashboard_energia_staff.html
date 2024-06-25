@@ -26,8 +26,7 @@
 
     <div class="display">
         <div class="entry-header-nav">
-            <h2 id="right-nav"><a href="/dashboard_hidrica_staff?instalacao={{ instalacao.id }}">Consumo Hidrico 🢒</a>
-            </h2>
+            <h2 id="right-nav"><a href="/dashboard_hidrica_staff?instalacao={{ instalacao.id }}">Consumo Hidrico 🢒</a></h2>
         </div>
         <div class="entry-header">
             <h2>Bem Vindo {{ instalacao.nome }}</h2>
@@ -49,12 +48,15 @@
             <div class="long-entry">
                 <div class="graf-slot3">
                     <canvas id="graf-energias" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Consumos Totais (kWh)</h3>
                 </div>
                 <div class="graf-slot3">
                     <canvas id="graf-energiasren" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Consumos Renovaveis (kWh)</h3>
                 </div>
                 <div class="graf-slot3">
                     <canvas id="graf-energiasnren" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Consumos Não Renovaveis (kWh)</h3>
                 </div>
 
             </div>
@@ -64,12 +66,15 @@
             <div class="long-entry">
                 <div class="graf-slot3">
                     <canvas id="graf-renconsumo" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Consumo (kWh)</h3>
                 </div>
                 <div class="graf-slot3">
                     <canvas id="graf-rencusto" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Custo (€)</h3>
                 </div>
                 <div class="graf-slot3">
                     <canvas id="graf-renconscusto" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Custo/Consumo (€/kWh)</h3>
                 </div>
             </div>
         </div>
@@ -78,12 +83,15 @@
             <div class="long-entry">
                 <div class="graf-slot3">
                     <canvas id="graf-nrenconsumo" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Consumo (kWh)</h3>
                 </div>
                 <div class="graf-slot3">
                     <canvas id="graf-nrencusto" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Custo (€)</h3>
                 </div>
                 <div class="graf-slot3">
                     <canvas id="graf-nrenconscusto" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Custo/Consumo (€/kWh)</h3>
                 </div>
             </div>
         </div>
@@ -136,9 +144,11 @@
             <div class="long-entry">
                 <div class="graf-slot3">
                     <canvas id="graf-climatizacao" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Consumo (kWh)</h3>
                 </div>
                 <div class="graf-slot3">
                     <canvas id="graf-aguas" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Consumo (L)</h3>
                 </div>
                 <div class="graf-slot3">
                     <h2>Iluminação Interior</h2>
@@ -157,49 +167,49 @@
         //energias
         let grafenergias = document.getElementById("graf-energias").getContext("2d");
 
-        makePieChart(grafenergias, {{ energias|safe }}, {{ energiasConsumos }})
+        makePieChart(grafenergias, {{ energias|safe }}, {{ energiasConsumos }}, "kWh")
 
         let grafenergiasren = document.getElementById("graf-energiasren").getContext("2d");
 
-        makePieChart(grafenergiasren, {{ energiasRenovaveis|safe }}, {{ consumoEnergiasRenovaveis }})
+        makePieChart(grafenergiasren, {{ energiasRenovaveis|safe }}, {{ consumoEnergiasRenovaveis }}, "kWh")
 
         let grafenergiasnren = document.getElementById("graf-energiasnren").getContext("2d");
 
-        makePieChart(grafenergiasnren, {{ energiasNaoRenovaveis|safe }}, {{ consumoEnergiasNaoRenovaveis }})
+        makePieChart(grafenergiasnren, {{ energiasNaoRenovaveis|safe }}, {{ consumoEnergiasNaoRenovaveis }}, "kWh")
 
         let grafrenconsumos = document.getElementById("graf-renconsumo").getContext("2d");
 
-        makeBarChart(grafrenconsumos, {{ energiasRenovaveis|safe }}, {{ consumoEnergiasRenovaveis }})
+        makeBarChart(grafrenconsumos, {{ energiasRenovaveis|safe }}, {{ consumoEnergiasRenovaveis }}, "kWh")
 
         let grafrencustos = document.getElementById("graf-rencusto").getContext("2d");
 
-        makeBarChart(grafrencustos, {{ energiasRenovaveis|safe }}, {{ custoEnergiasRenovaveis }})
+        makeBarChart(grafrencustos, {{ energiasRenovaveis|safe }}, {{ custoEnergiasRenovaveis }}, "€")
 
         let grafrencustosconsumos = document.getElementById("graf-renconscusto").getContext("2d");
 
-        makeBarChart(grafrencustosconsumos, {{ energiasRenovaveis|safe }}, {{ custoConsumoEnergiasRenovaveis }})
+        makeBarChart(grafrencustosconsumos, {{ energiasRenovaveis|safe }}, {{ custoConsumoEnergiasRenovaveis }}, "€/kWh")
 
         //energias nao renovaveis
         let grafnrenconsumos = document.getElementById("graf-nrenconsumo").getContext("2d");
 
-        makeBarChart(grafnrenconsumos, {{ energiasNaoRenovaveis|safe }}, {{ consumoEnergiasNaoRenovaveis }})
+        makeBarChart(grafnrenconsumos, {{ energiasNaoRenovaveis|safe }}, {{ consumoEnergiasNaoRenovaveis }}, "kWh")
 
         let grafnrencustos = document.getElementById("graf-nrencusto").getContext("2d");
 
-        makeBarChart(grafnrencustos, {{ energiasNaoRenovaveis|safe }}, {{ custoEnergiasNaoRenovaveis }})
+        makeBarChart(grafnrencustos, {{ energiasNaoRenovaveis|safe }}, {{ custoEnergiasNaoRenovaveis }}, "€")
 
         let grafnrencustosconsumos = document.getElementById("graf-nrenconscusto").getContext("2d");
 
-        makeBarChart(grafnrencustosconsumos, {{ energiasNaoRenovaveis|safe }}, {{ custoConsumoEnergiasNaoRenovaveis }})
+        makeBarChart(grafnrencustosconsumos, {{ energiasNaoRenovaveis|safe }}, {{ custoConsumoEnergiasNaoRenovaveis }}, "€/kWh")
 
         //climatizacao e aguas
         let grafclimatizacao = document.getElementById("graf-climatizacao").getContext("2d");
 
-        makePieChart(grafclimatizacao, {{ climatizacaoSistemas|safe }}, {{ climatizacaoPotencias }})
+        makePieChart(grafclimatizacao, {{ climatizacaoSistemas|safe }}, {{ climatizacaoPotencias }}, "kWh")
 
         let grafaguas = document.getElementById("graf-aguas").getContext("2d");
 
-        makePieChart(grafaguas, {{ aquecimetoAguasSistemas|safe }}, {{ aquecimetoAguasPotencias }})
+        makePieChart(grafaguas, {{ aquecimetoAguasSistemas|safe }}, {{ aquecimetoAguasPotencias }}, "kWh")
 
     </script>
 

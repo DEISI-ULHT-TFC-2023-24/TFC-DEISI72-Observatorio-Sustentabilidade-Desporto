@@ -25,14 +25,14 @@
 
     <div class="display">
         <div class="entry-header-nav">
-            <h2><a href="/dashboard_hidrica_staff?instalacao={{ instalacao.id }}">🢐 Consumo Hidrico</a></h2>
+            <h2><a href="/dashboard_hidrica_staff?instalacao={{ instalacao.id }}">🢐 Consumo Hídrico</a></h2>
         </div>
         <div class="entry-header">
             <h2>Bem Vindo {{ instalacao.nome }}</h2>
             <div class="long-entry-top">
                 <div class="info-column">
-                    <h2>Producao Total de Residuos: {{ consumoTotalResiduos }} Kg</h2>
-                    <h2>Numero de Veiculos: {{ veiculosTotal }}</h2>
+                    <h2>Produção Total de Residuos: {{ consumoTotalResiduos }} Kg</h2>
+                    <h2>Número de Veiculos: {{ veiculosTotal }}</h2>
                 </div>
                 <div class="info-column">
                     <h2>Número de Praticantes: {{ numeroPraticantes }}</h2>
@@ -47,18 +47,22 @@
                 <h2>Residuos</h2>
                 <div class="graf-slot3">
                     <canvas id="graf-residuosconsumo" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Produção (kg)</h3>
                 </div>
                 <div class="graf-slot3">
                     <canvas id="graf-residuosconsumo-bar" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Produção (kg)</h3>
                 </div>
             </div>
             <div class="single-entry-vertical">
                 <h2>Mobilidade</h2>
                 <div class="graf-slot3">
                     <canvas id="graf-mobilidadeconsumo" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Consumo (kg)</h3>
                 </div>
                 <div class="graf-slot3">
                     <canvas id="graf-mobilidadeconsumo-bar" class="graph-view"></canvas>
+                    <h3 style="text-align: center;">Consumo (kg)</h3>
                 </div>
             </div>
         </div>
@@ -70,21 +74,21 @@
         //
         let grafconsumos = document.getElementById("graf-residuosconsumo").getContext("2d");
 
-        makePieChart(grafconsumos, {{ residuos|safe }}, {{ residuosConsumos }})
+        makePieChart(grafconsumos, {{ residuos|safe }}, {{ residuosConsumos }}, "kg")
 
         let grafresiduosconsumos = document.getElementById("graf-residuosconsumo-bar").getContext("2d");
 
-        makeBarChart(grafresiduosconsumos, {{ residuos|safe }}, {{ residuosConsumos }})
+        makeBarChart(grafresiduosconsumos, {{ residuos|safe }}, {{ residuosConsumos }}, "kg")
 
         //
 
         let grafmobilidade = document.getElementById("graf-mobilidadeconsumo").getContext("2d");
 
-        makePieChart(grafmobilidade, {{ mobilidade|safe }}, {{ mobilidadeConsumos }})
+        makePieChart(grafmobilidade, {{ mobilidade|safe }}, {{ mobilidadeConsumos }}, "kg")
 
         let grafmobilidadeconsumos = document.getElementById("graf-mobilidadeconsumo-bar").getContext("2d");
 
-        makeBarChart(grafmobilidadeconsumos, {{ mobilidade|safe }}, {{ mobilidadeConsumos }})
+        makeBarChart(grafmobilidadeconsumos, {{ mobilidade|safe }}, {{ mobilidadeConsumos }}, "kg")
 
 
     </script>
