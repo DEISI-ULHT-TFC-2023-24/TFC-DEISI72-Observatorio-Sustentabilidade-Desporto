@@ -1802,7 +1802,7 @@ def instalacoes_view(request):
                               questionario=Questionario.objects.filter(id=3).first())
 
         avaliacao.save()
-        return redirect('/')
+        return redirect('/instalacoes')
 
     instalacaoForm = FormInstalacoes()
 
