@@ -1,6 +1,7 @@
 import calendar
 import datetime
 import locale
+import re
 
 from django.contrib import messages
 from django.contrib.auth import password_validation
@@ -101,6 +102,12 @@ class FormEntidade(ModelForm):
         fields = []
         labels = {}
 
+    def clean_username2(self):
+        username = self.cleaned_data.get('username')
+        if ' ' in username:
+            raise messages.error(request, 'error')
+        return username
+
 class FormInstalacoes(ModelForm):
     class Meta:
         model = Instalacao
@@ -145,7 +152,7 @@ class SignupForm(UserCreationForm):
         email = self.cleaned_data.get("email")
         if User.objects.filter(email=email).exists():
             raise ValidationError(
-                self.error_messages["duplicate_email"],
+                "Este email já está registado",
                 code="duplicate_email",
             )
         return email
@@ -154,9 +161,14 @@ class SignupForm(UserCreationForm):
         username = self.cleaned_data.get("username")
         if User.objects.filter(username=username).exists():
             raise ValidationError(
-                self.error_messages["duplicate_username"],
+                "O nome desta entidade já está registado",
                 code="duplicate_username",
             )
+        elif ' ' in username:
+            raise ValidationError('Username não pode conter espaços')
+        elif not re.match(r'^[\w-]+$', username):
+            raise ValidationError('O nome de entidade só pode conter letras e números',
+                                  code='invalid_username')
         return username
 
     def clean_password2(self):
@@ -164,7 +176,7 @@ class SignupForm(UserCreationForm):
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
             raise ValidationError(
-                self.error_messages["password_mismatch"],
+                "As passwords não coincidem",
                 code="password_mismatch",
             )
         return password2

@@ -213,3 +213,9 @@ div#resposta_dada {
         margin: 165px auto auto;
     }
 }
+
+.input_hidden{
+    visibility: hidden;
+    height: 0;
+    width: 0;
+}

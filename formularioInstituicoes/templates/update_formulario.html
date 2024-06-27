@@ -25,84 +25,96 @@
 
         <div class="container">
 
-        {% for tema, subtemas in perguntas_form.items %}
-            {% with forloop.counter as tema_counter %}
-                <div class="tema">
-                    <div class="titulo" onclick="toggle(this)" id="temaID:{{ tema.id }}">
-                        <span>{{ tema_counter }}. {{ tema.nome }} </span>
-                        <span style="float:right" id="sinal">+</span>
-                    </div>
-                    <div class="bloco">
-                        <form action="" method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
+            {% for tema, subtemas in perguntas_form.items %}
+                {% with forloop.counter as tema_counter %}
+                    <div class="tema">
+                        <div class="titulo" onclick="toggle(this)" id="temaID:{{ tema.id }}">
+                            <span>{{ tema_counter }}. {{ tema.nome }} </span>
+                            <span style="float:right" id="sinal">+</span>
+                        </div>
+                        <div class="bloco">
+                            <form action="" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
 
-                            {% for subtema, perguntas in subtemas.items %}
-                                {% with forloop.counter as subtema_counter %}
-                                    <div id={{ tema_counter }}:{{ subtema.nome|slugify }} class="bloco_subtema">
-                                        <h3>{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}
-                                            {% if subtema.resposta_duplicavel %}
-                                                <input type="hidden" value="{{ tema.id }}" name="temaId">
-                                                <button type="button" class="butao_adiciona"
-                                                        onclick="adicionarValorSubtema()">+
-                                                </button>
+                                {% for subtema, perguntas in subtemas.items %}
+                                    {% with forloop.counter as subtema_counter %}
+                                        <div id={{ tema_counter }}:{{ subtema.nome|slugify }} class="bloco_subtema">
+                                            <h3>{{ tema_counter }}.{{ subtema_counter }} {{ subtema.nome }}
+                                                {% if subtema.resposta_duplicavel %}
+                                                    <input type="hidden" value="{{ tema.id }}" name="temaId">
+                                                    <button type="button" class="butao_adiciona"
+                                                            onclick="adicionarValorSubtema()">+
+                                                    </button>
 
-                                            {% endif %}
-                                        </h3>
-                                        <table>
-                                            {% for pergunta, respostas in perguntas.items %}
-                                                <tr id="{{ tema_counter }}.{{ subtema_counter }}:{{ pergunta.texto|slugify }}">
-                                                    <td id="pergunta">
-                                                        <input type="hidden" name="pergunta" value="{{ pergunta.id }}">
-                                                        {{ pergunta.texto }}
-                                                    </td>
-                                                    <td id="resposta">
-                                                        <div id="boxResposta">
-                                                            <div class="multipla-resposta:{{ pergunta.resposta_permite_repetidos }}">
-                                                                {% for resposta in respostas %}
-                                                                    <div id="resposta_dada">
-                                                                        <input type="hidden"
-                                                                               value="{{ resposta.id }}"
-                                                                               id="respostaId">
-                                                                        <span class="respostaValue">{{ resposta }}</span>
-                                                                    </div>
-                                                                {% endfor %}
-                                                            </div>
-                                                            {% if pergunta.unidade %}
-                                                                <div class="unidade">
-                                                                    {{ pergunta.unidade }}
+                                                {% endif %}
+                                            </h3>
+                                            <table>
+                                                {% for pergunta, respostas in perguntas.items %}
+                                                    <tr id="{{ tema_counter }}.{{ subtema_counter }}:{{ pergunta.texto|slugify }}">
+                                                        <td id="pergunta">
+                                                            <input type="hidden" name="pergunta"
+                                                                   value="{{ pergunta.id }}">
+                                                            {{ pergunta.texto }}
+                                                        </td>
+                                                        <td id="resposta">
+                                                            <div id="boxResposta">
+                                                                <div class="multipla-resposta:{{ pergunta.resposta_permite_repetidos }}">
+                                                                    {% for resposta in respostas %}
+                                                                        <div id="resposta_dada">
+                                                                        {% if not pergunta.resposta_permite_repetidos %}
+                                                                            {% if resposta == respostas|first %}
+                                                                                <span class="respostaValue">{{ resposta.as_p }}</span>
+                                                                            {% else %}
+                                                                                <span class="respostaValue">{{ resposta }}</span>
+                                                                            {% endif %}
+
+                                                                        {% else %}
+                                                                            <span class="respostaValue">{{ resposta }}</span>
+                                                                        {% endif %}
+
+                                                                            <input type="hidden"
+                                                                                   value="{{ resposta.id }}"
+                                                                                   id="respostaId">
+                                                                        </div>
+                                                                    {% endfor %}
                                                                 </div>
-                                                            {% endif %}
-                                                        </div>
-                                                        <div id='{{ pergunta.texto|slugify }}'></div>
+                                                                {% if pergunta.unidade %}
+                                                                    <div class="unidade">
+                                                                        {{ pergunta.unidade }}
+                                                                    </div>
+                                                                {% endif %}
+                                                            </div>
+                                                            <div id='{{ pergunta.texto|slugify }}'></div>
 
-                                                    </td>
+                                                        </td>
 
-                                                </tr>
-                                            {% endfor %}
-
-
-                                        </table>
-                                    </div>
-
-                                {% endwith %}
-                            {% endfor %}
-
-                            <div class="button-group">
-                                <input type="button" value="Limpar" name="clearButton" id="ButaoLimpar" onclick="limpar_valores_form(); checkboxes_display();">
-
-                                <input type="submit" value="Gravar" name="saveButton" id="ButaoGravar">
-                            </div>
+                                                    </tr>
+                                                {% endfor %}
 
 
-                        </form>
+                                            </table>
+                                        </div>
+
+                                    {% endwith %}
+                                {% endfor %}
+
+                                <div class="button-group">
+                                    <input type="button" value="Limpar" name="clearButton" id="ButaoLimpar"
+                                           onclick="limpar_valores_form(); checkboxes_display();">
+
+                                    <input type="submit" value="Gravar" name="saveButton" id="ButaoGravar">
+                                </div>
+
+
+                            </form>
+                        </div>
                     </div>
-                </div>
-            {% endwith %}
+                {% endwith %}
 
-        {% endfor %}
+            {% endfor %}
 
 
-    </div>
+        </div>
 
     {% endif %}
 

@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block titulo %}
-    <h1>Dashboard</h1>
+    <h1>Dashboard Consumo Energético</h1>
 {% endblock %}
 
 {% block content %}
@@ -25,7 +25,7 @@
             <h2 id="right-nav"><a href="/dashboard_hidrica?instalacao={{ instalacao.id }}">Consumo Hidrico 🢒</a></h2>
         </div>
         <div class="entry-header">
-            <h2>Bem Vindo {{ instalacao.nome }}</h2>
+            <h2>Bem Vindo, {{ instalacao.nome }}</h2>
             <div class="long-entry-top">
                 <div class="info-column">
                     <h2>Consumo Total de Energia: {{ consumoTotalEnergia }} kWh</h2>
@@ -140,19 +140,19 @@
             <div class="long-entry">
                 <div class="graf-slot3">
                     <canvas id="graf-climatizacao" class="graph-view"></canvas>
-                    <h3 style="text-align: center;">Consumo (kWh)</h3>
+                    <h3 style="text-align: center;">Sistemas de climatização (kWh)</h3>
                 </div>
                 <div class="graf-slot3">
                     <canvas id="graf-aguas" class="graph-view"></canvas>
-                    <h3 style="text-align: center;">Consumo (L)</h3>
+                    <h3 style="text-align: center;">Sistemas de aquecimento de àgua (kW)</h3>
                 </div>
                 <div class="graf-slot3">
                     <h2>Iluminação Interior</h2>
                     <h4>&emsp;Número de Luminárias: {{ numeroLuminariasInterior }}</h4>
-                    <h4>&emsp;Potência Média: {{ potenciaLuminariasInterior }} kWh</h4>
+                    <h4>&emsp;Potência Média: {{ potenciaLuminariasInterior }} W</h4>
                     <h2>Iluminação Exterior</h2>
                     <h4>&emsp;Número de Luminárias: {{ numeroLuminariasExterior }}</h4>
-                    <h4>&emsp;Potência Média: {{ potenciaLuminariasExterior }} kWh</h4>
+                    <h4>&emsp;Potência Média: {{ potenciaLuminariasExterior }} W</h4>
                 </div>
             </div>
         </div>

@@ -1792,6 +1792,7 @@ def sign_up_view(request):
     formUser = SignupForm(request.POST or None)
 
     if request.method == "POST":
+
         if formEntidade.is_valid() and formUser.is_valid():
             user = formUser.save(commit=False)
             user.save()
@@ -1801,6 +1802,12 @@ def sign_up_view(request):
             utilizador.save()
 
             return redirect("/login")
+        else:
+            messages.error(request, 'error')
+
+    system_messages = messages.get_messages(request)
+    for message in system_messages:
+        pass
 
     return render(request, 'signup.html', {"formUser": formUser, "formUtilizador": formEntidade})
 
@@ -1809,9 +1816,7 @@ def sign_up_view(request):
 def instalacoes_view(request):
     entidade = getEntidade(request)
 
-
     instalacaoForm = FormInstalacoes(request.POST or None)
-
 
     if request.method == "POST":
         instalacao = instalacaoForm.save(commit=False)
@@ -2413,6 +2418,7 @@ def dashboard_residuos_view(request):
         'instalacao': instalacao
     })
 
+
 def dashboard_residuos_view_staff(request):
     instalacao = Instalacao.objects.filter(id=request.GET["instalacao"]).first()
     ano = datetime.date.today().year
@@ -2462,6 +2468,7 @@ def dashboard_residuos_view_staff(request):
         "mobilidadeConsumos": mobilidadeConsumos,
         'instalacao': instalacao
     })
+
 
 def getResiduosConsumos(instalacao, ano):
     return {

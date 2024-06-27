@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block titulo %}
-    <h1>Dashboard</h1>
+    <h1>Dashboard Consumo Hídrico</h1>
 {% endblock %}
 
 {% block button %}
@@ -29,7 +29,7 @@
             <h2 id="right-nav"><a href="/dashboard_residuos_staff?instalacao={{ instalacao.id }}">Residuos e Mobilidade 🢒</a></h2>
         </div>
         <div class="entry-header">
-            <h2>Bem Vindo {{ instalacao.nome }}</h2>
+            <h2>Bem Vindo, {{ instalacao.nome }}</h2>
             <div class="long-entry-top">
                 <div class="info-column">
                     <h2>Consumo Total de Água: {{ aguaConsumoTotal }} L</h2>
